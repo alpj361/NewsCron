@@ -2,8 +2,8 @@ import fetch from 'node-fetch';
 import { createClient } from '@supabase/supabase-js';
 
 // Configura tus credenciales de Supabase
-const SUPABASE_URL = 'https://TU_SUPABASE_URL.supabase.co';
-const SUPABASE_KEY = 'TU_SUPABASE_SERVICE_ROLE_KEY'; // Usa la service role key
+const SUPABASE_URL = 'https://qqshdccpmypelhmyqnut.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFxc2hkY2NwbXlwZWxobXlxbnV0Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0NjAzNjcxMSwiZXhwIjoyMDYxNjEyNzExfQ.BaJ_z3Gp2pUnmYEDpfNTCIxpHloSjmxi43aKwm-93ZI'; // Usa la service role key
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const categorias = [
