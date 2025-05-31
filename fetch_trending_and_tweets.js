@@ -42,15 +42,59 @@ const cleanTrendText = (trendText) => {
 
 // Función para extraer término de búsqueda del trend
 const extractSearchTerm = (trendText) => {
-  const cleanText = cleanTrendText(trendText);
+  let cleanText = cleanTrendText(trendText);
   
   // Si es un hashtag, remover el #
   if (cleanText.startsWith('#')) {
-    return cleanText.substring(1);
+    cleanText = cleanText.substring(1);
   }
   
-  // Si tiene paréntesis con conteo, remover esa parte
-  return cleanText.replace(/\s*\([^)]*\)$/, '').trim();
+  // Remover conteos con paréntesis (ej: "término (123)")
+  cleanText = cleanText.replace(/\s*\([^)]*\)$/, '');
+  
+  // Remover sufijos de números con K, M, etc. al final
+  // Ejemplos: Taylor839K -> Taylor, USAC14K -> USAC, Rep TV138K -> Rep TV
+  cleanText = cleanText.replace(/\d+[KMB]?$/i, '');
+  
+  // Remover números sueltos al final
+  cleanText = cleanText.replace(/\s*\d+$/, '');
+  
+  // Remover espacios extra y limpiar
+  cleanText = cleanText.trim();
+  
+  // Si el término queda muy corto (menos de 2 caracteres), podría no ser útil
+  if (cleanText.length < 2) {
+    console.log(`⚠️  Término muy corto después de limpiar: "${cleanText}" (original: "${trendText}")`);
+    return null;
+  }
+  
+  console.log(`🧹 Limpieza: "${trendText}" -> "${cleanText}"`);
+  return cleanText;
+};
+
+// Función para convertir fecha de Nitter a formato ISO
+const parseNitterDate = (dateString) => {
+  if (!dateString) return null;
+  
+  try {
+    // Formato típico de Nitter: "May 30, 2025 · 11:10 PM UTC"
+    // Remover el separador " · " y limpiar
+    const cleanDate = dateString.replace(' · ', ' ').replace(' UTC', '');
+    
+    // Crear objeto Date y convertir a ISO
+    const date = new Date(cleanDate + ' UTC');
+    
+    // Verificar si la fecha es válida
+    if (isNaN(date.getTime())) {
+      console.log(`⚠️  Fecha inválida: "${dateString}"`);
+      return null;
+    }
+    
+    return date.toISOString();
+  } catch (error) {
+    console.log(`❌ Error parseando fecha "${dateString}":`, error.message);
+    return null;
+  }
 };
 
 // Verificar si ya existe un tweet con el mismo tweet_id
@@ -68,22 +112,37 @@ async function tweetExiste(tweetId) {
 async function fetchTrendingAndTweets() {
   try {
     console.log('🔍 Obteniendo trending topics...');
+    console.log('📡 URL:', `${API_BASE_URL}/trending?location=${LOCATION}`);
     
     // 1. Obtener trending topics
-    const trendingRes = await fetch(`${API_BASE_URL}/trending`);
-    const trendingData = await trendingRes.json();
+    const trendingRes = await fetch(`${API_BASE_URL}/trending?location=${LOCATION}`);
+    console.log('📊 Response status:', trendingRes.status);
     
-    if (trendingData.status !== 'success' || !trendingData.trends) {
-      console.error('❌ Error obteniendo trending topics:', trendingData.message);
+    if (!trendingRes.ok) {
+      throw new Error(`HTTP ${trendingRes.status}: ${trendingRes.statusText}`);
+    }
+    
+    const trendingData = await trendingRes.json();
+    console.log('📦 Response data:', JSON.stringify(trendingData, null, 2));
+    
+    if (trendingData.status !== 'success' || !trendingData.twitter_trends) {
+      console.error('❌ Error obteniendo trending topics:', trendingData.message || 'No trends found');
       return;
     }
     
-    console.log(`✅ Obtenidos ${trendingData.trends.length} trending topics`);
+    console.log(`✅ Obtenidos ${trendingData.twitter_trends.length} trending topics`);
     
     // 2. Para cada trend, obtener tweets de Nitter
-    for (const trend of trendingData.trends) {
+    for (const trend of trendingData.twitter_trends) {
       try {
         const searchTerm = extractSearchTerm(trend);
+        
+        // Si el término es null o muy corto, saltar
+        if (!searchTerm) {
+          console.log(`⏭️  Saltando trend "${trend}" - término no válido después de limpiar`);
+          continue;
+        }
+        
         const categoria = categorizeTrend(trend);
         
         console.log(`\n🔍 Buscando tweets para: "${searchTerm}" (${categoria})`);
@@ -111,7 +170,7 @@ async function fetchTrendingAndTweets() {
               categoria: categoria,
               tweet_id: tweet.tweet_id,
               usuario: tweet.usuario,
-              fecha_tweet: tweet.fecha,
+              fecha_tweet: parseNitterDate(tweet.fecha),
               texto: tweet.texto,
               enlace: tweet.enlace,
               likes: tweet.likes || 0,
@@ -154,4 +213,4 @@ if (require.main === module) {
   fetchTrendingAndTweets();
 }
 
-module.exports = { fetchTrendingAndTweets }; 
+module.exports = { fetchTrendingAndTweets };
