@@ -70,7 +70,7 @@ async function fetchTrendingAndTweets() {
     console.log('🔍 Obteniendo trending topics...');
     
     // 1. Obtener trending topics
-    const trendingRes = await fetch(`${API_BASE_URL}/trending?location=${LOCATION}`);
+    const trendingRes = await fetch(`${API_BASE_URL}/trending`);
     const trendingData = await trendingRes.json();
     
     if (trendingData.status !== 'success' || !trendingData.trends) {
