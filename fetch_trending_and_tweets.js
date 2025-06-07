@@ -78,6 +78,40 @@ const parseNitterDate = (dateString) => {
   if (!dateString) return null;
   
   try {
+    // Manejar fechas relativas: "3m", "16m", "2h", "58m", etc.
+    if (/^\d+[mhsdwy]$/.test(dateString)) {
+      const now = new Date();
+      const value = parseInt(dateString);
+      const unit = dateString.slice(-1);
+      
+      switch (unit) {
+        case 'm': // minutos
+          now.setMinutes(now.getMinutes() - value);
+          break;
+        case 'h': // horas  
+          now.setHours(now.getHours() - value);
+          break;
+        case 'd': // días
+          now.setDate(now.getDate() - value);
+          break;
+        case 'w': // semanas
+          now.setDate(now.getDate() - (value * 7));
+          break;
+        case 'y': // años
+          now.setFullYear(now.getFullYear() - value);
+          break;
+        case 's': // segundos
+          now.setSeconds(now.getSeconds() - value);
+          break;
+        default:
+          console.log(`⚠️  Unidad de tiempo no reconocida: "${unit}" en "${dateString}"`);
+          return new Date().toISOString(); // Usar fecha actual como fallback
+      }
+      
+      console.log(`🕒 Fecha relativa convertida: "${dateString}" -> ${now.toISOString()}`);
+      return now.toISOString();
+    }
+    
     // Formato típico de Nitter: "May 30, 2025 · 11:10 PM UTC"
     // Remover el separador " · " y limpiar
     const cleanDate = dateString.replace(' · ', ' ').replace(' UTC', '');
@@ -87,14 +121,14 @@ const parseNitterDate = (dateString) => {
     
     // Verificar si la fecha es válida
     if (isNaN(date.getTime())) {
-      console.log(`⚠️  Fecha inválida: "${dateString}"`);
-      return null;
+      console.log(`⚠️  Fecha inválida: "${dateString}" - usando fecha actual`);
+      return new Date().toISOString(); // Usar fecha actual como fallback
     }
     
     return date.toISOString();
   } catch (error) {
     console.log(`❌ Error parseando fecha "${dateString}":`, error.message);
-    return null;
+    return new Date().toISOString(); // Usar fecha actual como fallback
   }
 };
 
