@@ -31,7 +31,7 @@ async function analyzeTweetSentiment(tweet, categoria) {
   try {
     systemLogger.logProgress(`Analizando sentimiento: @${tweet.usuario} - ${tweet.texto.substring(0, 50)}...`);
     
-    const prompt = `Analiza COMPLETAMENTE este tweet guatemalteco de la categoría "${categoria}":
+    const prompt = `Analiza este tweet guatemalteco de la categoría "${categoria}" considerando el contexto sociocultural guatemalteco:
 
 Tweet: "${tweet.texto}"
 
@@ -40,14 +40,15 @@ Contexto:
 - Categoría: ${categoria}
 - Ubicación: Guatemala
 - Fecha: ${tweet.fecha}
-- Likes: ${tweet.likes || 0}, Retweets: ${tweet.retweets || 0}, Replies: ${tweet.replies || 0}
+- Engagement: ${tweet.likes || 0} likes, ${tweet.retweets || 0} RTs, ${tweet.replies || 0} replies
 
-Instrucciones de Análisis:
-1. SENTIMIENTO: Considera contexto guatemalteco, lenguaje chapín, sarcasmo, ironía
-2. INTENCIÓN: Identifica el propósito comunicativo del tweet
-3. ENTIDADES: Extrae personas, organizaciones, lugares, eventos mencionados
+Instrucciones Específicas:
+1. SENTIMIENTO: Analiza considerando modismos chapines, sarcasmo local, referencias culturales guatemaltecas
+2. INTENCIÓN: Determina el propósito comunicativo específico del autor
+3. ENTIDADES: Identifica figuras públicas, instituciones guatemaltecas, lugares específicos, eventos relevantes
+4. CONTEXTO LOCAL: Explica referencias culturales o políticas guatemaltecas detectadas
 
-Responde ÚNICAMENTE con un JSON válido:
+Responde ÚNICAMENTE con un JSON válido (sin markdown):
 {
   "sentimiento": "positivo|negativo|neutral",
   "score": 0.75,
@@ -94,7 +95,7 @@ TIPOS DE ENTIDADES:
         'Authorization': `Bearer ${OPENAI_API_KEY}`
       },
       body: JSON.stringify({
-        model: 'gpt-5-mini',
+        model: 'gpt-4-turbo-preview',
         messages: [
           {
             role: 'system',
@@ -107,7 +108,7 @@ TIPOS DE ENTIDADES:
         ],
         temperature: 0.3,
         top_p: 1,
-        max_tokens: 300
+        max_tokens: 400
       })
     });
 
@@ -116,7 +117,7 @@ TIPOS DE ENTIDADES:
     if (!response.ok) {
       const errorMsg = `OpenAI API error: ${response.status} ${response.statusText}`;
       systemLogger.addError(new Error(errorMsg), `Tweet ${tweet.tweet_id}`);
-      systemLogger.addAIUsage({ tokens: 0, success: false, model: 'gpt-5-mini', provider: 'openai', costPer1M: process.env.OPENAI_GPT5_MINI_COST_PER_1M ? parseFloat(process.env.OPENAI_GPT5_MINI_COST_PER_1M) : undefined, apiResponseTimeMs: apiResponseTime });
+      systemLogger.addAIUsage({ tokens: 0, success: false, model: 'gpt-4-turbo-preview', provider: 'openai', costPer1M: process.env.OPENAI_GPT4_TURBO_COST_PER_1M ? parseFloat(process.env.OPENAI_GPT4_TURBO_COST_PER_1M) : undefined, apiResponseTimeMs: apiResponseTime });
       throw new Error(errorMsg);
     }
 
@@ -124,7 +125,7 @@ TIPOS DE ENTIDADES:
     const tokensUsed = (data.usage?.total_tokens) || ((data.usage?.prompt_tokens || 0) + (data.usage?.completion_tokens || 0));
     
     // Registrar costo, tokens y modelo de la AI request
-    systemLogger.addAIUsage({ tokens: tokensUsed, success: true, model: 'gpt-5-mini', provider: 'openai', costPer1M: process.env.OPENAI_GPT5_MINI_COST_PER_1M ? parseFloat(process.env.OPENAI_GPT5_MINI_COST_PER_1M) : undefined, apiResponseTimeMs: apiResponseTime });
+    systemLogger.addAIUsage({ tokens: tokensUsed, success: true, model: 'gpt-4-turbo-preview', provider: 'openai', costPer1M: process.env.OPENAI_GPT4_TURBO_COST_PER_1M ? parseFloat(process.env.OPENAI_GPT4_TURBO_COST_PER_1M) : undefined, apiResponseTimeMs: apiResponseTime });
     
     const aiResponse = data.choices?.[0]?.message?.content;
     
@@ -220,20 +221,20 @@ TIPOS DE ENTIDADES:
       intencion_comunicativa: intencion,
       entidades_mencionadas: entidades,
       analisis_ai_metadata: {
-        modelo: 'gpt-5-mini',
+        modelo: 'gpt-4-turbo-preview',
         timestamp: new Date().toISOString(),
         contexto_local: analysis.contexto_local || '',
         intensidad: analysis.intensidad || 'media',
         categoria: categoria,
         tokens_usados: tokensUsed,
-        costo_estimado: process.env.OPENAI_GPT5_MINI_COST_PER_1M ? (tokensUsed * (parseFloat(process.env.OPENAI_GPT5_MINI_COST_PER_1M) / 1000000)) : null,
+        costo_estimado: process.env.OPENAI_GPT4_TURBO_COST_PER_1M ? (tokensUsed * (parseFloat(process.env.OPENAI_GPT4_TURBO_COST_PER_1M) / 1000000)) : null,
         api_response_time_ms: apiResponseTime
       }
     };
 
   } catch (error) {
     systemLogger.addError(error, `Análisis sentimiento tweet ${tweet.tweet_id}`);
-    systemLogger.addAIUsage({ tokens: 0, success: false, model: 'gpt-5-mini', provider: 'openai', costPer1M: process.env.OPENAI_GPT5_MINI_COST_PER_1M ? parseFloat(process.env.OPENAI_GPT5_MINI_COST_PER_1M) : undefined });
+    systemLogger.addAIUsage({ tokens: 0, success: false, model: 'gpt-4-turbo-preview', provider: 'openai', costPer1M: process.env.OPENAI_GPT4_TURBO_COST_PER_1M ? parseFloat(process.env.OPENAI_GPT4_TURBO_COST_PER_1M) : undefined });
     return getDefaultSentimentData(error.message);
   }
 }
@@ -255,46 +256,78 @@ function getDefaultSentimentData(error) {
   };
 }
 
-// Mapeo de categorías basado en contenido - MEJORADO
+// Mapeo de categorías basado en contenido - MEJORADO para Guatemala
 const categorizeTrend = (trendText) => {
   const text = trendText.toLowerCase();
   
-  // Política - Expandido con términos guatemaltecos
+  // Política - Términos específicos guatemaltecos
   if (text.includes('política') || text.includes('político') || text.includes('congreso') || 
       text.includes('gobierno') || text.includes('presidente') || text.includes('ley') ||
       text.includes('elecciones') || text.includes('partido') || text.includes('diputado') ||
       text.includes('ministerio') || text.includes('ministra') || text.includes('ministro') ||
       text.includes('corrupción') || text.includes('tse') || text.includes('mp') ||
       text.includes('cicig') || text.includes('senado') || text.includes('alcalde') ||
-      text.includes('giammattei') || text.includes('arévalo') || text.includes('semilla') ||
-      text.includes('vamos') || text.includes('une') || text.includes('valor') ||
-      text.includes('todos') || text.includes('winaq') || text.includes('líder') ||
-      text.includes('guatemala') || text.includes('nombramiento') || text.includes('renuncia')) {
+      text.includes('giammattei') || text.includes('arévalo') || text.includes('arevalo') ||
+      text.includes('semilla') || text.includes('vamos') || text.includes('une') || 
+      text.includes('valor') || text.includes('todos') || text.includes('winaq') ||
+      text.includes('líder') || text.includes('nombramiento') || text.includes('renuncia') ||
+      text.includes('guatemala') && (text.includes('gobierno') || text.includes('estado')) ||
+      text.includes('cc') || text.includes('constitucional') || text.includes('diputados') ||
+      text.includes('municipalidad') || text.includes('alcaldía') || text.includes('concejo')) {
     return 'Política';
   }
   
-  // Económica - Expandido
+  // Económica - Enfoque en Guatemala
   if (text.includes('finanzas') || text.includes('economía') || text.includes('banco') ||
       text.includes('impuesto') || text.includes('precio') || text.includes('dólar') ||
       text.includes('inflación') || text.includes('comercio') || text.includes('empleo') ||
       text.includes('trabajo') || text.includes('salario') || text.includes('banguat') ||
       text.includes('superintendencia') || text.includes('inversión') || text.includes('exportación') ||
       text.includes('pib') || text.includes('bolsa') || text.includes('empresa') ||
-      text.includes('quetzal') || text.includes('mercado') || text.includes('negocios')) {
+      text.includes('quetzal') || text.includes('mercado') || text.includes('negocios') ||
+      text.includes('bi') || text.includes('banca') || text.includes('comercial') ||
+      text.includes('industrial') || text.includes('agropecuario') || text.includes('turismo')) {
     return 'Económica';
+  }
+  
+  // Seguridad - Nueva categoría específica para Guatemala
+  if (text.includes('seguridad') || text.includes('violencia') || text.includes('crimen') ||
+      text.includes('policía') || text.includes('pnc') || text.includes('mingob') ||
+      text.includes('extorsión') || text.includes('secuestro') || text.includes('narcotráfico') ||
+      text.includes('pandillas') || text.includes('homicidio') || text.includes('robo') ||
+      text.includes('delincuencia') || text.includes('estado de sitio') || text.includes('emergencia')) {
+    return 'Seguridad';
   }
   
   // Sociales - Expandido con temas guatemaltecos
   if (text.includes('educación') || text.includes('salud') || text.includes('familia') ||
       text.includes('sociedad') || text.includes('comunidad') || text.includes('cultura') ||
-      text.includes('derechos') || text.includes('violencia') || text.includes('mujer') ||
-      text.includes('niños') || text.includes('juventud') || text.includes('universidad') ||
-      text.includes('hospital') || text.includes('medicina') || text.includes('covid') ||
-      text.includes('vacuna') || text.includes('usac') || text.includes('url') ||
-      text.includes('mariano') || text.includes('landívar') || text.includes('rafael') ||
-      text.includes('social') || text.includes('maya') || text.includes('indígena') ||
-      text.includes('xinca') || text.includes('garífuna') || text.includes('discriminación')) {
+      text.includes('derechos') || text.includes('mujer') || text.includes('mujeres') ||
+      text.includes('niños') || text.includes('niñez') || text.includes('juventud') ||
+      text.includes('universidad') || text.includes('hospital') || text.includes('medicina') ||
+      text.includes('covid') || text.includes('vacuna') || text.includes('usac') ||
+      text.includes('url') || text.includes('mariano') || text.includes('landívar') ||
+      text.includes('rafael') || text.includes('social') || text.includes('maya') ||
+      text.includes('indígena') || text.includes('xinca') || text.includes('garífuna') ||
+      text.includes('discriminación') || text.includes('igualdad') || text.includes('justicia') ||
+      text.includes('derechos humanos') || text.includes('mineduc') || text.includes('mspas')) {
     return 'Sociales';
+  }
+  
+  // Deportes - Nueva categoría
+  if (text.includes('fútbol') || text.includes('futbol') || text.includes('deportes') ||
+      text.includes('liga') || text.includes('municipal') || text.includes('comunicaciones') ||
+      text.includes('antigua') || text.includes('xelajú') || text.includes('selección') ||
+      text.includes('mundial') || text.includes('gol') || text.includes('partido')) {
+    return 'Deportes';
+  }
+  
+  // Entretenimiento - Nueva categoría
+  if (text.includes('música') || text.includes('artista') || text.includes('cantante') ||
+      text.includes('concierto') || text.includes('festival') || text.includes('teatro') ||
+      text.includes('cine') || text.includes('televisión') || text.includes('tv') ||
+      text.includes('farándula') || text.includes('celebridad')) {
+    return 'Entretenimiento';
   }
   
   return 'General';
@@ -306,9 +339,36 @@ const cleanTrendText = (trendText) => {
   return trendText.replace(/^\d+\.\s*/, '').trim();
 };
 
-// Función para extraer término de búsqueda del trend
+// Lista de palabras clave relacionadas con Guatemala para filtrar relevancia
+const GUATEMALA_KEYWORDS = [
+  'guatemala', 'guatemal', 'gt', 'chapín', 'chapin', 'guate',
+  'congreso', 'gobierno', 'presidente', 'arévalo', 'arevalo', 'giammattei',
+  'semilla', 'vamos', 'une', 'valor', 'todos', 'winaq',
+  'usac', 'url', 'landívar', 'mariano', 'rafael',
+  'antigua', 'quetzal', 'xela', 'coban', 'peten',
+  'banguat', 'superintendencia', 'mp', 'tse', 'cicig',
+  'guatemala city', 'ciudad guatemala', 'zona', 'mixco', 'villa nueva'
+];
+
+// Lista de caracteres y patrones que indican contenido no guatemalteco
+const NON_GUATEMALA_PATTERNS = [
+  /[\u4e00-\u9fff]/, // Caracteres chinos
+  /[\u3040-\u309f\u30a0-\u30ff]/, // Caracteres japoneses (hiragana y katakana)
+  /[\u0600-\u06ff]/, // Caracteres árabes
+  /[\u0400-\u04ff]/, // Caracteres cirílicos (ruso)
+];
+
+// Función mejorada para extraer término de búsqueda del trend
 const extractSearchTerm = (trendText) => {
   let cleanText = cleanTrendText(trendText);
+  
+  // Verificar si contiene caracteres no deseados
+  for (const pattern of NON_GUATEMALA_PATTERNS) {
+    if (pattern.test(cleanText)) {
+      console.log(`🚫 Contenido no guatemalteco detectado: "${cleanText}" (original: "${trendText}")`);
+      return null;
+    }
+  }
   
   // Si es un hashtag, remover el #
   if (cleanText.startsWith('#')) {
@@ -319,7 +379,6 @@ const extractSearchTerm = (trendText) => {
   cleanText = cleanText.replace(/\s*\([^)]*\)$/, '');
   
   // Remover sufijos de números con K, M, etc. al final
-  // Ejemplos: Taylor839K -> Taylor, USAC14K -> USAC, Rep TV138K -> Rep TV
   cleanText = cleanText.replace(/\d+[KMB]?$/i, '');
   
   // Remover números sueltos al final
@@ -334,7 +393,22 @@ const extractSearchTerm = (trendText) => {
     return null;
   }
   
-  console.log(`🧹 Limpieza: "${trendText}" -> "${cleanText}"`);
+  // Verificar relevancia para Guatemala
+  const textLower = cleanText.toLowerCase();
+  const isRelevant = GUATEMALA_KEYWORDS.some(keyword => 
+    textLower.includes(keyword.toLowerCase()) ||
+    textLower === keyword.toLowerCase()
+  );
+  
+  // Si no es directamente relevante, verificar si parece ser un nombre/término local válido
+  const isLocalTerm = /^[a-záéíóúñü\s]+$/i.test(cleanText) && cleanText.length >= 3;
+  
+  if (!isRelevant && !isLocalTerm) {
+    console.log(`🚫 Término no relevante para Guatemala: "${cleanText}" (original: "${trendText}")`);
+    return null;
+  }
+  
+  console.log(`🧹 Limpieza exitosa: "${trendText}" -> "${cleanText}" ${isRelevant ? '(relevante)' : '(local)'}`);
   return cleanText;
 };
 
@@ -516,9 +590,9 @@ async function fetchTrendingAndTweets() {
         
         systemLogger.logProgress(`Buscando tweets para: "${searchTerm}" (${categoria})`);
         
-        // Llamar al endpoint de twitter_direct (usar Twitter sin Nitter)
+        // Llamar al endpoint de nitter_context (mejor filtrado por ubicación)
         const nitterRes = await fetch(
-          `${API_BASE_URL}/twitter_direct?q=${encodeURIComponent(searchTerm)}&location=${LOCATION}&limit=10`
+          `${API_BASE_URL}/nitter_context?q=${encodeURIComponent(searchTerm)}&location=${LOCATION}&limit=10`
         );
         const nitterData = await nitterRes.json();
         
@@ -530,6 +604,26 @@ async function fetchTrendingAndTweets() {
           // 3. Procesar cada tweet con análisis de sentimiento
           for (const tweet of nitterData.tweets) {
             try {
+              // Filtrar tweets no guatemaltecos a nivel de contenido
+              const tweetText = tweet.texto || '';
+              const usuario = tweet.usuario || '';
+              
+              // Verificar caracteres no deseados en el contenido del tweet
+              const hasNonGuatemalan = NON_GUATEMALA_PATTERNS.some(pattern => 
+                pattern.test(tweetText) || pattern.test(usuario)
+              );
+              
+              if (hasNonGuatemalan) {
+                systemLogger.addWarning(`Tweet filtrado por contenido no guatemalteco: @${usuario} - ${tweetText.substring(0, 50)}...`, 'content_filter');
+                continue;
+              }
+              
+              // Verificar que el tweet tenga contenido mínimo relevante
+              if (tweetText.length < 10) {
+                systemLogger.addWarning(`Tweet muy corto omitido: @${usuario} - ${tweetText}`, 'content_filter');
+                continue;
+              }
+              
               systemLogger.incrementMetric('tweets_processed');
               
               // Análizar sentimiento individual
