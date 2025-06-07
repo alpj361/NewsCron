@@ -356,15 +356,71 @@ const parseNitterDate = (dateString) => {
   }
 };
 
-// Verificar si ya existe un tweet con el mismo tweet_id
-async function tweetExiste(tweetId) {
-  if (!tweetId) return false;
+// Verificar si ya existe un tweet con el mismo tweet_id y retornar datos completos
+async function getTweetData(tweetId) {
+  if (!tweetId) return null;
   const { data, error } = await supabase
     .from('trending_tweets')
-    .select('id')
+    .select('*')
     .eq('tweet_id', tweetId)
     .maybeSingle();
-  return !!data;
+  
+  if (error) {
+    console.error(`Error verificando tweet ${tweetId}:`, error);
+    return null;
+  }
+  
+  return data;
+}
+
+// Función para insertar o actualizar tweet (upsert)
+async function upsertTweet(tweetData, isUpdate = false, existingId = null) {
+  try {
+    if (isUpdate && existingId) {
+      // Actualizar tweet existente - solo los campos de análisis
+      const { error } = await supabase
+        .from('trending_tweets')
+        .update({
+          // Actualizar métricas si han cambiado
+          likes: tweetData.likes || 0,
+          retweets: tweetData.retweets || 0,
+          replies: tweetData.replies || 0,
+          // Campos de análisis de sentimiento (siempre actualizar)
+          sentimiento: tweetData.sentimiento,
+          score_sentimiento: tweetData.score_sentimiento,
+          confianza_sentimiento: tweetData.confianza_sentimiento,
+          emociones_detectadas: tweetData.emociones_detectadas,
+          // Campos de análisis avanzado (siempre actualizar)
+          intencion_comunicativa: tweetData.intencion_comunicativa,
+          entidades_mencionadas: tweetData.entidades_mencionadas,
+          analisis_ai_metadata: tweetData.analisis_ai_metadata,
+          // Actualizar fecha de último análisis
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', existingId);
+      
+      if (error) {
+        throw error;
+      }
+      
+      return { success: true, action: 'updated', id: existingId };
+    } else {
+      // Insertar nuevo tweet
+      const { error, data } = await supabase
+        .from('trending_tweets')
+        .insert(tweetData)
+        .select();
+      
+      if (error) {
+        throw error;
+      }
+      
+      return { success: true, action: 'inserted', id: data[0]?.id };
+    }
+  } catch (error) {
+    console.error('Error en upsertTweet:', error);
+    return { success: false, error: error };
+  }
 }
 
 // Función principal para obtener trending y tweets
@@ -434,18 +490,11 @@ async function fetchTrendingAndTweets() {
             try {
               systemLogger.incrementMetric('tweets_processed');
               
-              // Evitar duplicados
-              if (await tweetExiste(tweet.tweet_id)) {
-                systemLogger.incrementMetric('duplicates_skipped');
-                systemLogger.logProgress(`Tweet ${tweet.tweet_id} ya existe, saltando...`);
-                continue;
-              }
-              
               // Análizar sentimiento individual
               const sentimentData = await analyzeTweetSentiment(tweet, categoria);
               
-              // Insertar tweet con análisis completo
-              const { error } = await supabase.from('trending_tweets').insert({
+              // Crear objeto completo de datos del tweet
+              const tweetData = {
                 trend_original: trend,
                 trend_clean: searchTerm,
                 categoria: categoria,
@@ -471,12 +520,20 @@ async function fetchTrendingAndTweets() {
                 entidades_mencionadas: sentimentData.entidades_mencionadas,
                 analisis_ai_metadata: sentimentData.analisis_ai_metadata
                 // Nota: score_propagacion y propagacion_viral se calculan automáticamente por el trigger
-              });
+              };
               
-              if (error) {
-                systemLogger.addError(error, `Insertando tweet ${tweet.tweet_id}`);
-                systemLogger.incrementMetric('tweets_failed');
-              } else {
+              // Verificar si el tweet ya existe
+              const existingTweetData = await getTweetData(tweet.tweet_id);
+              const isUpdate = !!existingTweetData;
+              
+              if (isUpdate) {
+                systemLogger.logProgress(`Tweet ${tweet.tweet_id} ya existe, actualizando campos de análisis...`);
+              }
+              
+              // Insertar o actualizar tweet
+              const result = await upsertTweet(tweetData, isUpdate, existingTweetData?.id);
+              
+              if (result.success) {
                 systemLogger.incrementMetric('tweets_saved');
                 
                 // Calcular propagación viral para el log
@@ -489,7 +546,11 @@ async function fetchTrendingAndTweets() {
                 
                 systemLogger.updatePropagacionStats(propagacion_viral);
                 
-                systemLogger.logSuccess(`Tweet completo guardado: @${tweet.usuario} - ${sentimentData.sentimiento} (${sentimentData.score_sentimiento}) | ${sentimentData.intencion_comunicativa} | ${sentimentData.entidades_mencionadas.length} entidades - ${tweet.texto.substring(0, 50)}...`);
+                const actionText = isUpdate ? 'actualizado' : 'nuevo';
+                systemLogger.logSuccess(`Tweet ${actionText} guardado: @${tweet.usuario} - ${sentimentData.sentimiento} (${sentimentData.score_sentimiento}) | ${sentimentData.intencion_comunicativa} | ${sentimentData.entidades_mencionadas.length} entidades - ${tweet.texto.substring(0, 50)}...`);
+              } else {
+                systemLogger.addError(result.error, `${isUpdate ? 'Actualizando' : 'Insertando'} tweet ${tweet.tweet_id}`);
+                systemLogger.incrementMetric('tweets_failed');
               }
               
               // Actualizar progreso en logs cada 5 tweets
