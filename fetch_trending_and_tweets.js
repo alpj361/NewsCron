@@ -495,29 +495,30 @@ async function fetchTrendingAndTweets() {
     const trendingData = await trendingRes.json();
     systemLogger.logProgress(`Response data: ${JSON.stringify(trendingData, null, 2)}`);
     
-    if (trendingData.status !== 'success' || !trendingData.twitter_trends) {
+    if (trendingData.status !== 'success' || !trendingData.trends) {
       const errorMsg = trendingData.message || 'No trends found';
       systemLogger.addError(new Error(errorMsg), 'Obteniendo trending topics');
       await systemLogger.finishExecution('failed');
       return;
     }
     
-    const trendsFound = trendingData.twitter_trends.length;
+    const trendsFound = trendingData.trends.length;
     systemLogger.setMetric('trends_found', trendsFound);
     systemLogger.logSuccess(`Obtenidos ${trendsFound} trending topics`);
     
     // 2. Para cada trend, obtener tweets de Nitter
-    for (const trend of trendingData.twitter_trends) {
+    for (const trend of trendingData.trends) {
       try {
-        const searchTerm = extractSearchTerm(trend);
+        const trendName = trend.name || trend;
+        const searchTerm = extractSearchTerm(trendName);
         
         // Si el término es null o muy corto, saltar
         if (!searchTerm) {
-          systemLogger.addWarning(`Saltando trend "${trend}" - término no válido después de limpiar`, 'extractSearchTerm');
+          systemLogger.addWarning(`Saltando trend "${trendName}" - término no válido después de limpiar`, 'extractSearchTerm');
           continue;
         }
         
-        const categoria = categorizeTrend(trend);
+        const categoria = categorizeTrend(trendName);
         systemLogger.updateCategoriaStats(categoria);
         
         systemLogger.logProgress(`Buscando tweets para: "${searchTerm}" (${categoria})`);
@@ -543,7 +544,7 @@ async function fetchTrendingAndTweets() {
               
               // Crear objeto completo de datos del tweet
               const tweetData = {
-                trend_original: trend,
+                trend_original: trendName,
                 trend_clean: searchTerm,
                 categoria: categoria,
                 tweet_id: tweet.tweet_id,
@@ -623,7 +624,7 @@ async function fetchTrendingAndTweets() {
         await new Promise(resolve => setTimeout(resolve, 2000));
         
       } catch (error) {
-        systemLogger.addError(error, `Procesando trend "${trend}"`);
+        systemLogger.addError(error, `Procesando trend "${trendName}"`);
         continue;
       }
     }
