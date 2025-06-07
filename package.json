@@ -1,13 +1,16 @@
 {
   "dependencies": {
     "@supabase/supabase-js": "^2.49.8",
-    "node-fetch": "^2.7.0"
+    "node-fetch": "^2.7.0",
+    "dotenv": "^16.3.1"
   },
   "name": "newscron",
   "version": "1.0.0",
   "main": "fetch_and_store_news.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "test-sentiment": "node test_sentiment_analysis.js",
+    "fetch-tweets": "node fetch_trending_and_tweets.js"
   },
   "repository": {
     "type": "git",
