@@ -20,6 +20,13 @@ CREATE TABLE IF NOT EXISTS trending_tweets (
   replies INTEGER DEFAULT 0,
   verified BOOLEAN DEFAULT false,
   
+  -- Análisis de sentimiento
+  sentimiento TEXT CHECK (sentimiento IN ('positivo', 'negativo', 'neutral')) DEFAULT 'neutral',
+  score_sentimiento DECIMAL(3,2) CHECK (score_sentimiento >= -1.0 AND score_sentimiento <= 1.0) DEFAULT 0.0,
+  confianza_sentimiento DECIMAL(3,2) CHECK (confianza_sentimiento >= 0.0 AND confianza_sentimiento <= 1.0) DEFAULT 0.0,
+  emociones_detectadas JSONB DEFAULT '[]'::jsonb,
+  analisis_ai_metadata JSONB DEFAULT '{}'::jsonb,
+  
   -- Metadatos
   location TEXT DEFAULT 'guatemala',        -- Ubicación para la cual se obtuvo
   fecha_captura TIMESTAMP DEFAULT NOW(),    -- Cuando se capturó este tweet
@@ -37,6 +44,8 @@ CREATE INDEX IF NOT EXISTS idx_trending_tweets_categoria ON trending_tweets(cate
 CREATE INDEX IF NOT EXISTS idx_trending_tweets_fecha_captura ON trending_tweets(fecha_captura);
 CREATE INDEX IF NOT EXISTS idx_trending_tweets_location ON trending_tweets(location);
 CREATE INDEX IF NOT EXISTS idx_trending_tweets_usuario ON trending_tweets(usuario);
+CREATE INDEX IF NOT EXISTS idx_trending_tweets_sentimiento ON trending_tweets(sentimiento);
+CREATE INDEX IF NOT EXISTS idx_trending_tweets_score_sentimiento ON trending_tweets(score_sentimiento);
 
 -- Índice compuesto para evitar duplicados por tweet_id y fecha
 CREATE UNIQUE INDEX IF NOT EXISTS idx_trending_tweets_unique 
@@ -56,9 +65,14 @@ BEFORE UPDATE ON trending_tweets
 FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 -- Comentarios para documentación
-COMMENT ON TABLE trending_tweets IS 'Almacena tweets obtenidos basándose en trending topics';
+COMMENT ON TABLE trending_tweets IS 'Almacena tweets obtenidos basándose en trending topics con análisis de sentimiento';
 COMMENT ON COLUMN trending_tweets.trend_original IS 'Trend original tal como viene de la API de trending';
 COMMENT ON COLUMN trending_tweets.trend_clean IS 'Término de búsqueda limpio usado para obtener tweets';
 COMMENT ON COLUMN trending_tweets.categoria IS 'Categoría automáticamente asignada basada en contenido';
 COMMENT ON COLUMN trending_tweets.tweet_id IS 'ID único del tweet en la plataforma original';
+COMMENT ON COLUMN trending_tweets.sentimiento IS 'Clasificación de sentimiento: positivo, negativo, neutral';
+COMMENT ON COLUMN trending_tweets.score_sentimiento IS 'Puntuación numérica del sentimiento (-1.0 a 1.0)';
+COMMENT ON COLUMN trending_tweets.confianza_sentimiento IS 'Nivel de confianza del análisis (0.0 a 1.0)';
+COMMENT ON COLUMN trending_tweets.emociones_detectadas IS 'Array de emociones detectadas con intensidad';
+COMMENT ON COLUMN trending_tweets.analisis_ai_metadata IS 'Metadatos del análisis de IA (modelo usado, timestamp, etc.)';
 COMMENT ON COLUMN trending_tweets.raw_data IS 'Datos completos del tweet en formato JSON'; 
