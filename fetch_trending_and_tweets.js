@@ -14,15 +14,15 @@ const API_BASE_URL = 'https://api.standatpd.com'; // Cambiado a puerto 8001 para
 const LOCATION = 'guatemala';
 
 // Configuración para análisis de sentimiento
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const ENABLE_SENTIMENT_ANALYSIS = process.env.ENABLE_SENTIMENT_ANALYSIS !== 'false'; // true por defecto
 
 // Inicializar logger global
 let systemLogger = new SystemLogger();
 
-// Función para análisis de sentimiento individual con GPT-3.5 Turbo
+// Función para análisis de sentimiento individual con Gemini 1.5 Flash
 async function analyzeTweetSentiment(tweet, categoria) {
-  if (!OPENAI_API_KEY || !ENABLE_SENTIMENT_ANALYSIS) {
+  if (!GEMINI_API_KEY || !ENABLE_SENTIMENT_ANALYSIS) {
     systemLogger.addWarning('Análisis de sentimiento deshabilitado', `Tweet ${tweet.tweet_id}`);
     return getDefaultSentimentData('API deshabilitada');
   }
@@ -86,14 +86,14 @@ TIPOS DE ENTIDADES:
 - evento: Acontecimientos, celebraciones, crisis, etc.`;
 
     const startTime = Date.now();
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const response = await fetch('https://api.gemini.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${OPENAI_API_KEY}`,
+        'Authorization': `Bearer ${GEMINI_API_KEY}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: 'gpt-3.5-turbo',
+        model: 'gemini-1.5-flash',
         messages: [
           {
             role: 'system',
@@ -115,7 +115,7 @@ TIPOS DE ENTIDADES:
     const apiResponseTime = Date.now() - startTime;
 
     if (!response.ok) {
-      const errorMsg = `OpenAI API error: ${response.status} ${response.statusText}`;
+      const errorMsg = `Gemini API error: ${response.status} ${response.statusText}`;
       systemLogger.addError(new Error(errorMsg), `Tweet ${tweet.tweet_id}`);
       systemLogger.addAIRequestCost(0, false);
       throw new Error(errorMsg);
@@ -130,7 +130,7 @@ TIPOS DE ENTIDADES:
     const aiResponse = data.choices?.[0]?.message?.content;
     
     if (!aiResponse) {
-      const errorMsg = 'No response from OpenAI';
+      const errorMsg = 'No response from Gemini';
       systemLogger.addError(new Error(errorMsg), `Tweet ${tweet.tweet_id}`);
       throw new Error(errorMsg);
     }
@@ -179,7 +179,7 @@ TIPOS DE ENTIDADES:
       intencion_comunicativa: intencion,
       entidades_mencionadas: entidades,
       analisis_ai_metadata: {
-        modelo: 'gpt-3.5-turbo',
+        modelo: 'gemini-1.5-flash',
         timestamp: new Date().toISOString(),
         contexto_local: analysis.contexto_local || '',
         intensidad: analysis.intensidad || 'media',
