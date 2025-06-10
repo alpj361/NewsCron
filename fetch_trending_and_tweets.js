@@ -86,29 +86,36 @@ TIPOS DE ENTIDADES:
 - evento: Acontecimientos, celebraciones, crisis, etc.`;
 
     const startTime = Date.now();
-    const response = await fetch('https://api.gemini.com/v1/chat/completions', {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${GEMINI_API_KEY}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: 'gemini-1.5-flash',
-        messages: [
+        contents: [
           {
-            role: 'system',
-            content: 'Eres un experto en análisis de sentimientos especializado en el contexto guatemalteco. Entiendes el lenguaje coloquial, sarcasmo, y las referencias culturales y políticas de Guatemala. Responde siempre con JSON válido.'
-          },
-          {
-            role: 'user',
-            content: prompt
+            parts: [
+              {
+                text: `Eres un experto en análisis de sentimientos especializado en el contexto guatemalteco. Entiendes el lenguaje coloquial, sarcasmo, y las referencias culturales y políticas de Guatemala. Responde siempre con JSON válido.
+
+${prompt}`
+              }
+            ]
           }
         ],
-        temperature: 0.3,
-        max_tokens: 300,
-        top_p: 1,
-        frequency_penalty: 0,
-        presence_penalty: 0
+        generationConfig: {
+          temperature: 0.3,
+          topK: 1,
+          topP: 1,
+          maxOutputTokens: 300,
+          stopSequences: []
+        },
+        safetySettings: [
+          {
+            category: "HARM_CATEGORY_HARASSMENT",
+            threshold: "BLOCK_MEDIUM_AND_ABOVE"
+          }
+        ]
       })
     });
 
@@ -122,12 +129,12 @@ TIPOS DE ENTIDADES:
     }
 
     const data = await response.json();
-    const tokensUsed = data.usage?.total_tokens || 0;
+    const tokensUsed = data.usageMetadata?.totalTokenCount || 0;
     
     // Registrar costo y éxito de la AI request
     systemLogger.addAIRequestCost(tokensUsed, true);
     
-    const aiResponse = data.choices?.[0]?.message?.content;
+    const aiResponse = data.candidates?.[0]?.content?.parts?.[0]?.text;
     
     if (!aiResponse) {
       const errorMsg = 'No response from Gemini';
@@ -135,9 +142,51 @@ TIPOS DE ENTIDADES:
       throw new Error(errorMsg);
     }
 
-    // Limpiar respuesta y parsear JSON
-    const cleanResponse = aiResponse.replace(/```json|```/g, '').trim();
-    const analysis = JSON.parse(cleanResponse);
+    // Limpiar respuesta y parsear JSON de forma más robusta
+    let cleanResponse = aiResponse
+      .replace(/```json|```/g, '')  // Remover markdown
+      .replace(/^\s*[\r\n]+|[\r\n]+\s*$/g, '') // Remover saltos de línea al inicio/final
+      .trim();
+    
+    let analysis;
+    try {
+      // Intentar parsear directamente
+      analysis = JSON.parse(cleanResponse);
+    } catch (firstError) {
+      try {
+        // Si falla, intentar arreglar JSON común
+        cleanResponse = cleanResponse
+          .replace(/[\u0000-\u001F\u007F-\u009F]/g, '') // Remover caracteres de control
+          .replace(/\n/g, '\\n') // Escapar saltos de línea
+          .replace(/\r/g, '\\r') // Escapar retornos de carro
+          .replace(/\t/g, '\\t') // Escapar tabs
+          .replace(/'/g, "\\'"); // Escapar comillas simples
+        
+        analysis = JSON.parse(cleanResponse);
+      } catch (secondError) {
+        // Si aún falla, crear un JSON básico extraendo información manualmente
+        systemLogger.addWarning(`JSON malformado de Gemini, extrayendo manualmente: ${secondError.message}`, `Tweet ${tweet.tweet_id}`);
+        
+        // Extraer información básica usando regex
+        const sentimientoMatch = cleanResponse.match(/"?sentimiento"?\s*:\s*"?(\w+)"?/i);
+        const scoreMatch = cleanResponse.match(/"?score"?\s*:\s*(\d*\.?\d+)/i);
+        const confianzaMatch = cleanResponse.match(/"?confianza"?\s*:\s*(\d*\.?\d+)/i);
+        const intencionMatch = cleanResponse.match(/"?intencion_comunicativa"?\s*:\s*"?(\w+)"?/i);
+        
+        analysis = {
+          sentimiento: sentimientoMatch ? sentimientoMatch[1] : 'neutral',
+          score: scoreMatch ? parseFloat(scoreMatch[1]) : 0.0,
+          confianza: confianzaMatch ? parseFloat(confianzaMatch[1]) : 0.5,
+          emociones: [],
+          intencion_comunicativa: intencionMatch ? intencionMatch[1] : 'informativo',
+          entidades_mencionadas: [],
+          contexto_local: 'Análisis básico por error de parsing',
+          intensidad: 'media'
+        };
+        
+        systemLogger.addWarning(`Análisis manual exitoso: ${analysis.sentimiento}`, `Tweet ${tweet.tweet_id}`);
+      }
+    }
     
     // Validar y normalizar datos
     const sentimiento = ['positivo', 'negativo', 'neutral'].includes(analysis.sentimiento) 
@@ -185,7 +234,7 @@ TIPOS DE ENTIDADES:
         intensidad: analysis.intensidad || 'media',
         categoria: categoria,
         tokens_usados: tokensUsed,
-        costo_estimado: tokensUsed * 0.0015 / 1000, // $0.0015 per 1K tokens
+        costo_estimado: tokensUsed * 0.000075 / 1000, // Gemini 1.5 Flash: $0.075 per 1M tokens
         api_response_time_ms: apiResponseTime
       }
     };
