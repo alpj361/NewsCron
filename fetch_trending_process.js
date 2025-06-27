@@ -60,7 +60,7 @@ async function processAutomatedTrends() {
     const processResponse = await fetch(`${EXTRACTORW_API_URL}/cron/processTrends`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify(requestBody)
     });

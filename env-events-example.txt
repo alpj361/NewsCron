@@ -1,0 +1,21 @@
+# Configuración para NewsCron - Sistema de Eventos
+
+# URL de la API de ExtractorT para eventos
+# Desarrollo local: http://localhost:8000/api/publicevents
+# Producción VPS: https://api.standatpd.com/api/publicevents
+EXTRACTORT_API_URL=https://api.standatpd.com/api/publicevents
+
+# Configuración de Supabase
+SUPABASE_URL=https://qqshdccpmypelhmyqnut.supabase.co
+SUPABASE_SERVICE_KEY=your_supabase_service_key_here
+
+# Configuración del scraper de eventos
+EVENTS_LIMIT_PER_SOURCE=20
+EVENTS_TOTAL_LIMIT=50
+
+# Configuración de logging
+LOG_LEVEL=INFO
+
+# Configuración de timeouts (en segundos)
+REQUEST_TIMEOUT=30
+SCRAPING_TIMEOUT=60 
