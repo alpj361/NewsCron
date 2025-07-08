@@ -12,6 +12,8 @@ const categorias = [
   { context: 'sociedad', categoria: 'Sociales' }
 ];
 
+const BASE_URL = process.env.NEWS_API_BASE_URL || 'https://api.standatpd.com';
+
 async function noticiaExiste(url, fecha) {
   if (!url) return false;
   const { data, error } = await supabase
@@ -25,7 +27,7 @@ async function noticiaExiste(url, fecha) {
 
 async function fetchAndStore() {
   for (const { context, categoria } of categorias) {
-    const res = await fetch(`https://api.standatpd.com/news?context=${context}`);
+    const res = await fetch(`${BASE_URL}/api/news?context=${context}`);
     const data = await res.json();
     for (const noticia of data.news) {
       // Evita duplicados por url y fecha

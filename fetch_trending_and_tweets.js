@@ -9,8 +9,7 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // Configuración de la API
-const API_BASE_URL = 'https://api.standatpd.com'; // Cambiado a puerto 8001 para evitar conflictos
-// const API_BASE_URL = 'https://api.standatpd.com'; // Producción - comentado temporalmente
+const API_BASE_URL = process.env.API_BASE_URL || 'https://api.standatpd.com'; // Default producción; override con env
 const LOCATION = 'guatemala';
 
 // Configuración para análisis de sentimiento
