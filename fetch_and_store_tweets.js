@@ -3,6 +3,10 @@ import pLimit from 'p-limit';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import { createClient } from '@supabase/supabase-js';
+import dotenv from 'dotenv';
+
+// Cargar variables de entorno
+dotenv.config();
 
 // CLI arguments
 const argv = yargs(hideBin(process.argv))
