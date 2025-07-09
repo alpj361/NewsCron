@@ -39,7 +39,7 @@ async function processAutomatedTrends() {
         console.log('✅ Datos raw obtenidos exitosamente del VPS');
         console.log('📊 Datos obtenidos:', {
           status: rawTrendingData.status,
-          trends_count: rawTrendingData.twitter_trends?.length || 0,
+          trends_count: rawTrendingData.trends?.length || 0,
           location: rawTrendingData.location
         });
       } else {
@@ -55,7 +55,24 @@ async function processAutomatedTrends() {
     // PASO 2: Procesar con ExtractorW usando el endpoint gratuito de cron
     console.log('⚡ PASO 2: Procesando con ExtractorW (endpoint cron - SIN COSTO)...');
     
-    const requestBody = rawTrendingData ? { rawData: rawTrendingData } : {};
+    // PASO 2.1: Convertir estructura de trends a twitter_trends para compatibilidad con ExtractorW
+    let requestBody = {};
+    if (rawTrendingData && rawTrendingData.trends) {
+      // ExtractorW espera rawData.twitter_trends, pero ExtractorT devuelve trends
+      requestBody = { 
+        rawData: { 
+          twitter_trends: rawTrendingData.trends.map(trend => trend.name || trend),
+          location: rawTrendingData.location || 'guatemala',
+          source: rawTrendingData.source || 'extractorT'
+        } 
+      };
+      
+      console.log('🔄 Datos convertidos de trends a twitter_trends:', {
+        original_count: rawTrendingData.trends.length,
+        converted_count: requestBody.rawData.twitter_trends.length,
+        sample: requestBody.rawData.twitter_trends.slice(0, 3)
+      });
+    }
     
     const processResponse = await fetch(`${EXTRACTORW_API_URL}/cron/processTrends`, {
       method: 'POST',
