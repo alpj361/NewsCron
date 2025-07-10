@@ -37,15 +37,18 @@ const supabase = createClient(
   process.env.SUPABASE_KEY
 );
 
+// Configuración de la API
+const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:8000'; // Default local; override con env
+
 // Control de concurrencia
 const limit = pLimit(argv.concurrency);
 
 // Set para evitar duplicados en la misma ejecución
 const seenTweetIds = new Set();
 
-// Función para obtener tendencias (adaptada del archivo original)
+// Función para obtener tendencias (usando ExtractorT)
 async function getTrends(location) {
-  const response = await fetch(`https://api.standtatpd.com/trending?location=${location}`);
+  const response = await fetch(`${API_BASE_URL}/trending?location=${location}`);
   
   if (!response.ok) {
     throw new Error(`Error obteniendo tendencias: ${response.status} ${response.statusText}`);
@@ -77,21 +80,18 @@ function cleanTrendText(trendText) {
   return cleanText.length >= 2 ? cleanText : null;
 }
 
-// Función para hacer retry con back-off
+// Función para hacer retry con back-off (usando ExtractorT local con queries inteligentes)
 async function fetchTweetsWithRetry(query, location, limit) {
   const delays = [500, 1000, 2000]; // 0.5s, 1s, 2s
   
   for (let attempt = 0; attempt < 3; attempt++) {
     try {
-      let searchQuery = query;
+      // ExtractorT ya maneja la lógica inteligente, solo pasamos el query original
+      const encodedQuery = encodeURIComponent(query);
+      const url = `${API_BASE_URL}/nitter_context?q=${encodedQuery}&location=${location}&limit=${limit}`;
       
-      // En el tercer intento, añadir palabras clave positivas
-      if (attempt === 2) {
-        searchQuery = `${query} ${location} noticias "última hora"`;
-      }
-      
-      const encodedQuery = encodeURIComponent(searchQuery);
-      const url = `https://api.standtatpd.com/nitter_context?q=${encodedQuery}&location=${location}&limit=${limit}`;
+      console.log(`[TREND] Procesando: "${query}"`);
+      console.log(`[FILTER] Ubicación: ${location}, Límite: ${limit}`);
       
       const response = await fetch(url);
       
@@ -103,18 +103,23 @@ async function fetchTweetsWithRetry(query, location, limit) {
       
       // Verificar si tiene tweets válidos
       if (data.status === 'success' && data.tweets && data.tweets.length > 0) {
+        console.log(`[RESULT] Tweets encontrados: ${data.tweets.length}/${limit}`);
+        console.log(`✅ ${query} · Búsqueda exitosa: ${data.tweets.length} tweets`);
         return data.tweets;
       }
       
       // Si no hay tweets, seguir con el siguiente intento
       if (attempt < 2) {
+        console.log(`⏳ ${query} · Sin resultados en intento ${attempt + 1}, reintentando...`);
         await new Promise(resolve => setTimeout(resolve, delays[attempt]));
       }
       
     } catch (error) {
       if (attempt === 2) {
+        console.log(`❌ ${query} · Todos los intentos fallaron: ${error.message}`);
         throw error;
       }
+      console.log(`⚠️  ${query} · Error en intento ${attempt + 1}: ${error.message}, reintentando...`);
       await new Promise(resolve => setTimeout(resolve, delays[attempt]));
     }
   }

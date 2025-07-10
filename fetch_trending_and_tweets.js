@@ -1,7 +1,9 @@
-const fetch = require('node-fetch');
-const { createClient } = require('@supabase/supabase-js');
-const { SystemLogger } = require('./system_logger');
-require('dotenv').config();
+import fetch from 'node-fetch';
+import { createClient } from '@supabase/supabase-js';
+import { SystemLogger } from './system_logger.js';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 // Configura tus credenciales de Supabase
 const SUPABASE_URL = 'https://qqshdccpmypelhmyqnut.supabase.co';
@@ -9,7 +11,7 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // Configuración de la API
-const API_BASE_URL = process.env.API_BASE_URL || 'https://api.standatpd.com'; // Default producción; override con env
+const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:8000'; // Default local; override con env
 const LOCATION = 'guatemala';
 
 // Configuración para análisis de sentimiento
@@ -644,8 +646,8 @@ async function fetchTrendingAndTweets() {
 }
 
 // Ejecutar si es llamado directamente
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   fetchTrendingAndTweets();
 }
 
-module.exports = { fetchTrendingAndTweets };
+export { fetchTrendingAndTweets };

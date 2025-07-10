@@ -1,5 +1,6 @@
-const fetch = require('node-fetch');
-const { createClient } = require('@supabase/supabase-js');
+import fetch from 'node-fetch';
+import { createClient } from '@supabase/supabase-js';
+import { SystemLogger } from './system_logger.js';
 
 // Configura tus credenciales de Supabase
 const SUPABASE_URL = 'https://qqshdccpmypelhmyqnut.supabase.co';
@@ -9,6 +10,9 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 // Configuración de la API
 const EXTRACTORW_API_URL = 'https://server.standatpd.com/api';
 const VPS_TRENDING_URL = 'https://api.standatpd.com/trending?location=guatemala';
+
+// Inicializar logger global
+let systemLogger = new SystemLogger();
 
 /**
  * Función principal que replica el botón "trending" pero de forma automatizada y sin cobrar créditos
@@ -22,11 +26,20 @@ const VPS_TRENDING_URL = 'https://api.standatpd.com/trending?location=guatemala'
  * La diferencia es que usa el endpoint /api/cron/processTrends que NO consume créditos
  */
 async function processAutomatedTrends() {
+  // Inicializar logging de ejecución
+  const executionId = await systemLogger.startExecution('fetch_trending_process', {
+    extractorw_url: EXTRACTORW_API_URL,
+    vps_trending_url: VPS_TRENDING_URL,
+    process_type: 'automated_trending'
+  });
+
   try {
+    systemLogger.logProgress('Iniciando procesamiento automatizado de tendencias...');
     console.log('🤖 [AUTOMATED] Iniciando procesamiento automatizado de tendencias...');
     console.log('📅 Timestamp:', new Date().toISOString());
     
     // PASO 1: Obtener datos raw de trending del VPS
+    systemLogger.logProgress('PASO 1: Obteniendo trending topics del VPS...');
     console.log('📡 PASO 1: Obteniendo trending topics del VPS...');
     console.log('🔗 URL:', VPS_TRENDING_URL);
     
@@ -36,6 +49,8 @@ async function processAutomatedTrends() {
       
       if (trendingResponse.ok) {
         rawTrendingData = await trendingResponse.json();
+        systemLogger.logSuccess('Datos raw obtenidos exitosamente del VPS');
+        systemLogger.setMetric('trends_found', rawTrendingData.trends?.length || 0);
         console.log('✅ Datos raw obtenidos exitosamente del VPS');
         console.log('📊 Datos obtenidos:', {
           status: rawTrendingData.status,
@@ -43,16 +58,19 @@ async function processAutomatedTrends() {
           location: rawTrendingData.location
         });
       } else {
+        systemLogger.addWarning(`VPS respondió con status ${trendingResponse.status}`, 'VPS_REQUEST');
         console.warn(`⚠️  VPS respondió con status ${trendingResponse.status}`);
         rawTrendingData = null;
       }
     } catch (error) {
+      systemLogger.addWarning(`Error obteniendo datos del VPS: ${error.message}`, 'VPS_REQUEST');
       console.warn('⚠️  Error obteniendo datos del VPS:', error.message);
       console.log('🔄 Continuando sin datos raw (ExtractorW generará datos mock)');
       rawTrendingData = null;
     }
     
     // PASO 2: Procesar con ExtractorW usando el endpoint gratuito de cron
+    systemLogger.logProgress('PASO 2: Procesando con ExtractorW (endpoint cron - SIN COSTO)...');
     console.log('⚡ PASO 2: Procesando con ExtractorW (endpoint cron - SIN COSTO)...');
     
     // PASO 2.1: Convertir estructura de trends a twitter_trends para compatibilidad con ExtractorW
@@ -87,6 +105,13 @@ async function processAutomatedTrends() {
     }
     
     const processedData = await processResponse.json();
+    systemLogger.logSuccess('Procesamiento completado por ExtractorW');
+    systemLogger.setMetric('ai_requests_made', 1);
+    systemLogger.setMetric('ai_requests_successful', processedData.success ? 1 : 0);
+    if (!processedData.success) {
+      systemLogger.setMetric('ai_requests_failed', 1);
+    }
+    
     console.log('✅ Procesamiento completado por ExtractorW');
     console.log('📊 Resultado:', {
       success: processedData.success,
@@ -138,6 +163,14 @@ async function processAutomatedTrends() {
     console.log(`   💰 Créditos consumidos: 0 (endpoint gratuito)`);
     console.log(`   📅 Timestamp final: ${processedData.timestamp}`);
     
+    // Finalizar ejecución exitosa
+    await systemLogger.finishExecution('completed', {
+      record_id: processedData.record_id,
+      credits_consumed: 0,
+      data_source: rawTrendingData ? 'vps' : 'mock',
+      final_summary: 'Proceso automatizado completado exitosamente'
+    });
+    
     return {
       success: true,
       message: 'Trending topics procesados automáticamente',
@@ -153,6 +186,12 @@ async function processAutomatedTrends() {
     };
     
   } catch (error) {
+    systemLogger.addError(error, 'Proceso principal automatizado');
+    await systemLogger.finishExecution('failed', {
+      error_summary: error.message,
+      credits_consumed: 0
+    });
+    
     console.error('❌ ERROR EN PROCESAMIENTO AUTOMATIZADO:', error);
     console.error('📋 Detalles del error:', {
       message: error.message,
@@ -206,7 +245,7 @@ async function getLastProcessingStatus() {
 }
 
 // Si el archivo es ejecutado directamente, correr la función
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   console.log('🚀 Ejecutando procesamiento automatizado de trending topics...');
   console.log('🕐 Inicio:', new Date().toLocaleString());
   console.log('📍 Este proceso NO consume créditos (usa endpoint cron gratuito)');
@@ -234,7 +273,7 @@ if (require.main === module) {
     });
 }
 
-module.exports = { 
+export { 
   processAutomatedTrends, 
   getLastProcessingStatus 
 }; 
