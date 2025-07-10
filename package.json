@@ -1,8 +1,11 @@
 {
+  "type": "module",
   "dependencies": {
     "@supabase/supabase-js": "^2.49.8",
+    "dotenv": "^16.3.1",
     "node-fetch": "^2.7.0",
-    "dotenv": "^16.3.1"
+    "p-limit": "^6.2.0",
+    "yargs": "^18.0.0"
   },
   "name": "newscron",
   "version": "1.0.0",
