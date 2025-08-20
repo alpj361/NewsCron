@@ -15,15 +15,15 @@ const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:8000'; // Def
 const LOCATION = 'guatemala';
 
 // Configuración para análisis de sentimiento
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const ENABLE_SENTIMENT_ANALYSIS = process.env.ENABLE_SENTIMENT_ANALYSIS !== 'false'; // true por defecto
 
 // Inicializar logger global
 let systemLogger = new SystemLogger();
 
-// Función para análisis de sentimiento individual con Gemini 1.5 Flash
+// Función para análisis de sentimiento individual con OpenAI GPT-5-mini
 async function analyzeTweetSentiment(tweet, categoria) {
-  if (!GEMINI_API_KEY || !ENABLE_SENTIMENT_ANALYSIS) {
+  if (!OPENAI_API_KEY || !ENABLE_SENTIMENT_ANALYSIS) {
     systemLogger.addWarning('Análisis de sentimiento deshabilitado', `Tweet ${tweet.tweet_id}`);
     return getDefaultSentimentData('API deshabilitada');
   }
@@ -87,58 +87,49 @@ TIPOS DE ENTIDADES:
 - evento: Acontecimientos, celebraciones, crisis, etc.`;
 
     const startTime = Date.now();
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`, {
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${OPENAI_API_KEY}`
       },
       body: JSON.stringify({
-        contents: [
+        model: 'gpt-5-mini',
+        messages: [
           {
-            parts: [
-              {
-                text: `Eres un experto en análisis de sentimientos especializado en el contexto guatemalteco. Entiendes el lenguaje coloquial, sarcasmo, y las referencias culturales y políticas de Guatemala. Responde siempre con JSON válido.
-
-${prompt}`
-              }
-            ]
+            role: 'system',
+            content: 'Eres un experto en análisis de sentimientos especializado en el contexto guatemalteco. Responde exclusivamente con JSON válido.'
+          },
+          {
+            role: 'user',
+            content: prompt
           }
         ],
-        generationConfig: {
-          temperature: 0.3,
-          topK: 1,
-          topP: 1,
-          maxOutputTokens: 300,
-          stopSequences: []
-        },
-        safetySettings: [
-          {
-            category: "HARM_CATEGORY_HARASSMENT",
-            threshold: "BLOCK_MEDIUM_AND_ABOVE"
-          }
-        ]
+        temperature: 0.3,
+        top_p: 1,
+        max_tokens: 300
       })
     });
 
     const apiResponseTime = Date.now() - startTime;
 
     if (!response.ok) {
-      const errorMsg = `Gemini API error: ${response.status} ${response.statusText}`;
+      const errorMsg = `OpenAI API error: ${response.status} ${response.statusText}`;
       systemLogger.addError(new Error(errorMsg), `Tweet ${tweet.tweet_id}`);
       systemLogger.addAIRequestCost(0, false);
       throw new Error(errorMsg);
     }
 
     const data = await response.json();
-    const tokensUsed = data.usageMetadata?.totalTokenCount || 0;
+    const tokensUsed = (data.usage?.total_tokens) || ((data.usage?.prompt_tokens || 0) + (data.usage?.completion_tokens || 0));
     
     // Registrar costo y éxito de la AI request
     systemLogger.addAIRequestCost(tokensUsed, true);
     
-    const aiResponse = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    const aiResponse = data.choices?.[0]?.message?.content;
     
     if (!aiResponse) {
-      const errorMsg = 'No response from Gemini';
+      const errorMsg = 'No response from OpenAI';
       systemLogger.addError(new Error(errorMsg), `Tweet ${tweet.tweet_id}`);
       throw new Error(errorMsg);
     }
@@ -166,7 +157,7 @@ ${prompt}`
         analysis = JSON.parse(cleanResponse);
       } catch (secondError) {
         // Si aún falla, crear un JSON básico extraendo información manualmente
-        systemLogger.addWarning(`JSON malformado de Gemini, extrayendo manualmente: ${secondError.message}`, `Tweet ${tweet.tweet_id}`);
+        systemLogger.addWarning(`JSON malformado del LLM, extrayendo manualmente: ${secondError.message}`, `Tweet ${tweet.tweet_id}`);
         
         // Extraer información básica usando regex
         const sentimientoMatch = cleanResponse.match(/"?sentimiento"?\s*:\s*"?(\w+)"?/i);
@@ -229,13 +220,13 @@ ${prompt}`
       intencion_comunicativa: intencion,
       entidades_mencionadas: entidades,
       analisis_ai_metadata: {
-        modelo: 'gemini-1.5-flash',
+        modelo: 'gpt-5-mini',
         timestamp: new Date().toISOString(),
         contexto_local: analysis.contexto_local || '',
         intensidad: analysis.intensidad || 'media',
         categoria: categoria,
         tokens_usados: tokensUsed,
-        costo_estimado: tokensUsed * 0.000075 / 1000, // Gemini 1.5 Flash: $0.075 per 1M tokens
+        costo_estimado: process.env.OPENAI_GPT5_MINI_COST_PER_1M ? (tokensUsed * (parseFloat(process.env.OPENAI_GPT5_MINI_COST_PER_1M) / 1000000)) : null,
         api_response_time_ms: apiResponseTime
       }
     };

@@ -188,38 +188,32 @@ IMPORTANTE:
 - NO inventar información, solo lo que está en el tweet
 `;
 
-    const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=' + process.env.GEMINI_API_KEY, {
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
       },
       body: JSON.stringify({
-        contents: [{
-          parts: [{
-            text: prompt
-          }]
-        }],
-        generationConfig: {
-          temperature: 0.1,
-          maxOutputTokens: 1000,
-        }
+        model: 'gpt-5-mini',
+        messages: [
+          { role: 'system', content: 'Eres un analista político guatemalteco. Responde solo con JSON válido.' },
+          { role: 'user', content: prompt }
+        ],
+        temperature: 0.1,
+        max_tokens: 1000
       })
     });
 
     if (!response.ok) {
-      throw new Error(`Gemini API error: ${response.status} ${response.statusText}`);
+      throw new Error(`OpenAI API error: ${response.status} ${response.statusText}`);
     }
 
     const data = await response.json();
-    
-    if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
-      throw new Error('Invalid response format from Gemini API');
-    }
-
-    const geminiText = data.candidates[0].content.parts[0].text;
-    const jsonMatch = geminiText.match(/\{[\s\S]*\}/);
+    const aiText = data.choices?.[0]?.message?.content || '';
+    const jsonMatch = aiText.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
-      throw new Error('No JSON found in Gemini response');
+      throw new Error('No JSON found in LLM response');
     }
 
     const geminiAnalysis = JSON.parse(jsonMatch[0]);
