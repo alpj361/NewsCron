@@ -8,6 +8,7 @@ import fetch from 'node-fetch';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import { createClient } from '@supabase/supabase-js';
+import { SystemLogger } from './system_logger.js';
 import dotenv from 'dotenv';
 
 // Cargar variables de entorno
@@ -47,6 +48,9 @@ const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_KEY
 );
+
+// Logger de ejecución para panel de admin
+const systemLogger = new SystemLogger();
 
 // ===== LAURA MEMORY CLIENT (Copiado del archivo principal) =====
 class LauraMemoryClient {
@@ -188,6 +192,7 @@ IMPORTANTE:
 - NO inventar información, solo lo que está en el tweet
 `;
 
+    const startTime = Date.now();
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -206,10 +211,19 @@ IMPORTANTE:
     });
 
     if (!response.ok) {
+      // Registrar fallo de IA sin tokens
+      systemLogger.addAIUsage({
+        tokens: 0,
+        success: false,
+        model: 'gpt-5-mini',
+        provider: 'openai'
+      });
       throw new Error(`OpenAI API error: ${response.status} ${response.statusText}`);
     }
 
     const data = await response.json();
+    const tokensUsed = (data.usage?.total_tokens) || ((data.usage?.prompt_tokens || 0) + (data.usage?.completion_tokens || 0));
+    const apiResponseTime = Date.now() - startTime;
     const aiText = data.choices?.[0]?.message?.content || '';
     const jsonMatch = aiText.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
@@ -217,6 +231,16 @@ IMPORTANTE:
     }
 
     const geminiAnalysis = JSON.parse(jsonMatch[0]);
+
+    // Registrar uso de IA con tokens/costo/modelo
+    systemLogger.addAIUsage({
+      tokens: tokensUsed || 0,
+      success: true,
+      model: 'gpt-5-mini',
+      provider: 'openai',
+      costPer1M: process.env.OPENAI_GPT5_MINI_COST_PER_1M ? parseFloat(process.env.OPENAI_GPT5_MINI_COST_PER_1M) : undefined,
+      apiResponseTimeMs: apiResponseTime
+    });
     
     const requiredFields = ['entities', 'figures', 'social_usernames', 'laws_decrees', 'news_events', 'nicknames_detected'];
     for (const field of requiredFields) {
@@ -231,6 +255,14 @@ IMPORTANTE:
 
   } catch (error) {
     console.error(`❌ [GEMINI] Error procesando tweet de @${tweet.usuario}: ${error.message}`);
+    // Registrar fallo de IA
+    systemLogger.addAIUsage({
+      tokens: 0,
+      success: false,
+      model: 'gpt-5-mini',
+      provider: 'openai',
+      costPer1M: process.env.OPENAI_GPT5_MINI_COST_PER_1M ? parseFloat(process.env.OPENAI_GPT5_MINI_COST_PER_1M) : undefined
+    });
     return {
       entities: [],
       figures: [],
@@ -395,6 +427,13 @@ async function main() {
   };
   
   try {
+    // Iniciar log de ejecución para el panel admin
+    await systemLogger.startExecution('political_analysis_cron', {
+      days: argv.days,
+      limit: argv.limit,
+      batch_size: argv['batch-size'],
+      min_score: argv['min-score']
+    });
     // Verificar Laura Memory Service
     const memoryAvailable = await lauraMemoryClient.isAvailable();
     console.log(`🧠 [MEMORIA] Laura Memory Service: ${memoryAvailable ? '✅ Disponible' : '❌ No disponible'}`);
@@ -429,6 +468,9 @@ async function main() {
       
       stats.politicalTweets += batchResults.politicalCount;
       stats.geminiProcessed += batchResults.geminiCount;
+      // Actualizar métrica de procesados y persistir estado
+      systemLogger.setMetric('tweets_processed', (systemLogger.metrics.tweets_processed || 0) + batch.length);
+      await systemLogger.updateExecution('running');
       
       console.log(`✅ [LOTE ${i + 1}] Completado: ${batchResults.politicalCount} políticos, ${batchResults.geminiCount} procesados con Gemini`);
     }
@@ -445,9 +487,17 @@ async function main() {
     console.log(`   • Errores: ${stats.errors}`);
     console.log(`   • Eficiencia: ${((stats.politicalTweets / stats.totalTweets) * 100).toFixed(1)}% políticos`);
     
+    // Finalizar log de ejecución
+    await systemLogger.finishExecution('completed', {
+      total_tweets: stats.totalTweets,
+      political_tweets: stats.politicalTweets,
+      gemini_processed: stats.geminiProcessed,
+      duration_seconds: ((Date.now() - startTime) / 1000) | 0
+    });
   } catch (error) {
     console.error(`💥 [ERROR FATAL] ${error.message}`);
     console.error(`📍 [DEBUG] Stack trace:`, error.stack);
+    await systemLogger.finishExecution('failed', { error_summary: error.message });
     process.exit(1);
   }
 }

@@ -32,6 +32,14 @@ class SystemLogger {
             error_details: [],
             warnings: []
         };
+
+        // Acumulado interno por modelo/proveedor (solo para guardar en metadata al finalizar)
+        this._aiUsage = {
+            total_requests: 0,
+            total_tokens: 0,
+            total_cost_usd: 0,
+            models: {}
+        };
     }
 
     async startExecution(scriptName, metadata = {}) {
@@ -125,19 +133,70 @@ class SystemLogger {
     }
 
     addAIRequestCost(tokens, success = true) {
+        // Compatibilidad hacia atrás: asume GPT-3.5-turbo $0.001 / 1K tokens
+        this.addAIUsage({ tokens, success, model: 'gpt-3.5-turbo', provider: 'openai', costPer1K: 0.001 });
+    }
+
+    /**
+     * Registra uso de IA con detalle de modelo y costo estimado.
+     * options: { tokens: number, success?: boolean, model?: string, provider?: string, costPer1K?: number, costPer1M?: number, apiResponseTimeMs?: number }
+     */
+    addAIUsage(options = {}) {
+        const {
+            tokens = 0,
+            success = true,
+            model = 'unknown',
+            provider = 'unknown',
+            costPer1K,
+            costPer1M,
+            apiResponseTimeMs
+        } = options;
+
+        // Contadores generales
         this.incrementMetric('ai_requests_made');
         if (success) {
             this.incrementMetric('ai_requests_successful');
         } else {
             this.incrementMetric('ai_requests_failed');
         }
-        
         this.incrementMetric('total_tokens_used', tokens);
-        
-        // Costo estimado: $0.001 / 1000 tokens para GPT-3.5-turbo
-        const costPerToken = 0.001 / 1000;
+
+        // Calcular costo por token a partir de costPer1K o costPer1M
+        let costPerToken = 0;
+        if (typeof costPer1M === 'number' && !Number.isNaN(costPer1M)) {
+            costPerToken = costPer1M / 1_000_000;
+        } else if (typeof costPer1K === 'number' && !Number.isNaN(costPer1K)) {
+            costPerToken = costPer1K / 1_000;
+        } else {
+            // Fallback conservador (coincide con el comportamiento previo)
+            costPerToken = 0.001 / 1000; // $0.001 por 1K tokens
+        }
+
         const requestCost = tokens * costPerToken;
         this.metrics.estimated_cost_usd += requestCost;
+
+        // Acumular desglose por modelo
+        if (!this._aiUsage.models[model]) {
+            this._aiUsage.models[model] = {
+                provider,
+                requests: 0,
+                tokens: 0,
+                cost_usd: 0
+            };
+        }
+        this._aiUsage.models[model].requests += 1;
+        this._aiUsage.models[model].tokens += tokens;
+        this._aiUsage.models[model].cost_usd += requestCost;
+
+        // Totales
+        this._aiUsage.total_requests += 1;
+        this._aiUsage.total_tokens += tokens;
+        this._aiUsage.total_cost_usd += requestCost;
+
+        // Guardar último request (útil en depuración)
+        if (apiResponseTimeMs !== undefined) {
+            this._aiUsage.last_request_ms = apiResponseTimeMs;
+        }
     }
 
     async updateExecution(status = 'running') {
@@ -183,7 +242,11 @@ class SystemLogger {
                 status: status,
                 completed_at: endTime.toISOString(),
                 duration_seconds: duration,
-                metadata: { ...this.currentLog.metadata, ...finalMetadata }
+                metadata: { 
+                    ...this.currentLog.metadata, 
+                    ...finalMetadata,
+                    ai_usage: this._aiUsage
+                }
             };
 
             const { error } = await this.supabase

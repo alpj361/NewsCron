@@ -116,15 +116,15 @@ TIPOS DE ENTIDADES:
     if (!response.ok) {
       const errorMsg = `OpenAI API error: ${response.status} ${response.statusText}`;
       systemLogger.addError(new Error(errorMsg), `Tweet ${tweet.tweet_id}`);
-      systemLogger.addAIRequestCost(0, false);
+      systemLogger.addAIUsage({ tokens: 0, success: false, model: 'gpt-5-mini', provider: 'openai', costPer1M: process.env.OPENAI_GPT5_MINI_COST_PER_1M ? parseFloat(process.env.OPENAI_GPT5_MINI_COST_PER_1M) : undefined, apiResponseTimeMs: apiResponseTime });
       throw new Error(errorMsg);
     }
 
     const data = await response.json();
     const tokensUsed = (data.usage?.total_tokens) || ((data.usage?.prompt_tokens || 0) + (data.usage?.completion_tokens || 0));
     
-    // Registrar costo y éxito de la AI request
-    systemLogger.addAIRequestCost(tokensUsed, true);
+    // Registrar costo, tokens y modelo de la AI request
+    systemLogger.addAIUsage({ tokens: tokensUsed, success: true, model: 'gpt-5-mini', provider: 'openai', costPer1M: process.env.OPENAI_GPT5_MINI_COST_PER_1M ? parseFloat(process.env.OPENAI_GPT5_MINI_COST_PER_1M) : undefined, apiResponseTimeMs: apiResponseTime });
     
     const aiResponse = data.choices?.[0]?.message?.content;
     
@@ -233,7 +233,7 @@ TIPOS DE ENTIDADES:
 
   } catch (error) {
     systemLogger.addError(error, `Análisis sentimiento tweet ${tweet.tweet_id}`);
-    systemLogger.addAIRequestCost(0, false);
+    systemLogger.addAIUsage({ tokens: 0, success: false, model: 'gpt-5-mini', provider: 'openai', costPer1M: process.env.OPENAI_GPT5_MINI_COST_PER_1M ? parseFloat(process.env.OPENAI_GPT5_MINI_COST_PER_1M) : undefined });
     return getDefaultSentimentData(error.message);
   }
 }
@@ -516,9 +516,9 @@ async function fetchTrendingAndTweets() {
         
         systemLogger.logProgress(`Buscando tweets para: "${searchTerm}" (${categoria})`);
         
-        // Llamar al endpoint de nitter_context
+        // Llamar al endpoint de twitter_direct (usar Twitter sin Nitter)
         const nitterRes = await fetch(
-          `${API_BASE_URL}/nitter_context?q=${encodeURIComponent(searchTerm)}&location=${LOCATION}&limit=10`
+          `${API_BASE_URL}/twitter_direct?q=${encodeURIComponent(searchTerm)}&location=${LOCATION}&limit=10`
         );
         const nitterData = await nitterRes.json();
         
