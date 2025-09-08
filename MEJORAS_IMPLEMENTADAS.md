@@ -124,3 +124,5 @@ El sistema ahora registra:
 4. Optimizar delays según performance de tu API
 5. Considerar agregar más categorías específicas si es necesario
 
+
+

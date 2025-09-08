@@ -40,6 +40,27 @@ const supabase = createClient(
 // Configuración de la API
 const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:8000'; // Default local; override con env
 
+// Compatibilidad: usar /trending del root y /nitter_context bajo /api
+const stripTrailingSlash = (url) => url.replace(/\/+$/, '');
+const BASE = stripTrailingSlash(API_BASE_URL);
+const HAS_API_SUFFIX = /\/api$/i.test(BASE);
+const TRENDS_BASE = HAS_API_SUFFIX ? BASE.replace(/\/api$/i, '') : BASE;
+const NITTER_BASE = HAS_API_SUFFIX ? BASE : `${BASE}/api`;
+const NITTER_PATH = '/nitter_context/'; // FastAPI define ruta exacta con barra final
+
+// Timeout configurable para requests
+const HTTP_TIMEOUT_MS = parseInt(process.env.HTTP_TIMEOUT || '30000', 10);
+
+async function fetchWithTimeout(url) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), HTTP_TIMEOUT_MS);
+  try {
+    return await fetch(url, { signal: controller.signal, redirect: 'follow' });
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 // Control de concurrencia
 const limit = pLimit(argv.concurrency);
 
@@ -48,7 +69,7 @@ const seenTweetIds = new Set();
 
 // Función para obtener tendencias (usando ExtractorT)
 async function getTrends(location) {
-  const response = await fetch(`${API_BASE_URL}/trending?location=${location}`);
+  const response = await fetchWithTimeout(`${TRENDS_BASE}/trending?location=${location}`);
   
   if (!response.ok) {
     throw new Error(`Error obteniendo tendencias: ${response.status} ${response.statusText}`);
@@ -88,12 +109,13 @@ async function fetchTweetsWithRetry(query, location, limit) {
     try {
       // ExtractorT ya maneja la lógica inteligente, solo pasamos el query original
       const encodedQuery = encodeURIComponent(query);
-      const url = `${API_BASE_URL}/nitter_context?q=${encodedQuery}&location=${location}&limit=${limit}`;
+      // Usar ruta modular exacta con barra final para evitar redirecciones 307
+      const url = `${NITTER_BASE}${NITTER_PATH}?q=${encodedQuery}&location=${location}&limit=${limit}`;
       
       console.log(`[TREND] Procesando: "${query}"`);
       console.log(`[FILTER] Ubicación: ${location}, Límite: ${limit}`);
       
-      const response = await fetch(url);
+      const response = await fetchWithTimeout(url);
       
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);

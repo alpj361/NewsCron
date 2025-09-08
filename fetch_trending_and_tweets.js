@@ -2,6 +2,8 @@ import fetch from 'node-fetch';
 import { createClient } from '@supabase/supabase-js';
 import { SystemLogger } from './system_logger.js';
 import dotenv from 'dotenv';
+import { fileURLToPath } from 'url';
+import path from 'path';
 
 dotenv.config();
 
@@ -12,6 +14,27 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // Configuración de la API
 const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:8000'; // Default local; override con env
+
+// Compatibilidad: /trending en raíz y /api/nitter_context/ con barra final
+const stripTrailingSlash = (url) => url.replace(/\/+$/, '');
+const BASE = stripTrailingSlash(API_BASE_URL);
+const HAS_API_SUFFIX = /\/api$/i.test(BASE);
+const TRENDS_BASE = HAS_API_SUFFIX ? BASE.replace(/\/api$/i, '') : BASE;
+const NITTER_BASE = HAS_API_SUFFIX ? BASE : `${BASE}/api`;
+const NITTER_PATH = '/nitter_context/';
+
+// Timeout configurable
+const HTTP_TIMEOUT_MS = parseInt(process.env.HTTP_TIMEOUT || '30000', 10);
+
+async function fetchWithTimeout(url) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), HTTP_TIMEOUT_MS);
+  try {
+    return await fetch(url, { signal: controller.signal, redirect: 'follow' });
+  } finally {
+    clearTimeout(timeout);
+  }
+}
 const LOCATION = 'guatemala';
 
 // Configuración para análisis de sentimiento
@@ -412,62 +435,48 @@ const extractSearchTerm = (trendText) => {
   return cleanText;
 };
 
-// Función para convertir fecha de Nitter a formato ISO
+// Función para convertir fecha de Nitter o ISO a formato ISO (robusta)
 const parseNitterDate = (dateString) => {
   if (!dateString) return null;
-  
   try {
-    // Manejar fechas relativas: "3m", "16m", "2h", "58m", etc.
-    if (/^\d+[mhsdwy]$/.test(dateString)) {
+    const input = String(dateString).trim();
+
+    // 1) Relativas: "3m", "2h", etc.
+    if (/^\d+[mhsdwy]$/.test(input)) {
       const now = new Date();
-      const value = parseInt(dateString);
-      const unit = dateString.slice(-1);
-      
-      switch (unit) {
-        case 'm': // minutos
-          now.setMinutes(now.getMinutes() - value);
-          break;
-        case 'h': // horas  
-          now.setHours(now.getHours() - value);
-          break;
-        case 'd': // días
-          now.setDate(now.getDate() - value);
-          break;
-        case 'w': // semanas
-          now.setDate(now.getDate() - (value * 7));
-          break;
-        case 'y': // años
-          now.setFullYear(now.getFullYear() - value);
-          break;
-        case 's': // segundos
-          now.setSeconds(now.getSeconds() - value);
-          break;
-        default:
-          console.log(`⚠️  Unidad de tiempo no reconocida: "${unit}" en "${dateString}"`);
-          return new Date().toISOString(); // Usar fecha actual como fallback
-      }
-      
-      console.log(`🕒 Fecha relativa convertida: "${dateString}" -> ${now.toISOString()}`);
+      const value = parseInt(input);
+      const unit = input.slice(-1);
+      if (unit === 'm') now.setMinutes(now.getMinutes() - value);
+      else if (unit === 'h') now.setHours(now.getHours() - value);
+      else if (unit === 'd') now.setDate(now.getDate() - value);
+      else if (unit === 'w') now.setDate(now.getDate() - (value * 7));
+      else if (unit === 'y') now.setFullYear(now.getFullYear() - value);
+      else if (unit === 's') now.setSeconds(now.getSeconds() - value);
+      else return new Date().toISOString();
       return now.toISOString();
     }
-    
-    // Formato típico de Nitter: "May 30, 2025 · 11:10 PM UTC"
-    // Remover el separador " · " y limpiar
-    const cleanDate = dateString.replace(' · ', ' ').replace(' UTC', '');
-    
-    // Crear objeto Date y convertir a ISO
-    const date = new Date(cleanDate + ' UTC');
-    
-    // Verificar si la fecha es válida
-    if (isNaN(date.getTime())) {
-      console.log(`⚠️  Fecha inválida: "${dateString}" - usando fecha actual`);
-      return new Date().toISOString(); // Usar fecha actual como fallback
+
+    // 2) ISO-like: 2025-09-04T00:00:00 o con microsegundos
+    if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?$/i.test(input)) {
+      // Limitar milisegundos a 3 dígitos para Date de JS
+      let iso = input.replace(/(\.\d{1,3})\d+$/, '$1');
+      if (!/[zZ]$/.test(iso)) iso += 'Z';
+      const d = new Date(iso);
+      if (!isNaN(d.getTime())) return d.toISOString();
     }
-    
-    return date.toISOString();
+
+    // 3) Formato Nitter: "May 30, 2025 · 11:10 PM UTC"
+    const cleanDate = input.replace(' · ', ' ').replace(' UTC', '');
+    const d1 = new Date(cleanDate + ' UTC');
+    if (!isNaN(d1.getTime())) return d1.toISOString();
+
+    // 4) Último intento directo
+    const d2 = new Date(input);
+    if (!isNaN(d2.getTime())) return d2.toISOString();
+
+    return new Date().toISOString();
   } catch (error) {
-    console.log(`❌ Error parseando fecha "${dateString}":`, error.message);
-    return new Date().toISOString(); // Usar fecha actual como fallback
+    return new Date().toISOString();
   }
 };
 
@@ -549,10 +558,10 @@ async function fetchTrendingAndTweets() {
 
   try {
     systemLogger.logProgress('Obteniendo trending topics...');
-    systemLogger.logProgress(`URL: ${API_BASE_URL}/trending?location=${LOCATION}`);
+    systemLogger.logProgress(`URL: ${TRENDS_BASE}/trending?location=${LOCATION}`);
     
     // 1. Obtener trending topics
-    const trendingRes = await fetch(`${API_BASE_URL}/trending?location=${LOCATION}`);
+    const trendingRes = await fetchWithTimeout(`${TRENDS_BASE}/trending?location=${LOCATION}`);
     systemLogger.logProgress(`Response status: ${trendingRes.status}`);
     
     if (!trendingRes.ok) {
@@ -573,8 +582,13 @@ async function fetchTrendingAndTweets() {
     systemLogger.setMetric('trends_found', trendsFound);
     systemLogger.logSuccess(`Obtenidos ${trendsFound} trending topics`);
     
-    // 2. Para cada trend, obtener tweets de Nitter
-    for (const trend of trendingData.trends) {
+    // 2. Para cada trend, obtener tweets de Nitter (permitir limitar por env)
+    const TRENDS_MAX = parseInt(process.env.TRENDS_MAX || '0', 10);
+    const trendsToProcess = Array.isArray(trendingData.trends)
+      ? (TRENDS_MAX > 0 ? trendingData.trends.slice(0, TRENDS_MAX) : trendingData.trends)
+      : [];
+
+    for (const trend of trendsToProcess) {
       try {
         const trendName = trend.name || trend;
         const searchTerm = extractSearchTerm(trendName);
@@ -589,10 +603,11 @@ async function fetchTrendingAndTweets() {
         systemLogger.updateCategoriaStats(categoria);
         
         systemLogger.logProgress(`Buscando tweets para: "${searchTerm}" (${categoria})`);
+        systemLogger.logProgress(`URL: ${NITTER_BASE}${NITTER_PATH}?q=${encodeURIComponent(searchTerm)}&location=${LOCATION}&limit=10`);
         
         // Llamar al endpoint de nitter_context (mejor filtrado por ubicación)
-        const nitterRes = await fetch(
-          `${API_BASE_URL}/nitter_context?q=${encodeURIComponent(searchTerm)}&location=${LOCATION}&limit=10`
+        const nitterRes = await fetchWithTimeout(
+          `${NITTER_BASE}${NITTER_PATH}?q=${encodeURIComponent(searchTerm)}&location=${LOCATION}&limit=10`
         );
         const nitterData = await nitterRes.json();
         
@@ -731,7 +746,10 @@ async function fetchTrendingAndTweets() {
 }
 
 // Ejecutar si es llamado directamente
-if (import.meta.url === `file://${process.argv[1]}`) {
+// Ejecutar de forma robusta aunque el path tenga espacios
+const thisFilePath = fileURLToPath(import.meta.url);
+const invokedPath = process.argv[1] ? path.resolve(process.argv[1]) : '';
+if (thisFilePath === invokedPath) {
   fetchTrendingAndTweets();
 }
 
