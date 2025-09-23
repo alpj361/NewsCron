@@ -38,15 +38,15 @@ async function fetchWithTimeout(url) {
 const LOCATION = 'guatemala';
 
 // Configuración para análisis de sentimiento
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const ENABLE_SENTIMENT_ANALYSIS = process.env.ENABLE_SENTIMENT_ANALYSIS !== 'false'; // true por defecto
 
 // Inicializar logger global
 let systemLogger = new SystemLogger();
 
-// Función para análisis de sentimiento individual con OpenAI GPT-5-mini
+// Función para análisis de sentimiento individual con Google Gemini
 async function analyzeTweetSentiment(tweet, categoria) {
-  if (!OPENAI_API_KEY || !ENABLE_SENTIMENT_ANALYSIS) {
+  if (!GEMINI_API_KEY || !ENABLE_SENTIMENT_ANALYSIS) {
     systemLogger.addWarning('Análisis de sentimiento deshabilitado', `Tweet ${tweet.tweet_id}`);
     return getDefaultSentimentData('API deshabilitada');
   }
@@ -111,49 +111,47 @@ TIPOS DE ENTIDADES:
 - evento: Acontecimientos, celebraciones, crisis, etc.`;
 
     const startTime = Date.now();
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${OPENAI_API_KEY}`
       },
       body: JSON.stringify({
-        model: 'gpt-4-turbo-preview',
-        messages: [
-          {
-            role: 'system',
-            content: 'Eres un experto en análisis de sentimientos especializado en el contexto guatemalteco. Responde exclusivamente con JSON válido.'
-          },
-          {
-            role: 'user',
-            content: prompt
-          }
-        ],
-        temperature: 0.3,
-        top_p: 1,
-        max_tokens: 400
+        contents: [{
+          parts: [{
+            text: `Eres un experto en análisis de sentimientos especializado en el contexto guatemalteco. Responde exclusivamente con JSON válido.
+
+${prompt}`
+          }]
+        }],
+        generationConfig: {
+          temperature: 0.3,
+          topP: 1,
+          maxOutputTokens: 400,
+          responseMimeType: "application/json"
+        }
       })
     });
 
     const apiResponseTime = Date.now() - startTime;
 
     if (!response.ok) {
-      const errorMsg = `OpenAI API error: ${response.status} ${response.statusText}`;
+      const errorMsg = `Gemini API error: ${response.status} ${response.statusText}`;
       systemLogger.addError(new Error(errorMsg), `Tweet ${tweet.tweet_id}`);
-      systemLogger.addAIUsage({ tokens: 0, success: false, model: 'gpt-4-turbo-preview', provider: 'openai', costPer1M: process.env.OPENAI_GPT4_TURBO_COST_PER_1M ? parseFloat(process.env.OPENAI_GPT4_TURBO_COST_PER_1M) : undefined, apiResponseTimeMs: apiResponseTime });
+      systemLogger.addAIUsage({ tokens: 0, success: false, model: 'gemini-1.5-flash', provider: 'google', costPer1M: process.env.GEMINI_COST_PER_1M ? parseFloat(process.env.GEMINI_COST_PER_1M) : undefined, apiResponseTimeMs: apiResponseTime });
       throw new Error(errorMsg);
     }
 
     const data = await response.json();
-    const tokensUsed = (data.usage?.total_tokens) || ((data.usage?.prompt_tokens || 0) + (data.usage?.completion_tokens || 0));
-    
+    const tokensUsed = (data.usageMetadata?.totalTokenCount) || 0;
+
     // Registrar costo, tokens y modelo de la AI request
-    systemLogger.addAIUsage({ tokens: tokensUsed, success: true, model: 'gpt-4-turbo-preview', provider: 'openai', costPer1M: process.env.OPENAI_GPT4_TURBO_COST_PER_1M ? parseFloat(process.env.OPENAI_GPT4_TURBO_COST_PER_1M) : undefined, apiResponseTimeMs: apiResponseTime });
-    
-    const aiResponse = data.choices?.[0]?.message?.content;
+    systemLogger.addAIUsage({ tokens: tokensUsed, success: true, model: 'gemini-1.5-flash', provider: 'google', costPer1M: process.env.GEMINI_COST_PER_1M ? parseFloat(process.env.GEMINI_COST_PER_1M) : undefined, apiResponseTimeMs: apiResponseTime });
+
+    const aiResponse = data.candidates?.[0]?.content?.parts?.[0]?.text;
     
     if (!aiResponse) {
-      const errorMsg = 'No response from OpenAI';
+      const errorMsg = 'No response from Gemini';
       systemLogger.addError(new Error(errorMsg), `Tweet ${tweet.tweet_id}`);
       throw new Error(errorMsg);
     }
@@ -244,20 +242,20 @@ TIPOS DE ENTIDADES:
       intencion_comunicativa: intencion,
       entidades_mencionadas: entidades,
       analisis_ai_metadata: {
-        modelo: 'gpt-4-turbo-preview',
+        modelo: 'gemini-1.5-flash',
         timestamp: new Date().toISOString(),
         contexto_local: analysis.contexto_local || '',
         intensidad: analysis.intensidad || 'media',
         categoria: categoria,
         tokens_usados: tokensUsed,
-        costo_estimado: process.env.OPENAI_GPT4_TURBO_COST_PER_1M ? (tokensUsed * (parseFloat(process.env.OPENAI_GPT4_TURBO_COST_PER_1M) / 1000000)) : null,
+        costo_estimado: process.env.GEMINI_COST_PER_1M ? (tokensUsed * (parseFloat(process.env.GEMINI_COST_PER_1M) / 1000000)) : null,
         api_response_time_ms: apiResponseTime
       }
     };
 
   } catch (error) {
     systemLogger.addError(error, `Análisis sentimiento tweet ${tweet.tweet_id}`);
-    systemLogger.addAIUsage({ tokens: 0, success: false, model: 'gpt-4-turbo-preview', provider: 'openai', costPer1M: process.env.OPENAI_GPT4_TURBO_COST_PER_1M ? parseFloat(process.env.OPENAI_GPT4_TURBO_COST_PER_1M) : undefined });
+    systemLogger.addAIUsage({ tokens: 0, success: false, model: 'gemini-1.5-flash', provider: 'google', costPer1M: process.env.GEMINI_COST_PER_1M ? parseFloat(process.env.GEMINI_COST_PER_1M) : undefined });
     return getDefaultSentimentData(error.message);
   }
 }
