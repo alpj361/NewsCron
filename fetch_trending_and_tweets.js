@@ -724,7 +724,7 @@ async function fetchTrendingAndTweets() {
         await new Promise(resolve => setTimeout(resolve, 2000));
         
       } catch (error) {
-        systemLogger.addError(error, `Procesando trend "${trendName}"`);
+        systemLogger.addError(error, `Procesando trend "${trend.name || trend}"`);
         continue;
       }
     }
