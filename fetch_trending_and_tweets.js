@@ -24,17 +24,38 @@ const NITTER_BASE = HAS_API_SUFFIX ? BASE : `${BASE}/api`;
 const NITTER_PATH = '/nitter_context/';
 
 // Timeout configurable
-const HTTP_TIMEOUT_MS = parseInt(process.env.HTTP_TIMEOUT || '30000', 10);
+const DEFAULT_HTTP_TIMEOUT_MS = parseInt(process.env.HTTP_TIMEOUT || '30000', 10);
+const TRENDING_TIMEOUT_MS = parseInt(
+  process.env.TRENDING_TIMEOUT_MS || String(Math.max(DEFAULT_HTTP_TIMEOUT_MS, 45000)),
+  10
+);
+const TWEETS_TIMEOUT_MS = parseInt(
+  process.env.TWEETS_TIMEOUT_MS || String(Math.max(DEFAULT_HTTP_TIMEOUT_MS, 45000)),
+  10
+);
+const HTTP_MAX_RETRIES = parseInt(process.env.HTTP_MAX_RETRIES || '1', 10);
+const HTTP_RETRY_DELAY_MS = parseInt(process.env.HTTP_RETRY_DELAY_MS || '4000', 10);
+const HTTP_RETRY_TIMEOUT_MULTIPLIER = parseFloat(
+  process.env.HTTP_RETRY_TIMEOUT_MULTIPLIER || '1.5'
+);
 
-async function fetchWithTimeout(url) {
+async function fetchWithTimeout(url, timeoutMs = DEFAULT_HTTP_TIMEOUT_MS, init = {}) {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), HTTP_TIMEOUT_MS);
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+
   try {
-    return await fetch(url, { signal: controller.signal, redirect: 'follow' });
+    return await fetch(url, {
+      redirect: 'follow',
+      ...init,
+      signal: controller.signal
+    });
   } finally {
     clearTimeout(timeout);
   }
 }
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 const LOCATION = 'guatemala';
 
 // Configuración para análisis de sentimiento
@@ -43,6 +64,52 @@ const ENABLE_SENTIMENT_ANALYSIS = process.env.ENABLE_SENTIMENT_ANALYSIS !== 'fal
 
 // Inicializar logger global
 let systemLogger = new SystemLogger();
+
+async function fetchWithResilience(url, {
+  timeoutMs = DEFAULT_HTTP_TIMEOUT_MS,
+  description = url,
+  retries = HTTP_MAX_RETRIES,
+  retryDelayMs = HTTP_RETRY_DELAY_MS,
+  timeoutMultiplier = HTTP_RETRY_TIMEOUT_MULTIPLIER
+} = {}) {
+  let attempt = 0;
+  let currentTimeout = timeoutMs;
+  let lastError;
+  const totalAttempts = retries + 1;
+
+  while (attempt < totalAttempts) {
+    attempt += 1;
+    const startedAt = Date.now();
+
+    try {
+      const response = await fetchWithTimeout(url, currentTimeout);
+      const duration = Date.now() - startedAt;
+      systemLogger.logProgress(
+        `[HTTP] ${description} completado en ${duration}ms (intento ${attempt}/${totalAttempts})`
+      );
+      return { response, duration, attempt };
+    } catch (error) {
+      lastError = error;
+      const isAbortError = error?.name === 'AbortError';
+      const reason = isAbortError
+        ? `Timeout alcanzado (${currentTimeout}ms)`
+        : error.message || error;
+      systemLogger.addWarning(
+        `Fallo al llamar ${description} - intento ${attempt}/${totalAttempts}: ${reason}`,
+        'http_retry'
+      );
+
+      if (attempt >= totalAttempts) {
+        break;
+      }
+
+      await sleep(retryDelayMs);
+      currentTimeout = Math.round(currentTimeout * timeoutMultiplier);
+    }
+  }
+
+  throw lastError;
+}
 
 // Función para análisis de sentimiento individual con Google Gemini
 async function analyzeTweetSentiment(tweet, categoria) {
@@ -556,10 +623,14 @@ async function fetchTrendingAndTweets() {
 
   try {
     systemLogger.logProgress('Obteniendo trending topics...');
-    systemLogger.logProgress(`URL: ${TRENDS_BASE}/trending?location=${LOCATION}`);
+    const trendingUrl = `${TRENDS_BASE}/trending?location=${LOCATION}`;
+    systemLogger.logProgress(`URL: ${trendingUrl}`);
     
     // 1. Obtener trending topics
-    const trendingRes = await fetchWithTimeout(`${TRENDS_BASE}/trending?location=${LOCATION}`);
+    const { response: trendingRes } = await fetchWithResilience(trendingUrl, {
+      timeoutMs: TRENDING_TIMEOUT_MS,
+      description: `GET ${trendingUrl}`
+    });
     systemLogger.logProgress(`Response status: ${trendingRes.status}`);
     
     if (!trendingRes.ok) {
@@ -601,12 +672,20 @@ async function fetchTrendingAndTweets() {
         systemLogger.updateCategoriaStats(categoria);
         
         systemLogger.logProgress(`Buscando tweets para: "${searchTerm}" (${categoria})`);
-        systemLogger.logProgress(`URL: ${NITTER_BASE}${NITTER_PATH}?q=${encodeURIComponent(searchTerm)}&location=${LOCATION}&limit=10`);
+        const nitterUrl = `${NITTER_BASE}${NITTER_PATH}?q=${encodeURIComponent(searchTerm)}&location=${LOCATION}&limit=10`;
+        systemLogger.logProgress(`URL: ${nitterUrl}`);
         
         // Llamar al endpoint de nitter_context (mejor filtrado por ubicación)
-        const nitterRes = await fetchWithTimeout(
-          `${NITTER_BASE}${NITTER_PATH}?q=${encodeURIComponent(searchTerm)}&location=${LOCATION}&limit=10`
-        );
+        const { response: nitterRes } = await fetchWithResilience(nitterUrl, {
+          timeoutMs: TWEETS_TIMEOUT_MS,
+          description: `GET tweets for "${searchTerm}"`
+        });
+        systemLogger.logProgress(`Response status: ${nitterRes.status}`);
+
+        if (!nitterRes.ok) {
+          throw new Error(`HTTP ${nitterRes.status}: ${nitterRes.statusText}`);
+        }
+
         const nitterData = await nitterRes.json();
         
         if (nitterData.status === 'success' && nitterData.tweets) {
