@@ -466,11 +466,8 @@ const extractSearchTerm = (trendText) => {
   // Remover conteos con paréntesis (ej: "término (123)")
   cleanText = cleanText.replace(/\s*\([^)]*\)$/, '');
   
-  // Remover sufijos de números con K, M, etc. al final
-  cleanText = cleanText.replace(/\d+[KMB]?$/i, '');
-  
-  // Remover números sueltos al final
-  cleanText = cleanText.replace(/\s*\d+$/, '');
+  // Remover sufijos de números con K, M, etc. al final solo si están pegados al término
+  cleanText = cleanText.replace(/(?<!\s)\d+[KMB]?$/i, '');
   
   // Remover espacios extra y limpiar
   cleanText = cleanText.trim();
