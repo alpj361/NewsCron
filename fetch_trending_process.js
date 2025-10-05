@@ -1,6 +1,7 @@
 import fetch from 'node-fetch';
 import { createClient } from '@supabase/supabase-js';
 import { SystemLogger } from './system_logger.js';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 // Configura tus credenciales de Supabase
 const SUPABASE_URL = 'https://qqshdccpmypelhmyqnut.supabase.co';
@@ -9,126 +10,195 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // Configuración de la API
 const EXTRACTORW_API_URL = 'https://server.standatpd.com/api';
-const VPS_TRENDING_URL = 'https://api.standatpd.com/trending?location=guatemala';
+const VPS_TRENDING_URL = 'https://api.standatpd.com/trending?location=guatemala&limit=50'; // Obtener 50 trends
+
+// Configuración de Gemini AI
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY || 'AIzaSyBMEq9kbJN9i30iXqZK3rT7Kp9n7AwN_RM'; // Añadir tu API key
 
 // Inicializar logger global
 let systemLogger = new SystemLogger();
 
 // ============================================================
-// SISTEMA DE DETECCIÓN Y BALANCEO DE DEPORTES
+// SISTEMA DE CLASIFICACIÓN Y BALANCEO CON GEMINI AI
 // ============================================================
 
 /**
- * Detecta si un trend individual es deportivo basado en palabras clave guatemaltecas
- * @param {string} trendName - Nombre del trend a analizar
- * @returns {boolean} - true si es deportivo, false si no
+ * Clasifica trends usando Gemini AI (una sola llamada para todos)
+ * @param {Array} trends - Array de trends a clasificar
+ * @returns {Promise<Array>} - Array de clasificaciones [{index, name, categoria}]
  */
-function isSportsTrend(trendName) {
-  if (!trendName) return false;
+async function classifyTrendsWithGemini(trends) {
+  const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+  const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
   
-  const text = (typeof trendName === 'string' ? trendName : trendName.name || '').toLowerCase();
+  const trendNames = trends.map((t, i) => {
+    const name = typeof t === 'string' ? t : (t.name || t);
+    return `${i+1}. ${name}`;
+  });
   
-  // Palabras clave deportivas - EXPANDIDAS para detectar mejor
-  const sportsKeywords = [
-    // Equipos guatemaltecos
-    'municipal', 'comunicaciones', 'antigua', 'xelajú', 'xelaju',
-    'coban', 'cobán', 'malacateco', 'suchitepéquez', 'suchitepequez', 'guastatoya',
-    'mictlan', 'mixco', 'achuapa', 'iztapa', 'petapa',
-    
-    // Equipos internacionales (España, Inglaterra, Alemania, etc.)
-    'madrid', 'barcelona', 'atletico', 'atlético', 'sevilla', 'valencia', 'villarreal',
-    'liverpool', 'chelsea', 'arsenal', 'manchester', 'city', 'united', 'tottenham',
-    'bayern', 'dortmund', 'leipzig', 'leipzig', 'psg', 'milan', 'inter', 'juventus',
-    'napoli', 'roma', 'lazio', 'ajax', 'psv', 'porto', 'benfica', 'sporting',
-    
-    // Jugadores famosos (nombres que aparecen frecuentemente)
-    'mbappe', 'messi', 'ronaldo', 'neymar', 'haaland', 'benzema', 'lewandowski',
-    'salah', 'mane', 'kane', 'sterling', 'griezmann', 'pogba', 'kante',
-    'vini', 'vinicius', 'rodrygo', 'valverde', 'modric', 'kroos', 'casemiro',
-    'pedri', 'gavi', 'ferran', 'ansu', 'dembele', 'ter stegen',
-    
-    // Términos generales de fútbol
-    'fútbol', 'futbol', 'deportes', 'liga', 'selección', 'seleccion',
-    'mundial', 'gol', 'goles', 'partido', 'campeonato', 'torneo',
-    'clasificación', 'clasificacion', 'eliminatorias', 'concachampions',
-    'champions', 'europa', 'eurocopa', 'copa', 'supercopa',
-    
-    // Jugadores y figuras
-    'jugador', 'jugadores', 'entrenador', 'arbitro', 'árbitro', 'dt',
-    'capitan', 'capitán', 'delantero', 'mediocampista', 'defensa', 'portero',
-    
-    // Eventos deportivos
-    'friendly', 'amistoso', 'clásico', 'clasico', 'derbi', 'derby', 
-    'semifinal', 'final', 'cuartos', 'octavos', 'grupos',
-    
-    // Ligas y competiciones
-    'laliga', 'premier', 'bundesliga', 'serie', 'ligue', 'eredivisie',
-    'champions', 'europa', 'conference', 'nations', 'nations league',
-    
-    // Términos específicos guatemaltecos
-    'cremas', 'rojos', 'venados', 'panza verde',
-    
-    // Patrones numéricos típicos de deportes (seguidores, estadísticas)
-    // Estos patrones como "42K", "50K", "368K" son típicos de equipos/jugadores
-  ];
+  const prompt = `Clasifica cada uno de estos ${trends.length} trending topics de Guatemala como DEPORTIVO o NO_DEPORTIVO.
+
+TRENDING TOPICS:
+${trendNames.join('\n')}
+
+CRITERIOS PARA DEPORTIVO:
+- Equipos de fútbol (Barcelona, Madrid, Liverpool, Municipal, Comunicaciones, etc.)
+- Jugadores de fútbol (Messi, Lewandowski, Pedri, Rashford, etc.)
+- Competiciones deportivas (LaLiga, Champions, Premier League, etc.)
+- Eventos deportivos (partidos, fichajes, transferencias, entrenamientos)
+- Términos relacionados con fútbol y deportes
+
+CRITERIOS PARA NO_DEPORTIVO:
+- Política, economía, noticias sociales
+- Música, entretenimiento, celebridades no deportivas
+- Eventos culturales, tecnología
+- Cualquier tema que no esté directamente relacionado con deportes
+
+Responde SOLO con un JSON array válido en este formato exacto (sin texto adicional):
+[
+  {"index": 1, "name": "nombre_trend", "categoria": "DEPORTIVO"},
+  {"index": 2, "name": "nombre_trend", "categoria": "NO_DEPORTIVO"}
+]`;
+
+  console.log('🤖 [GEMINI] Clasificando trends con IA...');
+  console.log(`   📊 Total a clasificar: ${trends.length} trends`);
   
-  // Detectar patrones numéricos típicos de deportes (K, M seguidos de números)
-  const numericPattern = /\d+[km]|\d+[km]/i;
-  const hasNumericPattern = numericPattern.test(text);
-  
-  // Contar coincidencias de palabras clave
-  let matchCount = 0;
-  for (const keyword of sportsKeywords) {
-    if (text.includes(keyword)) {
-      matchCount++;
+  try {
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const text = response.text();
+    
+    console.log('   📝 Respuesta de Gemini recibida');
+    
+    // Extraer JSON del response (buscar entre [ y ])
+    const jsonMatch = text.match(/\[[\s\S]*\]/);
+    if (!jsonMatch) {
+      console.error('   ❌ No se pudo extraer JSON de la respuesta');
+      throw new Error('No se pudo extraer JSON de la respuesta de Gemini');
     }
+    
+    const classifications = JSON.parse(jsonMatch[0]);
+    
+    console.log('   ✅ Clasificación completada exitosamente');
+    console.log(`   📊 Total clasificados: ${classifications.length}`);
+    
+    // Contar deportivos vs no deportivos
+    const deportivosCount = classifications.filter(c => c.categoria === 'DEPORTIVO').length;
+    const noDeportivosCount = classifications.filter(c => c.categoria === 'NO_DEPORTIVO').length;
+    
+    console.log(`   ⚽ Deportivos: ${deportivosCount}`);
+    console.log(`   📰 No deportivos: ${noDeportivosCount}`);
+    
+    return classifications;
+  } catch (error) {
+    console.error('   ❌ Error en clasificación con Gemini:', error.message);
+    console.log('   ⚠️  Usando fallback: todos como NO_DEPORTIVO');
+    
+    // Fallback: clasificar todos como NO_DEPORTIVO para evitar fallar completamente
+    return trends.map((t, i) => ({
+      index: i + 1,
+      name: typeof t === 'string' ? t : (t.name || t),
+      categoria: 'NO_DEPORTIVO'
+    }));
   }
-  
-  // También detectar si contiene hashtags deportivos
-  const hashtagPattern = /#[a-z]*liga|#[a-z]*champions|#[a-z]*futbol|#[a-z]*soccer/i;
-  const hasSportsHashtag = hashtagPattern.test(text);
-  
-  // Si hay 1 o más coincidencias, o tiene patrón numérico + hashtag deportivo, considerarlo deportivo
-  return matchCount >= 1 || (hasNumericPattern && hasSportsHashtag);
 }
 
 /**
- * SIMPLIFICADO: Envía todos los trends a ExtractorW para detección y balanceo
- * @param {Array} rawTrends - Array de trends originales del VPS
- * @returns {Object} - { balancedTrends, stats }
+ * Filtra y balancea trends usando clasificación de Gemini AI
+ * @param {Array} rawTrends - Array de trends originales del VPS (hasta 50)
+ * @returns {Promise<Object>} - { balancedTrends, stats, preclassificationHints }
  */
-function filterAndBalanceTrends(rawTrends) {
+async function filterAndBalanceTrendsWithAI(rawTrends) {
   if (!rawTrends || !Array.isArray(rawTrends) || rawTrends.length === 0) {
     console.log('⚠️  [FILTRO] No hay trends para procesar');
     return {
       balancedTrends: [],
       stats: {
         total_received: 0,
-        total_selected: 0
-      }
+        deportivos_found: 0,
+        no_deportivos_found: 0,
+        deportivos_selected: 0,
+        no_deportivos_selected: 0,
+        total_selected: 0,
+        sports_percentage: 0
+      },
+      preclassificationHints: {}
     };
   }
   
-  console.log(`\n🎯 [FILTRO] Enviando ${rawTrends.length} trends a ExtractorW para detección y balanceo...`);
-  console.log('🤖 [FILTRO] ExtractorW se encargará de:');
-  console.log('   - Detectar deportes usando IA');
-  console.log('   - Clasificar por categorías');
-  console.log('   - Balancear automáticamente');
+  console.log(`\n🎯 [FILTRO] Iniciando clasificación IA de ${rawTrends.length} trends...`);
   
-  // Enviar todos los trends, ExtractorW los balancea
+  // PASO 1: Clasificar con Gemini (una sola llamada para todos)
+  const classifications = await classifyTrendsWithGemini(rawTrends);
+  
+  // PASO 2: Separar en deportivos y no deportivos
+  const deportivos = [];
+  const noDeportivos = [];
+  
+  for (let i = 0; i < rawTrends.length; i++) {
+    const trend = rawTrends[i];
+    const trendName = typeof trend === 'string' ? trend : (trend.name || trend);
+    const classification = classifications.find(c => c.index === i + 1);
+    const isDeportivo = classification?.categoria === 'DEPORTIVO';
+    
+    if (isDeportivo) {
+      deportivos.push(trend);
+      console.log(`   ⚽ Deportivo: "${trendName}"`);
+    } else {
+      noDeportivos.push(trend);
+      console.log(`   📰 General: "${trendName}"`);
+    }
+  }
+  
+  // PASO 3: Balancear: 5 deportivos + 10 no deportivos
+  const MAX_DEPORTIVOS = 5;
+  const MAX_NO_DEPORTIVOS = 10;
+  
+  const deportivosSeleccionados = deportivos.slice(0, MAX_DEPORTIVOS);
+  const noDeportivosSeleccionados = noDeportivos.slice(0, MAX_NO_DEPORTIVOS);
+  
+  // Combinar: primero no deportivos (para dar prioridad), luego deportivos
+  const trendsBalanceados = [
+    ...noDeportivosSeleccionados,
+    ...deportivosSeleccionados
+  ];
+  
   const stats = {
     total_received: rawTrends.length,
-    total_selected: rawTrends.length
+    deportivos_found: deportivos.length,
+    no_deportivos_found: noDeportivos.length,
+    deportivos_selected: deportivosSeleccionados.length,
+    no_deportivos_selected: noDeportivosSeleccionados.length,
+    total_selected: trendsBalanceados.length,
+    sports_percentage: trendsBalanceados.length > 0 
+      ? Math.round((deportivosSeleccionados.length / trendsBalanceados.length) * 100) 
+      : 0
   };
   
+  console.log(`\n✅ [FILTRO] Balanceo con IA completado:`);
+  console.log(`   📊 Recibidos: ${stats.total_received} trends`);
+  console.log(`   ⚽ Deportivos encontrados: ${stats.deportivos_found}`);
+  console.log(`   📰 No deportivos encontrados: ${stats.no_deportivos_found}`);
+  console.log(`   ✅ Deportivos seleccionados: ${stats.deportivos_selected}/${MAX_DEPORTIVOS}`);
+  console.log(`   ✅ No deportivos seleccionados: ${stats.no_deportivos_selected}/${MAX_NO_DEPORTIVOS}`);
+  console.log(`   📊 Total a procesar: ${stats.total_selected}`);
+  console.log(`   🎯 % Deportes: ${stats.sports_percentage}%`);
+  
+  // PASO 4: Crear hints de preclasificación para ExtractorW
+  const preclassificationHints = {};
+  classifications.forEach(c => {
+    preclassificationHints[c.name] = c.categoria;
+  });
+  
   return {
-    balancedTrends: rawTrends, // Enviar todos, ExtractorW los balancea
-    stats: stats
+    balancedTrends: trendsBalanceados,
+    stats: stats,
+    preclassificationHints: preclassificationHints
   };
 }
 
 // ============================================================
-// FIN SISTEMA DE DETECCIÓN Y BALANCEO
+// FIN SISTEMA DE CLASIFICACIÓN Y BALANCEO
 // ============================================================
 
 /**
@@ -186,14 +256,16 @@ async function processAutomatedTrends() {
       rawTrendingData = null;
     }
     
-    // PASO 1.5: BALANCEAR TRENDS (máximo 5 deportivos + 10 no deportivos)
+    // PASO 1.5: CLASIFICAR Y BALANCEAR TRENDS CON IA (máximo 5 deportivos + 10 no deportivos)
     let balancedTrends = [];
     let balanceStats = {};
+    let preclassificationHints = {};
     
     if (rawTrendingData && rawTrendingData.trends) {
-      const balanceResult = filterAndBalanceTrends(rawTrendingData.trends);
+      const balanceResult = await filterAndBalanceTrendsWithAI(rawTrendingData.trends);
       balancedTrends = balanceResult.balancedTrends;
       balanceStats = balanceResult.stats;
+      preclassificationHints = balanceResult.preclassificationHints;
       
       // Registrar métricas de balanceo
       systemLogger.setMetric('trends_total_received', balanceStats.total_received);
@@ -215,18 +287,6 @@ async function processAutomatedTrends() {
     let requestBody = {};
     if (balancedTrends.length > 0) {
       // ExtractorW espera rawData.twitter_trends, usar los trends balanceados
-      // Preclasificación ligera por heurística para enviar como hint
-      const sportsHeuristic = (name) => {
-        const t = (name || '').toString().toLowerCase();
-        const aliases = ['madrid','barcelona','barça','barca','sevilla','villarreal','liverpool','chelsea','psg','bayern','juventus','inter','milan','laliga','la liga','uefa','ucl','champions','futbol','fútbol'];
-        return aliases.some(a => t.includes(a));
-      };
-      const preclassificationHints = {};
-      balancedTrends.forEach(trend => {
-        const n = trend.name || trend;
-        preclassificationHints[n] = sportsHeuristic(n) ? 'DEPORTIVO' : 'NO_DEPORTIVO';
-      });
-
       requestBody = { 
         rawData: { 
           twitter_trends: balancedTrends.map(trend => trend.name || trend),
@@ -234,7 +294,7 @@ async function processAutomatedTrends() {
           source: rawTrendingData?.source || 'extractorT',
           // Metadatos de balanceo para tracking
           balance_metadata: balanceStats,
-          // Hints de preclasificación
+          // Hints de preclasificación de Gemini
           preclassification_hints: preclassificationHints
         } 
       };
@@ -325,10 +385,14 @@ async function processAutomatedTrends() {
     console.log('📋 Resumen de la operación:');
     console.log(`   ✅ Datos raw obtenidos: ${rawTrendingData ? 'SÍ' : 'NO (usó mock data)'}`);
        console.log(`   ⚽ Trends recibidos: ${balanceStats.total_received || 0}`);
-       console.log(`   🤖 [BALANCEO] ExtractorW se encargará del balanceo automático`);
-       console.log(`      - Total enviado: ${balanceStats.total_selected || 0}`);
-       console.log(`      - Detección: IA de ExtractorW`);
-       console.log(`      - Balanceo: Automático en ExtractorW`);
+       console.log(`   🤖 [CLASIFICACIÓN] Gemini AI clasificó los trends`);
+       console.log(`      - Deportivos encontrados: ${balanceStats.deportivos_found || 0}`);
+       console.log(`      - No deportivos encontrados: ${balanceStats.no_deportivos_found || 0}`);
+       console.log(`   ⚖️  [BALANCEO] Selección automática aplicada:`);
+       console.log(`      - Deportivos seleccionados: ${balanceStats.deportivos_selected || 0}/5`);
+       console.log(`      - No deportivos seleccionados: ${balanceStats.no_deportivos_selected || 0}/10`);
+       console.log(`      - Total procesado: ${balanceStats.total_selected || 0}`);
+       console.log(`      - % Deportes: ${balanceStats.sports_percentage || 0}%`);
     console.log(`   ✅ Procesamiento IA: ${processedData.success ? 'EXITOSO' : 'FALLIDO'}`);
     console.log(`   ✅ Guardado en DB: ${processedData.record_id ? 'SÍ' : 'NO'}`);
     console.log(`   ✅ Procesamiento background: ${processedData.success ? 'INICIADO' : 'NO INICIADO'}`);
