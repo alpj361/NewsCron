@@ -14,6 +14,123 @@ const VPS_TRENDING_URL = 'https://api.standatpd.com/trending?location=guatemala'
 // Inicializar logger global
 let systemLogger = new SystemLogger();
 
+// ============================================================
+// SISTEMA DE DETECCIÓN Y BALANCEO DE DEPORTES
+// ============================================================
+
+/**
+ * Detecta si un trend individual es deportivo basado en palabras clave guatemaltecas
+ * @param {string} trendName - Nombre del trend a analizar
+ * @returns {boolean} - true si es deportivo, false si no
+ */
+function isSportsTrend(trendName) {
+  if (!trendName) return false;
+  
+  const text = (typeof trendName === 'string' ? trendName : trendName.name || '').toLowerCase();
+  
+  // Palabras clave deportivas - EXPANDIDAS para detectar mejor
+  const sportsKeywords = [
+    // Equipos guatemaltecos
+    'municipal', 'comunicaciones', 'antigua', 'xelajú', 'xelaju',
+    'coban', 'cobán', 'malacateco', 'suchitepéquez', 'suchitepequez', 'guastatoya',
+    'mictlan', 'mixco', 'achuapa', 'iztapa', 'petapa',
+    
+    // Equipos internacionales (España, Inglaterra, Alemania, etc.)
+    'madrid', 'barcelona', 'atletico', 'atlético', 'sevilla', 'valencia', 'villarreal',
+    'liverpool', 'chelsea', 'arsenal', 'manchester', 'city', 'united', 'tottenham',
+    'bayern', 'dortmund', 'leipzig', 'leipzig', 'psg', 'milan', 'inter', 'juventus',
+    'napoli', 'roma', 'lazio', 'ajax', 'psv', 'porto', 'benfica', 'sporting',
+    
+    // Jugadores famosos (nombres que aparecen frecuentemente)
+    'mbappe', 'messi', 'ronaldo', 'neymar', 'haaland', 'benzema', 'lewandowski',
+    'salah', 'mane', 'kane', 'sterling', 'griezmann', 'pogba', 'kante',
+    'vini', 'vinicius', 'rodrygo', 'valverde', 'modric', 'kroos', 'casemiro',
+    'pedri', 'gavi', 'ferran', 'ansu', 'dembele', 'ter stegen',
+    
+    // Términos generales de fútbol
+    'fútbol', 'futbol', 'deportes', 'liga', 'selección', 'seleccion',
+    'mundial', 'gol', 'goles', 'partido', 'campeonato', 'torneo',
+    'clasificación', 'clasificacion', 'eliminatorias', 'concachampions',
+    'champions', 'europa', 'eurocopa', 'copa', 'supercopa',
+    
+    // Jugadores y figuras
+    'jugador', 'jugadores', 'entrenador', 'arbitro', 'árbitro', 'dt',
+    'capitan', 'capitán', 'delantero', 'mediocampista', 'defensa', 'portero',
+    
+    // Eventos deportivos
+    'friendly', 'amistoso', 'clásico', 'clasico', 'derbi', 'derby', 
+    'semifinal', 'final', 'cuartos', 'octavos', 'grupos',
+    
+    // Ligas y competiciones
+    'laliga', 'premier', 'bundesliga', 'serie', 'ligue', 'eredivisie',
+    'champions', 'europa', 'conference', 'nations', 'nations league',
+    
+    // Términos específicos guatemaltecos
+    'cremas', 'rojos', 'venados', 'panza verde',
+    
+    // Patrones numéricos típicos de deportes (seguidores, estadísticas)
+    // Estos patrones como "42K", "50K", "368K" son típicos de equipos/jugadores
+  ];
+  
+  // Detectar patrones numéricos típicos de deportes (K, M seguidos de números)
+  const numericPattern = /\d+[km]|\d+[km]/i;
+  const hasNumericPattern = numericPattern.test(text);
+  
+  // Contar coincidencias de palabras clave
+  let matchCount = 0;
+  for (const keyword of sportsKeywords) {
+    if (text.includes(keyword)) {
+      matchCount++;
+    }
+  }
+  
+  // También detectar si contiene hashtags deportivos
+  const hashtagPattern = /#[a-z]*liga|#[a-z]*champions|#[a-z]*futbol|#[a-z]*soccer/i;
+  const hasSportsHashtag = hashtagPattern.test(text);
+  
+  // Si hay 1 o más coincidencias, o tiene patrón numérico + hashtag deportivo, considerarlo deportivo
+  return matchCount >= 1 || (hasNumericPattern && hasSportsHashtag);
+}
+
+/**
+ * SIMPLIFICADO: Envía todos los trends a ExtractorW para detección y balanceo
+ * @param {Array} rawTrends - Array de trends originales del VPS
+ * @returns {Object} - { balancedTrends, stats }
+ */
+function filterAndBalanceTrends(rawTrends) {
+  if (!rawTrends || !Array.isArray(rawTrends) || rawTrends.length === 0) {
+    console.log('⚠️  [FILTRO] No hay trends para procesar');
+    return {
+      balancedTrends: [],
+      stats: {
+        total_received: 0,
+        total_selected: 0
+      }
+    };
+  }
+  
+  console.log(`\n🎯 [FILTRO] Enviando ${rawTrends.length} trends a ExtractorW para detección y balanceo...`);
+  console.log('🤖 [FILTRO] ExtractorW se encargará de:');
+  console.log('   - Detectar deportes usando IA');
+  console.log('   - Clasificar por categorías');
+  console.log('   - Balancear automáticamente');
+  
+  // Enviar todos los trends, ExtractorW los balancea
+  const stats = {
+    total_received: rawTrends.length,
+    total_selected: rawTrends.length
+  };
+  
+  return {
+    balancedTrends: rawTrends, // Enviar todos, ExtractorW los balancea
+    stats: stats
+  };
+}
+
+// ============================================================
+// FIN SISTEMA DE DETECCIÓN Y BALANCEO
+// ============================================================
+
 /**
  * Función principal que replica el botón "trending" pero de forma automatizada y sin cobrar créditos
  * 
@@ -69,14 +186,54 @@ async function processAutomatedTrends() {
       rawTrendingData = null;
     }
     
+    // PASO 1.5: BALANCEAR TRENDS (máximo 5 deportivos + 10 no deportivos)
+    let balancedTrends = [];
+    let balanceStats = {};
+    
+    if (rawTrendingData && rawTrendingData.trends) {
+      const balanceResult = filterAndBalanceTrends(rawTrendingData.trends);
+      balancedTrends = balanceResult.balancedTrends;
+      balanceStats = balanceResult.stats;
+      
+      // Registrar métricas de balanceo
+      systemLogger.setMetric('trends_total_received', balanceStats.total_received);
+      systemLogger.setMetric('trends_deportivos_found', balanceStats.deportivos_found);
+      systemLogger.setMetric('trends_no_deportivos_found', balanceStats.no_deportivos_found);
+      systemLogger.setMetric('trends_deportivos_selected', balanceStats.deportivos_selected);
+      systemLogger.setMetric('trends_no_deportivos_selected', balanceStats.no_deportivos_selected);
+      systemLogger.setMetric('trends_total_selected', balanceStats.total_selected);
+      systemLogger.setMetric('trends_sports_percentage', balanceStats.sports_percentage);
+      
+      systemLogger.logSuccess(`Balanceo completado: ${balanceStats.deportivos_selected} deportes + ${balanceStats.no_deportivos_selected} generales`);
+    }
+    
     // PASO 2: Procesar con ExtractorW usando el endpoint gratuito de cron
     systemLogger.logProgress('PASO 2: Procesando con ExtractorW (endpoint cron - SIN COSTO)...');
     console.log('⚡ PASO 2: Procesando con ExtractorW (endpoint cron - SIN COSTO)...');
     
-    // PASO 2.1: Convertir estructura de trends a twitter_trends para compatibilidad con ExtractorW
+    // PASO 2.1: Convertir estructura de trends balanceados a twitter_trends para compatibilidad con ExtractorW
     let requestBody = {};
-    if (rawTrendingData && rawTrendingData.trends) {
-      // ExtractorW espera rawData.twitter_trends, pero ExtractorT devuelve trends
+    if (balancedTrends.length > 0) {
+      // ExtractorW espera rawData.twitter_trends, usar los trends balanceados
+      requestBody = { 
+        rawData: { 
+          twitter_trends: balancedTrends.map(trend => trend.name || trend),
+          location: rawTrendingData?.location || 'guatemala',
+          source: rawTrendingData?.source || 'extractorT',
+          // Metadatos de balanceo para tracking
+          balance_metadata: balanceStats
+        } 
+      };
+      
+      console.log('🔄 Datos balanceados convertidos a twitter_trends:', {
+        original_count: rawTrendingData?.trends?.length || 0,
+        balanced_count: balancedTrends.length,
+        deportivos: balanceStats.deportivos_selected,
+        no_deportivos: balanceStats.no_deportivos_selected,
+        sample: requestBody.rawData.twitter_trends.slice(0, 3)
+      });
+    } else if (rawTrendingData && rawTrendingData.trends) {
+      // Fallback: si no hay trends balanceados, usar los originales (no debería pasar)
       requestBody = { 
         rawData: { 
           twitter_trends: rawTrendingData.trends.map(trend => trend.name || trend),
@@ -85,11 +242,7 @@ async function processAutomatedTrends() {
         } 
       };
       
-      console.log('🔄 Datos convertidos de trends a twitter_trends:', {
-        original_count: rawTrendingData.trends.length,
-        converted_count: requestBody.rawData.twitter_trends.length,
-        sample: requestBody.rawData.twitter_trends.slice(0, 3)
-      });
+      console.log('⚠️  Usando trends originales sin balanceo (fallback)');
     }
     
     const processResponse = await fetch(`${EXTRACTORW_API_URL}/cron/processTrends`, {
@@ -157,6 +310,11 @@ async function processAutomatedTrends() {
     console.log('\n🎉 PROCESO AUTOMATIZADO COMPLETADO EXITOSAMENTE');
     console.log('📋 Resumen de la operación:');
     console.log(`   ✅ Datos raw obtenidos: ${rawTrendingData ? 'SÍ' : 'NO (usó mock data)'}`);
+       console.log(`   ⚽ Trends recibidos: ${balanceStats.total_received || 0}`);
+       console.log(`   🤖 [BALANCEO] ExtractorW se encargará del balanceo automático`);
+       console.log(`      - Total enviado: ${balanceStats.total_selected || 0}`);
+       console.log(`      - Detección: IA de ExtractorW`);
+       console.log(`      - Balanceo: Automático en ExtractorW`);
     console.log(`   ✅ Procesamiento IA: ${processedData.success ? 'EXITOSO' : 'FALLIDO'}`);
     console.log(`   ✅ Guardado en DB: ${processedData.record_id ? 'SÍ' : 'NO'}`);
     console.log(`   ✅ Procesamiento background: ${processedData.success ? 'INICIADO' : 'NO INICIADO'}`);
@@ -245,7 +403,7 @@ async function getLastProcessingStatus() {
 }
 
 // Si el archivo es ejecutado directamente, correr la función
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (import.meta.url === `file://${process.argv[1]}` || process.argv[1]?.includes('fetch_trending_process.js')) {
   console.log('🚀 Ejecutando procesamiento automatizado de trending topics...');
   console.log('🕐 Inicio:', new Date().toLocaleString());
   console.log('📍 Este proceso NO consume créditos (usa endpoint cron gratuito)');
