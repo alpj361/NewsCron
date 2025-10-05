@@ -215,13 +215,27 @@ async function processAutomatedTrends() {
     let requestBody = {};
     if (balancedTrends.length > 0) {
       // ExtractorW espera rawData.twitter_trends, usar los trends balanceados
+      // Preclasificación ligera por heurística para enviar como hint
+      const sportsHeuristic = (name) => {
+        const t = (name || '').toString().toLowerCase();
+        const aliases = ['madrid','barcelona','barça','barca','sevilla','villarreal','liverpool','chelsea','psg','bayern','juventus','inter','milan','laliga','la liga','uefa','ucl','champions','futbol','fútbol'];
+        return aliases.some(a => t.includes(a));
+      };
+      const preclassificationHints = {};
+      balancedTrends.forEach(trend => {
+        const n = trend.name || trend;
+        preclassificationHints[n] = sportsHeuristic(n) ? 'DEPORTIVO' : 'NO_DEPORTIVO';
+      });
+
       requestBody = { 
         rawData: { 
           twitter_trends: balancedTrends.map(trend => trend.name || trend),
           location: rawTrendingData?.location || 'guatemala',
           source: rawTrendingData?.source || 'extractorT',
           // Metadatos de balanceo para tracking
-          balance_metadata: balanceStats
+          balance_metadata: balanceStats,
+          // Hints de preclasificación
+          preclassification_hints: preclassificationHints
         } 
       };
       
