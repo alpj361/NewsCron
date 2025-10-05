@@ -10,13 +10,102 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // Configuración de la API
 const EXTRACTORW_API_URL = 'https://server.standatpd.com/api';
-const VPS_TRENDING_URL = 'https://api.standatpd.com/trending?location=guatemala&limit=50'; // Obtener 50 trends
+// Estrategia multi-fuente para obtener más trends
+const VPS_TRENDING_URLS = [
+  'https://api.standatpd.com/trending?location=guatemala&limit=50',  // VPS PRODUCCIÓN
+  // 'http://localhost:8000/trending?location=guatemala&limit=50',  // LOCAL para testing
+];
+
+// Compatibilidad: mantener la variable singular para código viejo
+const VPS_TRENDING_URL = VPS_TRENDING_URLS[0];
 
 // Configuración de Gemini AI
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY || 'AIzaSyBMEq9kbJN9i30iXqZK3rT7Kp9n7AwN_RM'; // Añadir tu API key
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY; // Configurar en variables de entorno
 
 // Inicializar logger global
 let systemLogger = new SystemLogger();
+
+// ============================================================
+// SISTEMA MULTI-FUENTE PARA OBTENER MÁS TRENDS
+// ============================================================
+
+/**
+ * Obtiene trends de múltiples fuentes y los combina
+ * @returns {Promise<Object>} - Datos combinados de todas las fuentes
+ */
+async function getTrendsFromMultipleSources() {
+  console.log('📡 Obteniendo trends de múltiples fuentes...');
+  
+  let allTrends = [];
+  let sourcesUsed = [];
+  
+  // Obtener trends de cada fuente
+  for (let i = 0; i < VPS_TRENDING_URLS.length; i++) {
+    const url = VPS_TRENDING_URLS[i];
+    const location = url.includes('guatemala') ? 'guatemala' : 
+                    url.includes('global') ? 'global' : 'mexico';
+    
+    console.log(`🔗 Fuente ${i+1}/${VPS_TRENDING_URLS.length}: ${location}`);
+    
+    try {
+      const response = await fetch(url);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.trends && Array.isArray(data.trends)) {
+          // Agregar source a cada trend
+          const trendsWithSource = data.trends.map(trend => ({
+            ...trend,
+            source: location
+          }));
+          allTrends.push(...trendsWithSource);
+          sourcesUsed.push(location);
+          console.log(`   ✅ ${location}: ${data.trends.length} trends`);
+        }
+      } else {
+        console.log(`   ⚠️ ${location}: Error ${response.status}`);
+      }
+    } catch (error) {
+      console.log(`   ❌ ${location}: ${error.message}`);
+    }
+    
+    // Pequeña pausa entre requests
+    if (i < VPS_TRENDING_URLS.length - 1) {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+  }
+  
+  // Eliminar duplicados por nombre
+  const uniqueTrends = [];
+  const seenNames = new Set();
+  
+  for (const trend of allTrends) {
+    const name = typeof trend === 'string' ? trend : (trend.name || trend);
+    const normalizedName = name.toLowerCase().trim();
+    
+    if (!seenNames.has(normalizedName)) {
+      seenNames.add(normalizedName);
+      uniqueTrends.push(trend);
+    }
+  }
+  
+  console.log('✅ Trends combinados exitosamente');
+  console.log('📊 Resumen:', { 
+    total_sources: VPS_TRENDING_URLS.length,
+    total_trends: allTrends.length,
+    unique_trends: uniqueTrends.length,
+    sources_used: sourcesUsed
+  });
+  
+  return {
+    status: 'success',
+    location: 'multi-source',
+    trends: uniqueTrends,
+    source: 'combined',
+    sources_used: sourcesUsed,
+    total_before_dedup: allTrends.length,
+    total_after_dedup: uniqueTrends.length
+  };
+}
 
 // ============================================================
 // SISTEMA DE CLASIFICACIÓN Y BALANCEO CON GEMINI AI
@@ -29,7 +118,7 @@ let systemLogger = new SystemLogger();
  */
 async function classifyTrendsWithGemini(trends) {
   const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-  const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+  const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
   
   const trendNames = trends.map((t, i) => {
     const name = typeof t === 'string' ? t : (t.name || t);
@@ -150,9 +239,21 @@ async function filterAndBalanceTrendsWithAI(rawTrends) {
     }
   }
   
-  // PASO 3: Balancear: 5 deportivos + 10 no deportivos
-  const MAX_DEPORTIVOS = 5;
-  const MAX_NO_DEPORTIVOS = 10;
+  // PASO 3: Balancear dinámicamente según cantidad de trends recibidos
+  // Si recibimos 50 trends: 5 deportivos + 10 no deportivos = 15 total
+  // Si recibimos 15 trends: 3 deportivos + 7 no deportivos = 10 total
+  const totalTrends = rawTrends.length;
+  let MAX_DEPORTIVOS, MAX_NO_DEPORTIVOS;
+  
+  if (totalTrends >= 30) {
+    // Si tenemos muchos trends (30+), ser más selectivos
+    MAX_DEPORTIVOS = 5;
+    MAX_NO_DEPORTIVOS = 10;
+  } else {
+    // Si tenemos pocos trends (15-30), ajustar proporcionalmente
+    MAX_DEPORTIVOS = Math.min(3, deportivos.length);
+    MAX_NO_DEPORTIVOS = Math.min(7, noDeportivos.length);
+  }
   
   const deportivosSeleccionados = deportivos.slice(0, MAX_DEPORTIVOS);
   const noDeportivosSeleccionados = noDeportivos.slice(0, MAX_NO_DEPORTIVOS);
@@ -256,13 +357,17 @@ async function processAutomatedTrends() {
       rawTrendingData = null;
     }
     
-    // PASO 1.5: CLASIFICAR Y BALANCEAR TRENDS CON IA (máximo 5 deportivos + 10 no deportivos)
+    // PASO 1.5: LIMITAR A 50 TRENDS Y CLASIFICAR CON IA
     let balancedTrends = [];
     let balanceStats = {};
     let preclassificationHints = {};
     
     if (rawTrendingData && rawTrendingData.trends) {
-      const balanceResult = await filterAndBalanceTrendsWithAI(rawTrendingData.trends);
+      // Limitar a máximo 50 trends antes de clasificar
+      const trendsToClassify = rawTrendingData.trends.slice(0, 50);
+      console.log(`🔢 Limitando a 50 trends de ${rawTrendingData.trends.length} disponibles`);
+      
+      const balanceResult = await filterAndBalanceTrendsWithAI(trendsToClassify);
       balancedTrends = balanceResult.balancedTrends;
       balanceStats = balanceResult.stats;
       preclassificationHints = balanceResult.preclassificationHints;
