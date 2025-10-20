@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  # Laura Memory Service
+  laura-memory:
+    build: 
+      context: ../LauraMemoryService
+      dockerfile: Dockerfile
+    container_name: pulse-laura-memory
+    restart: unless-stopped
+    ports:
+      - "5001:5001"
+    environment:
+      - ZEP_API_KEY=${ZEP_API_KEY}
+      - ZEP_PROJECT_ID=${ZEP_PROJECT_ID}
+    volumes:
+      - laura-logs:/app/logs
+    networks:
+      - pulse-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # News Cron Service
+  news-cron:
+    build:
+      context: .
+      dockerfile: Dockerfile.cron
+    container_name: pulse-news-cron
+    restart: unless-stopped
+    environment:
+      # Laura Memory - USA NOMBRE DEL SERVICIO EN DOCKER
+      - LAURA_MEMORY_URL=http://laura-memory:5001
+      - LAURA_MEMORY_ENABLED=true
+      
+      # Supabase
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_KEY=${SUPABASE_KEY}
+      
+      # Gemini
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    volumes:
+      - cron-logs:/app/logs
+    networks:
+      - pulse-network
+    depends_on:
+      laura-memory:
+        condition: service_healthy
+    
+    # Ejecutar cron político cada 6 horas
+    command: >
+      sh -c "
+        echo '0 */6 * * * cd /app && node political_analysis_cron.js --days 1 --limit 50 --batch-size 10 --min-score 3' > /etc/crontab &&
+        cron -f
+      "
+
+volumes:
+  laura-logs:
+  cron-logs:
+
+networks:
+  pulse-network:
+    driver: bridge
+
+# Para desarrollo local, usar:
+# LAURA_MEMORY_URL=http://localhost:5001
+
+# Para producción Docker, usar:  
+# LAURA_MEMORY_URL=http://laura-memory:5001 

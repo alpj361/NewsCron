@@ -1,5 +1,7 @@
-const fetch = require('node-fetch');
-const { createClient } = require('@supabase/supabase-js');
+import fetch from 'node-fetch';
+import { createClient } from '@supabase/supabase-js';
+import { SystemLogger } from './system_logger.js';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 // Configura tus credenciales de Supabase
 const SUPABASE_URL = 'https://qqshdccpmypelhmyqnut.supabase.co';
@@ -8,7 +10,297 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // Configuración de la API
 const EXTRACTORW_API_URL = 'https://server.standatpd.com/api';
-const VPS_TRENDING_URL = 'https://api.standatpd.com/trending?location=guatemala';
+// Estrategia multi-fuente para obtener más trends
+const VPS_TRENDING_URLS = [
+  'https://api.standatpd.com/trending?location=guatemala&limit=50',  // VPS PRODUCCIÓN
+  // 'http://localhost:8000/trending?location=guatemala&limit=50',  // LOCAL para testing
+];
+
+// Compatibilidad: mantener la variable singular para código viejo
+const VPS_TRENDING_URL = VPS_TRENDING_URLS[0];
+
+// Configuración de Gemini AI
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY; // Configurar en variables de entorno
+
+// Inicializar logger global
+let systemLogger = new SystemLogger();
+
+// ============================================================
+// SISTEMA MULTI-FUENTE PARA OBTENER MÁS TRENDS
+// ============================================================
+
+/**
+ * Obtiene trends de múltiples fuentes y los combina
+ * @returns {Promise<Object>} - Datos combinados de todas las fuentes
+ */
+async function getTrendsFromMultipleSources() {
+  console.log('📡 Obteniendo trends de múltiples fuentes...');
+  
+  let allTrends = [];
+  let sourcesUsed = [];
+  
+  // Obtener trends de cada fuente
+  for (let i = 0; i < VPS_TRENDING_URLS.length; i++) {
+    const url = VPS_TRENDING_URLS[i];
+    const location = url.includes('guatemala') ? 'guatemala' : 
+                    url.includes('global') ? 'global' : 'mexico';
+    
+    console.log(`🔗 Fuente ${i+1}/${VPS_TRENDING_URLS.length}: ${location}`);
+    
+    try {
+      const response = await fetch(url);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.trends && Array.isArray(data.trends)) {
+          // Agregar source a cada trend
+          const trendsWithSource = data.trends.map(trend => ({
+            ...trend,
+            source: location
+          }));
+          allTrends.push(...trendsWithSource);
+          sourcesUsed.push(location);
+          console.log(`   ✅ ${location}: ${data.trends.length} trends`);
+        }
+      } else {
+        console.log(`   ⚠️ ${location}: Error ${response.status}`);
+      }
+    } catch (error) {
+      console.log(`   ❌ ${location}: ${error.message}`);
+    }
+    
+    // Pequeña pausa entre requests
+    if (i < VPS_TRENDING_URLS.length - 1) {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+  }
+  
+  // Eliminar duplicados por nombre
+  const uniqueTrends = [];
+  const seenNames = new Set();
+  
+  for (const trend of allTrends) {
+    const name = typeof trend === 'string' ? trend : (trend.name || trend);
+    const normalizedName = name.toLowerCase().trim();
+    
+    if (!seenNames.has(normalizedName)) {
+      seenNames.add(normalizedName);
+      uniqueTrends.push(trend);
+    }
+  }
+  
+  console.log('✅ Trends combinados exitosamente');
+  console.log('📊 Resumen:', { 
+    total_sources: VPS_TRENDING_URLS.length,
+    total_trends: allTrends.length,
+    unique_trends: uniqueTrends.length,
+    sources_used: sourcesUsed
+  });
+  
+  return {
+    status: 'success',
+    location: 'multi-source',
+    trends: uniqueTrends,
+    source: 'combined',
+    sources_used: sourcesUsed,
+    total_before_dedup: allTrends.length,
+    total_after_dedup: uniqueTrends.length
+  };
+}
+
+// ============================================================
+// SISTEMA DE CLASIFICACIÓN Y BALANCEO CON GEMINI AI
+// ============================================================
+
+/**
+ * Clasifica trends usando Gemini AI (una sola llamada para todos)
+ * @param {Array} trends - Array de trends a clasificar
+ * @returns {Promise<Array>} - Array de clasificaciones [{index, name, categoria}]
+ */
+async function classifyTrendsWithGemini(trends) {
+  const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+  const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
+  
+  const trendNames = trends.map((t, i) => {
+    const name = typeof t === 'string' ? t : (t.name || t);
+    return `${i+1}. ${name}`;
+  });
+  
+  const prompt = `Clasifica cada uno de estos ${trends.length} trending topics de Guatemala como DEPORTIVO o NO_DEPORTIVO.
+
+TRENDING TOPICS:
+${trendNames.join('\n')}
+
+CRITERIOS PARA DEPORTIVO:
+- Equipos de fútbol (Barcelona, Madrid, Liverpool, Municipal, Comunicaciones, etc.)
+- Jugadores de fútbol (Messi, Lewandowski, Pedri, Rashford, etc.)
+- Competiciones deportivas (LaLiga, Champions, Premier League, etc.)
+- Eventos deportivos (partidos, fichajes, transferencias, entrenamientos)
+- Términos relacionados con fútbol y deportes
+
+CRITERIOS PARA NO_DEPORTIVO:
+- Política, economía, noticias sociales
+- Música, entretenimiento, celebridades no deportivas
+- Eventos culturales, tecnología
+- Cualquier tema que no esté directamente relacionado con deportes
+
+Responde SOLO con un JSON array válido en este formato exacto (sin texto adicional):
+[
+  {"index": 1, "name": "nombre_trend", "categoria": "DEPORTIVO"},
+  {"index": 2, "name": "nombre_trend", "categoria": "NO_DEPORTIVO"}
+]`;
+
+  console.log('🤖 [GEMINI] Clasificando trends con IA...');
+  console.log(`   📊 Total a clasificar: ${trends.length} trends`);
+  
+  try {
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const text = response.text();
+    
+    console.log('   📝 Respuesta de Gemini recibida');
+    
+    // Extraer JSON del response (buscar entre [ y ])
+    const jsonMatch = text.match(/\[[\s\S]*\]/);
+    if (!jsonMatch) {
+      console.error('   ❌ No se pudo extraer JSON de la respuesta');
+      throw new Error('No se pudo extraer JSON de la respuesta de Gemini');
+    }
+    
+    const classifications = JSON.parse(jsonMatch[0]);
+    
+    console.log('   ✅ Clasificación completada exitosamente');
+    console.log(`   📊 Total clasificados: ${classifications.length}`);
+    
+    // Contar deportivos vs no deportivos
+    const deportivosCount = classifications.filter(c => c.categoria === 'DEPORTIVO').length;
+    const noDeportivosCount = classifications.filter(c => c.categoria === 'NO_DEPORTIVO').length;
+    
+    console.log(`   ⚽ Deportivos: ${deportivosCount}`);
+    console.log(`   📰 No deportivos: ${noDeportivosCount}`);
+    
+    return classifications;
+  } catch (error) {
+    console.error('   ❌ Error en clasificación con Gemini:', error.message);
+    console.log('   ⚠️  Usando fallback: todos como NO_DEPORTIVO');
+    
+    // Fallback: clasificar todos como NO_DEPORTIVO para evitar fallar completamente
+    return trends.map((t, i) => ({
+      index: i + 1,
+      name: typeof t === 'string' ? t : (t.name || t),
+      categoria: 'NO_DEPORTIVO'
+    }));
+  }
+}
+
+/**
+ * Filtra y balancea trends usando clasificación de Gemini AI
+ * @param {Array} rawTrends - Array de trends originales del VPS (hasta 50)
+ * @returns {Promise<Object>} - { balancedTrends, stats, preclassificationHints }
+ */
+async function filterAndBalanceTrendsWithAI(rawTrends) {
+  if (!rawTrends || !Array.isArray(rawTrends) || rawTrends.length === 0) {
+    console.log('⚠️  [FILTRO] No hay trends para procesar');
+    return {
+      balancedTrends: [],
+      stats: {
+        total_received: 0,
+        deportivos_found: 0,
+        no_deportivos_found: 0,
+        deportivos_selected: 0,
+        no_deportivos_selected: 0,
+        total_selected: 0,
+        sports_percentage: 0
+      },
+      preclassificationHints: {}
+    };
+  }
+  
+  console.log(`\n🎯 [FILTRO] Iniciando clasificación IA de ${rawTrends.length} trends...`);
+  
+  // PASO 1: Clasificar con Gemini (una sola llamada para todos)
+  const classifications = await classifyTrendsWithGemini(rawTrends);
+  
+  // PASO 2: Separar en deportivos y no deportivos
+  const deportivos = [];
+  const noDeportivos = [];
+  
+  for (let i = 0; i < rawTrends.length; i++) {
+    const trend = rawTrends[i];
+    const trendName = typeof trend === 'string' ? trend : (trend.name || trend);
+    const classification = classifications.find(c => c.index === i + 1);
+    const isDeportivo = classification?.categoria === 'DEPORTIVO';
+    
+    if (isDeportivo) {
+      deportivos.push(trend);
+      console.log(`   ⚽ Deportivo: "${trendName}"`);
+    } else {
+      noDeportivos.push(trend);
+      console.log(`   📰 General: "${trendName}"`);
+    }
+  }
+  
+  // PASO 3: Balancear dinámicamente según cantidad de trends recibidos
+  // Si recibimos 50 trends: 5 deportivos + 10 no deportivos = 15 total
+  // Si recibimos 15 trends: 3 deportivos + 7 no deportivos = 10 total
+  const totalTrends = rawTrends.length;
+  let MAX_DEPORTIVOS, MAX_NO_DEPORTIVOS;
+  
+  if (totalTrends >= 30) {
+    // Si tenemos muchos trends (30+), ser más selectivos
+    MAX_DEPORTIVOS = 5;
+    MAX_NO_DEPORTIVOS = 10;
+  } else {
+    // Si tenemos pocos trends (15-30), ajustar proporcionalmente
+    MAX_DEPORTIVOS = Math.min(3, deportivos.length);
+    MAX_NO_DEPORTIVOS = Math.min(7, noDeportivos.length);
+  }
+  
+  const deportivosSeleccionados = deportivos.slice(0, MAX_DEPORTIVOS);
+  const noDeportivosSeleccionados = noDeportivos.slice(0, MAX_NO_DEPORTIVOS);
+  
+  // Combinar: primero no deportivos (para dar prioridad), luego deportivos
+  const trendsBalanceados = [
+    ...noDeportivosSeleccionados,
+    ...deportivosSeleccionados
+  ];
+  
+  const stats = {
+    total_received: rawTrends.length,
+    deportivos_found: deportivos.length,
+    no_deportivos_found: noDeportivos.length,
+    deportivos_selected: deportivosSeleccionados.length,
+    no_deportivos_selected: noDeportivosSeleccionados.length,
+    total_selected: trendsBalanceados.length,
+    sports_percentage: trendsBalanceados.length > 0 
+      ? Math.round((deportivosSeleccionados.length / trendsBalanceados.length) * 100) 
+      : 0
+  };
+  
+  console.log(`\n✅ [FILTRO] Balanceo con IA completado:`);
+  console.log(`   📊 Recibidos: ${stats.total_received} trends`);
+  console.log(`   ⚽ Deportivos encontrados: ${stats.deportivos_found}`);
+  console.log(`   📰 No deportivos encontrados: ${stats.no_deportivos_found}`);
+  console.log(`   ✅ Deportivos seleccionados: ${stats.deportivos_selected}/${MAX_DEPORTIVOS}`);
+  console.log(`   ✅ No deportivos seleccionados: ${stats.no_deportivos_selected}/${MAX_NO_DEPORTIVOS}`);
+  console.log(`   📊 Total a procesar: ${stats.total_selected}`);
+  console.log(`   🎯 % Deportes: ${stats.sports_percentage}%`);
+  
+  // PASO 4: Crear hints de preclasificación para ExtractorW
+  const preclassificationHints = {};
+  classifications.forEach(c => {
+    preclassificationHints[c.name] = c.categoria;
+  });
+  
+  return {
+    balancedTrends: trendsBalanceados,
+    stats: stats,
+    preclassificationHints: preclassificationHints
+  };
+}
+
+// ============================================================
+// FIN SISTEMA DE CLASIFICACIÓN Y BALANCEO
+// ============================================================
 
 /**
  * Función principal que replica el botón "trending" pero de forma automatizada y sin cobrar créditos
@@ -22,11 +314,20 @@ const VPS_TRENDING_URL = 'https://api.standatpd.com/trending?location=guatemala'
  * La diferencia es que usa el endpoint /api/cron/processTrends que NO consume créditos
  */
 async function processAutomatedTrends() {
+  // Inicializar logging de ejecución
+  const executionId = await systemLogger.startExecution('fetch_trending_process', {
+    extractorw_url: EXTRACTORW_API_URL,
+    vps_trending_url: VPS_TRENDING_URL,
+    process_type: 'automated_trending'
+  });
+
   try {
+    systemLogger.logProgress('Iniciando procesamiento automatizado de tendencias...');
     console.log('🤖 [AUTOMATED] Iniciando procesamiento automatizado de tendencias...');
     console.log('📅 Timestamp:', new Date().toISOString());
     
     // PASO 1: Obtener datos raw de trending del VPS
+    systemLogger.logProgress('PASO 1: Obteniendo trending topics del VPS...');
     console.log('📡 PASO 1: Obteniendo trending topics del VPS...');
     console.log('🔗 URL:', VPS_TRENDING_URL);
     
@@ -36,31 +337,97 @@ async function processAutomatedTrends() {
       
       if (trendingResponse.ok) {
         rawTrendingData = await trendingResponse.json();
+        systemLogger.logSuccess('Datos raw obtenidos exitosamente del VPS');
+        systemLogger.setMetric('trends_found', rawTrendingData.trends?.length || 0);
         console.log('✅ Datos raw obtenidos exitosamente del VPS');
         console.log('📊 Datos obtenidos:', {
           status: rawTrendingData.status,
-          trends_count: rawTrendingData.twitter_trends?.length || 0,
+          trends_count: rawTrendingData.trends?.length || 0,
           location: rawTrendingData.location
         });
       } else {
+        systemLogger.addWarning(`VPS respondió con status ${trendingResponse.status}`, 'VPS_REQUEST');
         console.warn(`⚠️  VPS respondió con status ${trendingResponse.status}`);
         rawTrendingData = null;
       }
     } catch (error) {
+      systemLogger.addWarning(`Error obteniendo datos del VPS: ${error.message}`, 'VPS_REQUEST');
       console.warn('⚠️  Error obteniendo datos del VPS:', error.message);
       console.log('🔄 Continuando sin datos raw (ExtractorW generará datos mock)');
       rawTrendingData = null;
     }
     
+    // PASO 1.5: LIMITAR A 50 TRENDS Y CLASIFICAR CON IA
+    let balancedTrends = [];
+    let balanceStats = {};
+    let preclassificationHints = {};
+    
+    if (rawTrendingData && rawTrendingData.trends) {
+      // Limitar a máximo 50 trends antes de clasificar
+      const trendsToClassify = rawTrendingData.trends.slice(0, 50);
+      console.log(`🔢 Limitando a 50 trends de ${rawTrendingData.trends.length} disponibles`);
+      
+      const balanceResult = await filterAndBalanceTrendsWithAI(trendsToClassify);
+      balancedTrends = balanceResult.balancedTrends;
+      balanceStats = balanceResult.stats;
+      preclassificationHints = balanceResult.preclassificationHints;
+      
+      // Registrar métricas de balanceo
+      systemLogger.setMetric('trends_total_received', balanceStats.total_received);
+      systemLogger.setMetric('trends_deportivos_found', balanceStats.deportivos_found);
+      systemLogger.setMetric('trends_no_deportivos_found', balanceStats.no_deportivos_found);
+      systemLogger.setMetric('trends_deportivos_selected', balanceStats.deportivos_selected);
+      systemLogger.setMetric('trends_no_deportivos_selected', balanceStats.no_deportivos_selected);
+      systemLogger.setMetric('trends_total_selected', balanceStats.total_selected);
+      systemLogger.setMetric('trends_sports_percentage', balanceStats.sports_percentage);
+      
+      systemLogger.logSuccess(`Balanceo completado: ${balanceStats.deportivos_selected} deportes + ${balanceStats.no_deportivos_selected} generales`);
+    }
+    
     // PASO 2: Procesar con ExtractorW usando el endpoint gratuito de cron
+    systemLogger.logProgress('PASO 2: Procesando con ExtractorW (endpoint cron - SIN COSTO)...');
     console.log('⚡ PASO 2: Procesando con ExtractorW (endpoint cron - SIN COSTO)...');
     
-    const requestBody = rawTrendingData ? { rawData: rawTrendingData } : {};
+    // PASO 2.1: Convertir estructura de trends balanceados a twitter_trends para compatibilidad con ExtractorW
+    let requestBody = {};
+    if (balancedTrends.length > 0) {
+      // ExtractorW espera rawData.twitter_trends, usar los trends balanceados
+      requestBody = { 
+        rawData: { 
+          twitter_trends: balancedTrends.map(trend => trend.name || trend),
+          location: rawTrendingData?.location || 'guatemala',
+          source: rawTrendingData?.source || 'extractorT',
+          // Metadatos de balanceo para tracking
+          balance_metadata: balanceStats,
+          // Hints de preclasificación de Gemini
+          preclassification_hints: preclassificationHints
+        } 
+      };
+      
+      console.log('🔄 Datos balanceados convertidos a twitter_trends:', {
+        original_count: rawTrendingData?.trends?.length || 0,
+        balanced_count: balancedTrends.length,
+        deportivos: balanceStats.deportivos_selected,
+        no_deportivos: balanceStats.no_deportivos_selected,
+        sample: requestBody.rawData.twitter_trends.slice(0, 3)
+      });
+    } else if (rawTrendingData && rawTrendingData.trends) {
+      // Fallback: si no hay trends balanceados, usar los originales (no debería pasar)
+      requestBody = { 
+        rawData: { 
+          twitter_trends: rawTrendingData.trends.map(trend => trend.name || trend),
+          location: rawTrendingData.location || 'guatemala',
+          source: rawTrendingData.source || 'extractorT'
+        } 
+      };
+      
+      console.log('⚠️  Usando trends originales sin balanceo (fallback)');
+    }
     
     const processResponse = await fetch(`${EXTRACTORW_API_URL}/cron/processTrends`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify(requestBody)
     });
@@ -70,6 +437,13 @@ async function processAutomatedTrends() {
     }
     
     const processedData = await processResponse.json();
+    systemLogger.logSuccess('Procesamiento completado por ExtractorW');
+    systemLogger.setMetric('ai_requests_made', 1);
+    systemLogger.setMetric('ai_requests_successful', processedData.success ? 1 : 0);
+    if (!processedData.success) {
+      systemLogger.setMetric('ai_requests_failed', 1);
+    }
+    
     console.log('✅ Procesamiento completado por ExtractorW');
     console.log('📊 Resultado:', {
       success: processedData.success,
@@ -115,11 +489,28 @@ async function processAutomatedTrends() {
     console.log('\n🎉 PROCESO AUTOMATIZADO COMPLETADO EXITOSAMENTE');
     console.log('📋 Resumen de la operación:');
     console.log(`   ✅ Datos raw obtenidos: ${rawTrendingData ? 'SÍ' : 'NO (usó mock data)'}`);
+       console.log(`   ⚽ Trends recibidos: ${balanceStats.total_received || 0}`);
+       console.log(`   🤖 [CLASIFICACIÓN] Gemini AI clasificó los trends`);
+       console.log(`      - Deportivos encontrados: ${balanceStats.deportivos_found || 0}`);
+       console.log(`      - No deportivos encontrados: ${balanceStats.no_deportivos_found || 0}`);
+       console.log(`   ⚖️  [BALANCEO] Selección automática aplicada:`);
+       console.log(`      - Deportivos seleccionados: ${balanceStats.deportivos_selected || 0}/5`);
+       console.log(`      - No deportivos seleccionados: ${balanceStats.no_deportivos_selected || 0}/10`);
+       console.log(`      - Total procesado: ${balanceStats.total_selected || 0}`);
+       console.log(`      - % Deportes: ${balanceStats.sports_percentage || 0}%`);
     console.log(`   ✅ Procesamiento IA: ${processedData.success ? 'EXITOSO' : 'FALLIDO'}`);
     console.log(`   ✅ Guardado en DB: ${processedData.record_id ? 'SÍ' : 'NO'}`);
     console.log(`   ✅ Procesamiento background: ${processedData.success ? 'INICIADO' : 'NO INICIADO'}`);
     console.log(`   💰 Créditos consumidos: 0 (endpoint gratuito)`);
     console.log(`   📅 Timestamp final: ${processedData.timestamp}`);
+    
+    // Finalizar ejecución exitosa
+    await systemLogger.finishExecution('completed', {
+      record_id: processedData.record_id,
+      credits_consumed: 0,
+      data_source: rawTrendingData ? 'vps' : 'mock',
+      final_summary: 'Proceso automatizado completado exitosamente'
+    });
     
     return {
       success: true,
@@ -136,6 +527,12 @@ async function processAutomatedTrends() {
     };
     
   } catch (error) {
+    systemLogger.addError(error, 'Proceso principal automatizado');
+    await systemLogger.finishExecution('failed', {
+      error_summary: error.message,
+      credits_consumed: 0
+    });
+    
     console.error('❌ ERROR EN PROCESAMIENTO AUTOMATIZADO:', error);
     console.error('📋 Detalles del error:', {
       message: error.message,
@@ -189,7 +586,7 @@ async function getLastProcessingStatus() {
 }
 
 // Si el archivo es ejecutado directamente, correr la función
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}` || process.argv[1]?.includes('fetch_trending_process.js')) {
   console.log('🚀 Ejecutando procesamiento automatizado de trending topics...');
   console.log('🕐 Inicio:', new Date().toLocaleString());
   console.log('📍 Este proceso NO consume créditos (usa endpoint cron gratuito)');
@@ -217,7 +614,7 @@ if (require.main === module) {
     });
 }
 
-module.exports = { 
+export { 
   processAutomatedTrends, 
   getLastProcessingStatus 
 }; 
