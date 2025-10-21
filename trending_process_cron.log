@@ -1,0 +1,2009 @@
+🚀 Ejecutando procesamiento automatizado de trending topics...
+🕐 Inicio: 10/6/2025, 6:00:01 PM
+📍 Este proceso NO consume créditos (usa endpoint cron gratuito)
+NaN
+📊 Ejecución iniciada - ID: a36705bf-6c16-4cc6-9797-f03cb379c601
+🔄 2025-10-06T18:00:03.125Z - Iniciando procesamiento automatizado de tendencias...
+🤖 [AUTOMATED] Iniciando procesamiento automatizado de tendencias...
+📅 Timestamp: 2025-10-06T18:00:03.125Z
+🔄 2025-10-06T18:00:03.125Z - PASO 1: Obteniendo trending topics del VPS...
+📡 PASO 1: Obteniendo trending topics del VPS...
+🔗 URL: https://api.standatpd.com/trending?location=guatemala&limit=50
+✅ 2025-10-06T18:00:08.766Z - Datos raw obtenidos exitosamente del VPS
+✅ Datos raw obtenidos exitosamente del VPS
+📊 Datos obtenidos: { status: 'success', trends_count: 15, location: 'guatemala' }
+🔢 Limitando a 50 trends de 15 disponibles
+
+🎯 [FILTRO] Iniciando clasificación IA de 15 trends...
+🤖 [GEMINI] Clasificando trends con IA...
+   📊 Total a clasificar: 15 trends
+   📝 Respuesta de Gemini recibida
+   ✅ Clasificación completada exitosamente
+   📊 Total clasificados: 15
+   ⚽ Deportivos: 4
+   📰 No deportivos: 11
+   📰 General: "Carretera a El Salvador"
+   📰 General: "XCRY X GALORE19K"
+   📰 General: "#LaCasaDeLosFamosososMx29K"
+   📰 General: "Aldo349K"
+   ⚽ Deportivo: "Lewandowski17K"
+   ⚽ Deportivo: "Araujo30K"
+   📰 General: "#DalilahGanadora41K"
+   ⚽ Deportivo: "Sevilla92K"
+   📰 General: "ELAINE NUESTRO DIAMANTE70K"
+   📰 General: "walter lópez"
+   📰 General: "#BMCGuatemala"
+   📰 General: "#LCDFLMX349K"
+   ⚽ Deportivo: "Ferran"
+   📰 General: "AARON GANADOR DEL PÚBLICO270K"
+   📰 General: "#LCDLFM310K"
+
+✅ [FILTRO] Balanceo con IA completado:
+   📊 Recibidos: 15 trends
+   ⚽ Deportivos encontrados: 4
+   📰 No deportivos encontrados: 11
+   ✅ Deportivos seleccionados: 3/3
+   ✅ No deportivos seleccionados: 7/7
+   📊 Total a procesar: 10
+   🎯 % Deportes: 30%
+✅ 2025-10-06T18:00:12.217Z - Balanceo completado: 3 deportes + 7 generales
+🔄 2025-10-06T18:00:12.217Z - PASO 2: Procesando con ExtractorW (endpoint cron - SIN COSTO)...
+⚡ PASO 2: Procesando con ExtractorW (endpoint cron - SIN COSTO)...
+🔄 Datos balanceados convertidos a twitter_trends: {
+  original_count: 15,
+  balanced_count: 10,
+  deportivos: 3,
+  no_deportivos: 7,
+  sample: [
+    'Carretera a El Salvador',
+    'XCRY X GALORE19K',
+    '#LaCasaDeLosFamosososMx29K'
+  ]
+}
+✅ 2025-10-06T18:02:45.418Z - Procesamiento completado por ExtractorW
+✅ Procesamiento completado por ExtractorW
+📊 Resultado: {
+  success: true,
+  source: 'cron_job_automated',
+  timestamp: '2025-10-06T18:02:45.089Z',
+  word_cloud_count: 10,
+  keywords_count: 10,
+  categories_count: 4,
+  record_id: '34bdf785-61c7-4eb5-ac19-848076ca0135'
+}
+🗄️  PASO 3: Verificando datos en Supabase...
+✅ Datos verificados en Supabase
+📋 Resumen guardado: {
+  id: '34bdf785-61c7-4eb5-ac19-848076ca0135',
+  timestamp: '2025-10-06T18:02:45.089+00:00',
+  processing_status: 'complete',
+  source: undefined,
+  word_cloud_data_count: 10,
+  top_keywords_count: 10,
+  category_data_count: 4
+}
+
+🎉 PROCESO AUTOMATIZADO COMPLETADO EXITOSAMENTE
+📋 Resumen de la operación:
+   ✅ Datos raw obtenidos: SÍ
+   ⚽ Trends recibidos: 15
+   🤖 [CLASIFICACIÓN] Gemini AI clasificó los trends
+      - Deportivos encontrados: 4
+      - No deportivos encontrados: 11
+   ⚖️  [BALANCEO] Selección automática aplicada:
+      - Deportivos seleccionados: 3/5
+      - No deportivos seleccionados: 7/10
+      - Total procesado: 10
+      - % Deportes: 30%
+   ✅ Procesamiento IA: EXITOSO
+   ✅ Guardado en DB: SÍ
+   ✅ Procesamiento background: INICIADO
+   💰 Créditos consumidos: 0 (endpoint gratuito)
+   📅 Timestamp final: 2025-10-06T18:02:45.089Z
+✅ Ejecución finalizada - Status: completed
+📊 Resumen:
+   - Duración: 163s
+   - Tweets procesados: 0
+   - Tweets guardados: 0
+   - Requests IA: 1
+   - Costo estimado: $0.000000
+   - Errores: 0
+
+NaN
+🏁 EJECUCIÓN FINALIZADA
+📊 Resultado final: {
+  "success": true,
+  "message": "Trending topics procesados automáticamente",
+  "timestamp": "2025-10-06T18:02:45.089Z",
+  "record_id": "34bdf785-61c7-4eb5-ac19-848076ca0135",
+  "credits_consumed": 0,
+  "source": "automated_cron",
+  "data_summary": {
+    "word_cloud_count": 10,
+    "keywords_count": 10,
+    "categories_count": 4
+  }
+}
+🕐 Fin: 10/6/2025, 6:02:45 PM
+🚀 Ejecutando procesamiento automatizado de trending topics...
+🕐 Inicio: 10/7/2025, 6:00:02 PM
+📍 Este proceso NO consume créditos (usa endpoint cron gratuito)
+NaN
+📊 Ejecución iniciada - ID: 0408157c-a945-42e9-9b61-3529284bffe1
+🔄 2025-10-07T18:00:04.021Z - Iniciando procesamiento automatizado de tendencias...
+🤖 [AUTOMATED] Iniciando procesamiento automatizado de tendencias...
+📅 Timestamp: 2025-10-07T18:00:04.021Z
+🔄 2025-10-07T18:00:04.021Z - PASO 1: Obteniendo trending topics del VPS...
+📡 PASO 1: Obteniendo trending topics del VPS...
+🔗 URL: https://api.standatpd.com/trending?location=guatemala&limit=50
+✅ 2025-10-07T18:00:09.801Z - Datos raw obtenidos exitosamente del VPS
+✅ Datos raw obtenidos exitosamente del VPS
+📊 Datos obtenidos: { status: 'success', trends_count: 15, location: 'guatemala' }
+🔢 Limitando a 50 trends de 15 disponibles
+
+🎯 [FILTRO] Iniciando clasificación IA de 15 trends...
+🤖 [GEMINI] Clasificando trends con IA...
+   📊 Total a clasificar: 15 trends
+   📝 Respuesta de Gemini recibida
+   ✅ Clasificación completada exitosamente
+   📊 Total clasificados: 15
+   ⚽ Deportivos: 3
+   📰 No deportivos: 12
+   📰 General: "El Salvador29K"
+   📰 General: "Blanca Alfaro"
+   📰 General: "#BloqueosGT"
+   📰 General: "Conred"
+   📰 General: "CAES"
+   📰 General: "Tiny Desk86K"
+   ⚽ Deportivo: "Roma39K"
+   📰 General: "#lacasadelosfamosososmx"
+   📰 General: "Villa Canales"
+   ⚽ Deportivo: "Dodgers90K"
+   📰 General: "Vaticano"
+   📰 General: "Raíces"
+   ⚽ Deportivo: "Sevilla29K"
+   📰 General: "Gobernación"
+   📰 General: "Arévalo"
+
+✅ [FILTRO] Balanceo con IA completado:
+   📊 Recibidos: 15 trends
+   ⚽ Deportivos encontrados: 3
+   📰 No deportivos encontrados: 12
+   ✅ Deportivos seleccionados: 3/3
+   ✅ No deportivos seleccionados: 7/7
+   📊 Total a procesar: 10
+   🎯 % Deportes: 30%
+✅ 2025-10-07T18:00:12.975Z - Balanceo completado: 3 deportes + 7 generales
+🔄 2025-10-07T18:00:12.975Z - PASO 2: Procesando con ExtractorW (endpoint cron - SIN COSTO)...
+⚡ PASO 2: Procesando con ExtractorW (endpoint cron - SIN COSTO)...
+🔄 Datos balanceados convertidos a twitter_trends: {
+  original_count: 15,
+  balanced_count: 10,
+  deportivos: 3,
+  no_deportivos: 7,
+  sample: [ 'El Salvador29K', 'Blanca Alfaro', '#BloqueosGT' ]
+}
+✅ 2025-10-07T18:03:43.766Z - Procesamiento completado por ExtractorW
+✅ Procesamiento completado por ExtractorW
+📊 Resultado: {
+  success: true,
+  source: 'cron_job_automated',
+  timestamp: '2025-10-07T18:03:43.396Z',
+  word_cloud_count: 10,
+  keywords_count: 10,
+  categories_count: 7,
+  record_id: 'a9fb1aa1-a91a-41b8-9899-86e76e0f5f70'
+}
+🗄️  PASO 3: Verificando datos en Supabase...
+✅ Datos verificados en Supabase
+📋 Resumen guardado: {
+  id: 'a9fb1aa1-a91a-41b8-9899-86e76e0f5f70',
+  timestamp: '2025-10-07T18:03:43.396+00:00',
+  processing_status: 'complete',
+  source: undefined,
+  word_cloud_data_count: 10,
+  top_keywords_count: 10,
+  category_data_count: 7
+}
+
+🎉 PROCESO AUTOMATIZADO COMPLETADO EXITOSAMENTE
+📋 Resumen de la operación:
+   ✅ Datos raw obtenidos: SÍ
+   ⚽ Trends recibidos: 15
+   🤖 [CLASIFICACIÓN] Gemini AI clasificó los trends
+      - Deportivos encontrados: 3
+      - No deportivos encontrados: 12
+   ⚖️  [BALANCEO] Selección automática aplicada:
+      - Deportivos seleccionados: 3/5
+      - No deportivos seleccionados: 7/10
+      - Total procesado: 10
+      - % Deportes: 30%
+   ✅ Procesamiento IA: EXITOSO
+   ✅ Guardado en DB: SÍ
+   ✅ Procesamiento background: INICIADO
+   💰 Créditos consumidos: 0 (endpoint gratuito)
+   📅 Timestamp final: 2025-10-07T18:03:43.396Z
+✅ Ejecución finalizada - Status: completed
+📊 Resumen:
+   - Duración: 221s
+   - Tweets procesados: 0
+   - Tweets guardados: 0
+   - Requests IA: 1
+   - Costo estimado: $0.000000
+   - Errores: 0
+
+NaN
+🏁 EJECUCIÓN FINALIZADA
+📊 Resultado final: {
+  "success": true,
+  "message": "Trending topics procesados automáticamente",
+  "timestamp": "2025-10-07T18:03:43.396Z",
+  "record_id": "a9fb1aa1-a91a-41b8-9899-86e76e0f5f70",
+  "credits_consumed": 0,
+  "source": "automated_cron",
+  "data_summary": {
+    "word_cloud_count": 10,
+    "keywords_count": 10,
+    "categories_count": 7
+  }
+}
+🕐 Fin: 10/7/2025, 6:03:44 PM
+🚀 Ejecutando procesamiento automatizado de trending topics...
+🕐 Inicio: 10/8/2025, 6:00:03 PM
+📍 Este proceso NO consume créditos (usa endpoint cron gratuito)
+NaN
+📊 Ejecución iniciada - ID: d093e3b1-6686-4f13-bb17-1fbaff516d61
+🔄 2025-10-08T18:00:05.114Z - Iniciando procesamiento automatizado de tendencias...
+🤖 [AUTOMATED] Iniciando procesamiento automatizado de tendencias...
+📅 Timestamp: 2025-10-08T18:00:05.114Z
+🔄 2025-10-08T18:00:05.114Z - PASO 1: Obteniendo trending topics del VPS...
+📡 PASO 1: Obteniendo trending topics del VPS...
+🔗 URL: https://api.standatpd.com/trending?location=guatemala&limit=50
+✅ 2025-10-08T18:00:49.716Z - Datos raw obtenidos exitosamente del VPS
+✅ Datos raw obtenidos exitosamente del VPS
+📊 Datos obtenidos: { status: 'success', trends_count: 10, location: 'guatemala' }
+🔢 Limitando a 50 trends de 10 disponibles
+
+🎯 [FILTRO] Iniciando clasificación IA de 10 trends...
+🤖 [GEMINI] Clasificando trends con IA...
+   📊 Total a clasificar: 10 trends
+   📝 Respuesta de Gemini recibida
+   ✅ Clasificación completada exitosamente
+   📊 Total clasificados: 10
+   ⚽ Deportivos: 0
+   📰 No deportivos: 10
+   📰 General: "Guatemala"
+   📰 General: "#Guatemala"
+   📰 General: "Gobierno"
+   📰 General: "Congreso"
+   📰 General: "#FelizDomingo"
+   📰 General: "Presidente"
+   📰 General: "#BuenViernes"
+   📰 General: "COVID-19"
+   📰 General: "Municipalidad"
+   📰 General: "Zona 10"
+
+✅ [FILTRO] Balanceo con IA completado:
+   📊 Recibidos: 10 trends
+   ⚽ Deportivos encontrados: 0
+   📰 No deportivos encontrados: 10
+   ✅ Deportivos seleccionados: 0/0
+   ✅ No deportivos seleccionados: 7/7
+   📊 Total a procesar: 7
+   🎯 % Deportes: 0%
+✅ 2025-10-08T18:00:51.680Z - Balanceo completado: 0 deportes + 7 generales
+🔄 2025-10-08T18:00:51.687Z - PASO 2: Procesando con ExtractorW (endpoint cron - SIN COSTO)...
+⚡ PASO 2: Procesando con ExtractorW (endpoint cron - SIN COSTO)...
+🔄 Datos balanceados convertidos a twitter_trends: {
+  original_count: 10,
+  balanced_count: 7,
+  deportivos: 0,
+  no_deportivos: 7,
+  sample: [ 'Guatemala', '#Guatemala', 'Gobierno' ]
+}
+✅ 2025-10-08T18:02:57.843Z - Procesamiento completado por ExtractorW
+✅ Procesamiento completado por ExtractorW
+📊 Resultado: {
+  success: true,
+  source: 'cron_job_automated',
+  timestamp: '2025-10-08T18:02:57.231Z',
+  word_cloud_count: 10,
+  keywords_count: 10,
+  categories_count: 3,
+  record_id: 'c4264ba0-0189-443c-b06b-a488e3c0a439'
+}
+🗄️  PASO 3: Verificando datos en Supabase...
+✅ Datos verificados en Supabase
+📋 Resumen guardado: {
+  id: 'c4264ba0-0189-443c-b06b-a488e3c0a439',
+  timestamp: '2025-10-08T18:02:57.231+00:00',
+  processing_status: 'complete',
+  source: undefined,
+  word_cloud_data_count: 10,
+  top_keywords_count: 10,
+  category_data_count: 3
+}
+
+🎉 PROCESO AUTOMATIZADO COMPLETADO EXITOSAMENTE
+📋 Resumen de la operación:
+   ✅ Datos raw obtenidos: SÍ
+   ⚽ Trends recibidos: 10
+   🤖 [CLASIFICACIÓN] Gemini AI clasificó los trends
+      - Deportivos encontrados: 0
+      - No deportivos encontrados: 10
+   ⚖️  [BALANCEO] Selección automática aplicada:
+      - Deportivos seleccionados: 0/5
+      - No deportivos seleccionados: 7/10
+      - Total procesado: 7
+      - % Deportes: 0%
+   ✅ Procesamiento IA: EXITOSO
+   ✅ Guardado en DB: SÍ
+   ✅ Procesamiento background: INICIADO
+   💰 Créditos consumidos: 0 (endpoint gratuito)
+   📅 Timestamp final: 2025-10-08T18:02:57.231Z
+✅ Ejecución finalizada - Status: completed
+📊 Resumen:
+   - Duración: 174s
+   - Tweets procesados: 0
+   - Tweets guardados: 0
+   - Requests IA: 1
+   - Costo estimado: $0.000000
+   - Errores: 0
+
+NaN
+🏁 EJECUCIÓN FINALIZADA
+📊 Resultado final: {
+  "success": true,
+  "message": "Trending topics procesados automáticamente",
+  "timestamp": "2025-10-08T18:02:57.231Z",
+  "record_id": "c4264ba0-0189-443c-b06b-a488e3c0a439",
+  "credits_consumed": 0,
+  "source": "automated_cron",
+  "data_summary": {
+    "word_cloud_count": 10,
+    "keywords_count": 10,
+    "categories_count": 3
+  }
+}
+🕐 Fin: 10/8/2025, 6:02:58 PM
+🚀 Ejecutando procesamiento automatizado de trending topics...
+🕐 Inicio: 10/9/2025, 6:00:02 PM
+📍 Este proceso NO consume créditos (usa endpoint cron gratuito)
+NaN
+📊 Ejecución iniciada - ID: d747a08d-39f9-4071-954b-c527d4f7c66c
+🔄 2025-10-09T18:00:03.306Z - Iniciando procesamiento automatizado de tendencias...
+🤖 [AUTOMATED] Iniciando procesamiento automatizado de tendencias...
+📅 Timestamp: 2025-10-09T18:00:03.306Z
+🔄 2025-10-09T18:00:03.306Z - PASO 1: Obteniendo trending topics del VPS...
+📡 PASO 1: Obteniendo trending topics del VPS...
+🔗 URL: https://api.standatpd.com/trending?location=guatemala&limit=50
+✅ 2025-10-09T18:00:09.520Z - Datos raw obtenidos exitosamente del VPS
+✅ Datos raw obtenidos exitosamente del VPS
+📊 Datos obtenidos: { status: 'success', trends_count: 124, location: 'guatemala' }
+🔢 Limitando a 50 trends de 124 disponibles
+
+🎯 [FILTRO] Iniciando clasificación IA de 50 trends...
+🤖 [GEMINI] Clasificando trends con IA...
+   📊 Total a clasificar: 50 trends
+   📝 Respuesta de Gemini recibida
+   ✅ Clasificación completada exitosamente
+   📊 Total clasificados: 50
+   ⚽ Deportivos: 3
+   📰 No deportivos: 47
+   📰 General: "nelson acpt"
+   📰 General: "#préndeme"
+   📰 General: "Surinam"
+   📰 General: "#AaronMercury"
+   📰 General: "IGSS"
+   📰 General: "Lago de Atitlán"
+   📰 General: "#AldoViral"
+   📰 General: "Paramaribo"
+   📰 General: "Danny Ocean"
+   ⚽ Deportivo: "Yankees"
+   📰 General: "Israel y Hamás"
+   📰 General: "Arévalo"
+   📰 General: "Constitución"
+   📰 General: "Big Mac"
+   📰 General: "Alcalde"
+   📰 General: "Russo"
+   📰 General: "Santiago Atitlán"
+   📰 General: "#CheVive"
+   📰 General: "#LMD7"
+   📰 General: "Atlántico"
+   📰 General: "Día 7"
+   📰 General: "comisión de finanzas"
+   📰 General: "Canadá"
+   📰 General: "Sololá"
+   📰 General: "Maldito"
+   📰 General: "Netanyahu"
+   📰 General: "El Salvador"
+   📰 General: "Nobel"
+   📰 General: "Cabal"
+   ⚽ Deportivo: "Amarini"
+   ⚽ Deportivo: "Concacaf"
+   📰 General: "Harry Potter"
+   📰 General: "Decreto 7-2025"
+   📰 General: "Arzu"
+   📰 General: "David"
+   📰 General: "Semilla"
+   📰 General: "Sandra Torres"
+   📰 General: "Fijo"
+   📰 General: "Ecuador"
+   📰 General: "Congreso"
+   📰 General: "Chicago"
+   📰 General: "Jimmy Morales"
+   📰 General: "Disney"
+   📰 General: "Veto"
+   📰 General: "Alex"
+   📰 General: "Miami"
+   📰 General: "GUATEMALTECOS"
+   📰 General: "Caribe"
+   📰 General: "Siii"
+   📰 General: "Google"
+
+✅ [FILTRO] Balanceo con IA completado:
+   📊 Recibidos: 50 trends
+   ⚽ Deportivos encontrados: 3
+   📰 No deportivos encontrados: 47
+   ✅ Deportivos seleccionados: 3/5
+   ✅ No deportivos seleccionados: 10/10
+   📊 Total a procesar: 13
+   🎯 % Deportes: 23%
+✅ 2025-10-09T18:00:17.125Z - Balanceo completado: 3 deportes + 10 generales
+🔄 2025-10-09T18:00:17.125Z - PASO 2: Procesando con ExtractorW (endpoint cron - SIN COSTO)...
+⚡ PASO 2: Procesando con ExtractorW (endpoint cron - SIN COSTO)...
+🔄 Datos balanceados convertidos a twitter_trends: {
+  original_count: 124,
+  balanced_count: 13,
+  deportivos: 3,
+  no_deportivos: 10,
+  sample: [ 'nelson acpt', '#préndeme', 'Surinam' ]
+}
+✅ 2025-10-09T18:03:17.520Z - Procesamiento completado por ExtractorW
+✅ Procesamiento completado por ExtractorW
+📊 Resultado: {
+  success: true,
+  source: 'cron_job_automated',
+  timestamp: '2025-10-09T18:03:17.204Z',
+  word_cloud_count: 10,
+  keywords_count: 10,
+  categories_count: 7,
+  record_id: 'b3f8699c-4886-457a-b763-7871685623e8'
+}
+🗄️  PASO 3: Verificando datos en Supabase...
+✅ Datos verificados en Supabase
+📋 Resumen guardado: {
+  id: 'b3f8699c-4886-457a-b763-7871685623e8',
+  timestamp: '2025-10-09T18:03:17.204+00:00',
+  processing_status: 'complete',
+  source: undefined,
+  word_cloud_data_count: 10,
+  top_keywords_count: 10,
+  category_data_count: 7
+}
+
+🎉 PROCESO AUTOMATIZADO COMPLETADO EXITOSAMENTE
+📋 Resumen de la operación:
+   ✅ Datos raw obtenidos: SÍ
+   ⚽ Trends recibidos: 50
+   🤖 [CLASIFICACIÓN] Gemini AI clasificó los trends
+      - Deportivos encontrados: 3
+      - No deportivos encontrados: 47
+   ⚖️  [BALANCEO] Selección automática aplicada:
+      - Deportivos seleccionados: 3/5
+      - No deportivos seleccionados: 10/10
+      - Total procesado: 13
+      - % Deportes: 23%
+   ✅ Procesamiento IA: EXITOSO
+   ✅ Guardado en DB: SÍ
+   ✅ Procesamiento background: INICIADO
+   💰 Créditos consumidos: 0 (endpoint gratuito)
+   📅 Timestamp final: 2025-10-09T18:03:17.204Z
+✅ Ejecución finalizada - Status: completed
+📊 Resumen:
+   - Duración: 195s
+   - Tweets procesados: 0
+   - Tweets guardados: 0
+   - Requests IA: 1
+   - Costo estimado: $0.000000
+   - Errores: 0
+
+NaN
+🏁 EJECUCIÓN FINALIZADA
+📊 Resultado final: {
+  "success": true,
+  "message": "Trending topics procesados automáticamente",
+  "timestamp": "2025-10-09T18:03:17.204Z",
+  "record_id": "b3f8699c-4886-457a-b763-7871685623e8",
+  "credits_consumed": 0,
+  "source": "automated_cron",
+  "data_summary": {
+    "word_cloud_count": 10,
+    "keywords_count": 10,
+    "categories_count": 7
+  }
+}
+🕐 Fin: 10/9/2025, 6:03:17 PM
+🚀 Ejecutando procesamiento automatizado de trending topics...
+🕐 Inicio: 10/10/2025, 6:00:01 PM
+📍 Este proceso NO consume créditos (usa endpoint cron gratuito)
+NaN
+📊 Ejecución iniciada - ID: d606cca2-baf9-4157-8268-af39f5aeeecc
+🔄 2025-10-10T18:00:02.901Z - Iniciando procesamiento automatizado de tendencias...
+🤖 [AUTOMATED] Iniciando procesamiento automatizado de tendencias...
+📅 Timestamp: 2025-10-10T18:00:02.901Z
+🔄 2025-10-10T18:00:02.901Z - PASO 1: Obteniendo trending topics del VPS...
+📡 PASO 1: Obteniendo trending topics del VPS...
+🔗 URL: https://api.standatpd.com/trending?location=guatemala&limit=50
+✅ 2025-10-10T18:00:08.531Z - Datos raw obtenidos exitosamente del VPS
+✅ Datos raw obtenidos exitosamente del VPS
+📊 Datos obtenidos: { status: 'success', trends_count: 137, location: 'guatemala' }
+🔢 Limitando a 50 trends de 137 disponibles
+
+🎯 [FILTRO] Iniciando clasificación IA de 50 trends...
+🤖 [GEMINI] Clasificando trends con IA...
+   📊 Total a clasificar: 50 trends
+   📝 Respuesta de Gemini recibida
+   ✅ Clasificación completada exitosamente
+   📊 Total clasificados: 50
+   ⚽ Deportivos: 7
+   📰 No deportivos: 43
+   📰 General: "Surinam"
+   📰 General: "Nobel"
+   📰 General: "Venezuela"
+   📰 General: "Danny Ocean"
+   📰 General: "María Corina Machado"
+   📰 General: "Dina Boluarte"
+   📰 General: "Día Mundial de la Salud Mental"
+   📰 General: "#AldoViral"
+   📰 General: "#ENADE2025"
+   📰 General: "#EYESCLOSEDbyJISOOandZayn"
+   📰 General: "Trump"
+   📰 General: "Sigan"
+   📰 General: "Honduras"
+   📰 General: "Costa Rica"
+   📰 General: "EYES CLOSED OUT NOW"
+   📰 General: "Perú"
+   📰 General: "Haití"
+   📰 General: "#AaronMercury"
+   ⚽ Deportivo: "Walter López"
+   📰 General: "McRib"
+   📰 General: "McPatatas"
+   📰 General: "Guatemala"
+   ⚽ Deportivo: "Mundial 2026"
+   📰 General: "TRIPLE A VIRAL"
+   📰 General: "Peacemaker"
+   📰 General: "Paramaribo"
+   📰 General: "Aguilar Batres"
+   📰 General: "Rusia"
+   📰 General: "Israel y Hamás"
+   📰 General: "Fonseca"
+   📰 General: "#ComuniFest2025"
+   ⚽ Deportivo: "Phillies"
+   📰 General: "Estado de Derecho"
+   📰 General: "Felicitaciones"
+   ⚽ Deportivo: "Miguel Ángel Russo"
+   📰 General: "Harry Potter"
+   📰 General: "El Salvador"
+   📰 General: "Sololá"
+   ⚽ Deportivo: "Dodgers"
+   📰 General: "Arévalo"
+   ⚽ Deportivo: "Concacaf"
+   📰 General: "Canadá"
+   📰 General: "Fortnite"
+   📰 General: "Corte de Constitucionalidad"
+   ⚽ Deportivo: "Vinicius"
+   📰 General: "Daniel"
+   📰 General: "Patria"
+   📰 General: "Cabal"
+   📰 General: "Nicaragua"
+   📰 General: "Nobel de la Paz"
+
+✅ [FILTRO] Balanceo con IA completado:
+   📊 Recibidos: 50 trends
+   ⚽ Deportivos encontrados: 7
+   📰 No deportivos encontrados: 43
+   ✅ Deportivos seleccionados: 5/5
+   ✅ No deportivos seleccionados: 10/10
+   📊 Total a procesar: 15
+   🎯 % Deportes: 33%
+✅ 2025-10-10T18:00:16.780Z - Balanceo completado: 5 deportes + 10 generales
+🔄 2025-10-10T18:00:16.781Z - PASO 2: Procesando con ExtractorW (endpoint cron - SIN COSTO)...
+⚡ PASO 2: Procesando con ExtractorW (endpoint cron - SIN COSTO)...
+🔄 Datos balanceados convertidos a twitter_trends: {
+  original_count: 137,
+  balanced_count: 15,
+  deportivos: 5,
+  no_deportivos: 10,
+  sample: [ 'Surinam', 'Nobel', 'Venezuela' ]
+}
+✅ 2025-10-10T18:04:46.313Z - Procesamiento completado por ExtractorW
+✅ Procesamiento completado por ExtractorW
+📊 Resultado: {
+  success: true,
+  source: 'cron_job_automated',
+  timestamp: '2025-10-10T18:04:45.943Z',
+  word_cloud_count: 10,
+  keywords_count: 10,
+  categories_count: 6,
+  record_id: 'ebed9d93-7006-497f-95d4-0bc91ea65b8e'
+}
+🗄️  PASO 3: Verificando datos en Supabase...
+✅ Datos verificados en Supabase
+📋 Resumen guardado: {
+  id: 'ebed9d93-7006-497f-95d4-0bc91ea65b8e',
+  timestamp: '2025-10-10T18:04:45.943+00:00',
+  processing_status: 'complete',
+  source: undefined,
+  word_cloud_data_count: 10,
+  top_keywords_count: 10,
+  category_data_count: 6
+}
+
+🎉 PROCESO AUTOMATIZADO COMPLETADO EXITOSAMENTE
+📋 Resumen de la operación:
+   ✅ Datos raw obtenidos: SÍ
+   ⚽ Trends recibidos: 50
+   🤖 [CLASIFICACIÓN] Gemini AI clasificó los trends
+      - Deportivos encontrados: 7
+      - No deportivos encontrados: 43
+   ⚖️  [BALANCEO] Selección automática aplicada:
+      - Deportivos seleccionados: 5/5
+      - No deportivos seleccionados: 10/10
+      - Total procesado: 15
+      - % Deportes: 33%
+   ✅ Procesamiento IA: EXITOSO
+   ✅ Guardado en DB: SÍ
+   ✅ Procesamiento background: INICIADO
+   💰 Créditos consumidos: 0 (endpoint gratuito)
+   📅 Timestamp final: 2025-10-10T18:04:45.943Z
+✅ Ejecución finalizada - Status: completed
+📊 Resumen:
+   - Duración: 284s
+   - Tweets procesados: 0
+   - Tweets guardados: 0
+   - Requests IA: 1
+   - Costo estimado: $0.000000
+   - Errores: 0
+
+NaN
+🏁 EJECUCIÓN FINALIZADA
+📊 Resultado final: {
+  "success": true,
+  "message": "Trending topics procesados automáticamente",
+  "timestamp": "2025-10-10T18:04:45.943Z",
+  "record_id": "ebed9d93-7006-497f-95d4-0bc91ea65b8e",
+  "credits_consumed": 0,
+  "source": "automated_cron",
+  "data_summary": {
+    "word_cloud_count": 10,
+    "keywords_count": 10,
+    "categories_count": 6
+  }
+}
+🕐 Fin: 10/10/2025, 6:04:46 PM
+🚀 Ejecutando procesamiento automatizado de trending topics...
+🕐 Inicio: 10/11/2025, 6:29:02 PM
+📍 Este proceso NO consume créditos (usa endpoint cron gratuito)
+NaN
+📊 Ejecución iniciada - ID: ce72993b-efc5-4964-b91f-3cdc6b8f94b6
+🔄 2025-10-11T18:29:03.679Z - Iniciando procesamiento automatizado de tendencias...
+🤖 [AUTOMATED] Iniciando procesamiento automatizado de tendencias...
+📅 Timestamp: 2025-10-11T18:29:03.679Z
+🔄 2025-10-11T18:29:03.679Z - PASO 1: Obteniendo trending topics del VPS...
+📡 PASO 1: Obteniendo trending topics del VPS...
+🔗 URL: https://api.standatpd.com/trending?location=guatemala&limit=50
+⚠️ Warning: VPS_REQUEST - VPS respondió con status 502
+⚠️  VPS respondió con status 502
+🔄 2025-10-11T18:30:52.608Z - PASO 2: Procesando con ExtractorW (endpoint cron - SIN COSTO)...
+⚡ PASO 2: Procesando con ExtractorW (endpoint cron - SIN COSTO)...
+✅ 2025-10-11T18:34:06.041Z - Procesamiento completado por ExtractorW
+✅ Procesamiento completado por ExtractorW
+📊 Resultado: {
+  success: true,
+  source: 'cron_job_automated',
+  timestamp: '2025-10-11T18:34:05.810Z',
+  word_cloud_count: 10,
+  keywords_count: 10,
+  categories_count: 1,
+  record_id: '4c4c9f9f-ec1f-4280-a160-10c82363010c'
+}
+🗄️  PASO 3: Verificando datos en Supabase...
+✅ Datos verificados en Supabase
+📋 Resumen guardado: {
+  id: '4c4c9f9f-ec1f-4280-a160-10c82363010c',
+  timestamp: '2025-10-11T18:34:05.81+00:00',
+  processing_status: 'complete',
+  source: undefined,
+  word_cloud_data_count: 10,
+  top_keywords_count: 10,
+  category_data_count: 1
+}
+
+🎉 PROCESO AUTOMATIZADO COMPLETADO EXITOSAMENTE
+📋 Resumen de la operación:
+   ✅ Datos raw obtenidos: NO (usó mock data)
+   ⚽ Trends recibidos: 0
+   🤖 [CLASIFICACIÓN] Gemini AI clasificó los trends
+      - Deportivos encontrados: 0
+      - No deportivos encontrados: 0
+   ⚖️  [BALANCEO] Selección automática aplicada:
+      - Deportivos seleccionados: 0/5
+      - No deportivos seleccionados: 0/10
+      - Total procesado: 0
+      - % Deportes: 0%
+   ✅ Procesamiento IA: EXITOSO
+   ✅ Guardado en DB: SÍ
+   ✅ Procesamiento background: INICIADO
+   💰 Créditos consumidos: 0 (endpoint gratuito)
+   📅 Timestamp final: 2025-10-11T18:34:05.810Z
+✅ Ejecución finalizada - Status: completed
+📊 Resumen:
+   - Duración: 303s
+   - Tweets procesados: 0
+   - Tweets guardados: 0
+   - Requests IA: 1
+   - Costo estimado: $0.000000
+   - Errores: 0
+
+NaN
+🏁 EJECUCIÓN FINALIZADA
+📊 Resultado final: {
+  "success": true,
+  "message": "Trending topics procesados automáticamente",
+  "timestamp": "2025-10-11T18:34:05.810Z",
+  "record_id": "4c4c9f9f-ec1f-4280-a160-10c82363010c",
+  "credits_consumed": 0,
+  "source": "automated_cron",
+  "data_summary": {
+    "word_cloud_count": 10,
+    "keywords_count": 10,
+    "categories_count": 1
+  }
+}
+🕐 Fin: 10/11/2025, 6:34:06 PM
+🚀 Ejecutando procesamiento automatizado de trending topics...
+🕐 Inicio: 10/12/2025, 6:00:02 PM
+📍 Este proceso NO consume créditos (usa endpoint cron gratuito)
+NaN
+📊 Ejecución iniciada - ID: dbac063d-5ef4-41fd-ac4e-46529767700e
+🔄 2025-10-12T18:00:03.768Z - Iniciando procesamiento automatizado de tendencias...
+🤖 [AUTOMATED] Iniciando procesamiento automatizado de tendencias...
+📅 Timestamp: 2025-10-12T18:00:03.768Z
+🔄 2025-10-12T18:00:03.768Z - PASO 1: Obteniendo trending topics del VPS...
+📡 PASO 1: Obteniendo trending topics del VPS...
+🔗 URL: https://api.standatpd.com/trending?location=guatemala&limit=50
+✅ 2025-10-12T18:00:09.293Z - Datos raw obtenidos exitosamente del VPS
+✅ Datos raw obtenidos exitosamente del VPS
+📊 Datos obtenidos: { status: 'success', trends_count: 115, location: 'guatemala' }
+🔢 Limitando a 50 trends de 115 disponibles
+
+🎯 [FILTRO] Iniciando clasificación IA de 50 trends...
+🤖 [GEMINI] Clasificando trends con IA...
+   📊 Total a clasificar: 50 trends
+   📝 Respuesta de Gemini recibida
+   ✅ Clasificación completada exitosamente
+   📊 Total clasificados: 50
+   ⚽ Deportivos: 6
+   📰 No deportivos: 44
+   📰 General: "Fraijanes II"
+   📰 General: "Sistema Penitenciario"
+   📰 General: "#OurMuseJimin"
+   📰 General: "#HappyJiminDay"
+   📰 General: "#30YearsofLove"
+   📰 General: "HAPPY BIRTHDAY JIMIN"
+   📰 General: "Hagen"
+   📰 General: "Diane Keaton"
+   ⚽ Deportivo: "Municipal"
+   ⚽ Deportivo: "#Apertura2025"
+   ⚽ Deportivo: "Cobán Imperial"
+   📰 General: "DALILAH X TELETÓN"
+   📰 General: "Foppa"
+   📰 General: "El Trébol"
+   ⚽ Deportivo: "kevin ruiz"
+   📰 General: "AARON NO TE VAMOS A SOLTAR"
+   📰 General: "Ardon"
+   📰 General: "darwin lom"
+   📰 General: "Día Internacional de la Niña"
+   📰 General: "Panamá"
+   📰 General: "Surinam"
+   📰 General: "#DíaDeLaNiña"
+   ⚽ Deportivo: "Concacaf"
+   📰 General: "Nobel de la Paz"
+   📰 General: "Papa"
+   📰 General: "América"
+   📰 General: "El Progreso"
+   📰 General: "El Salvador"
+   📰 General: "España"
+   📰 General: "María Corina Machado"
+   📰 General: "Joji"
+   📰 General: "Navarro"
+   📰 General: "Tena"
+   📰 General: "Cuscatlán"
+   📰 General: "Amén"
+   📰 General: "Olger"
+   📰 General: "mcpatatas"
+   📰 General: "Altan"
+   📰 General: "Ufff"
+   📰 General: "Rusia"
+   📰 General: "Plaza de la Constitución"
+   📰 General: "Venezuela"
+   📰 General: "Rudy"
+   📰 General: "Madrid"
+   📰 General: "Vaticano"
+   📰 General: "Rubio"
+   📰 General: "CA-9"
+   📰 General: "Tobago"
+   ⚽ Deportivo: "FIFA"
+   📰 General: "Trump"
+
+✅ [FILTRO] Balanceo con IA completado:
+   📊 Recibidos: 50 trends
+   ⚽ Deportivos encontrados: 6
+   📰 No deportivos encontrados: 44
+   ✅ Deportivos seleccionados: 5/5
+   ✅ No deportivos seleccionados: 10/10
+   📊 Total a procesar: 15
+   🎯 % Deportes: 33%
+✅ 2025-10-12T18:00:15.927Z - Balanceo completado: 5 deportes + 10 generales
+🔄 2025-10-12T18:00:15.927Z - PASO 2: Procesando con ExtractorW (endpoint cron - SIN COSTO)...
+⚡ PASO 2: Procesando con ExtractorW (endpoint cron - SIN COSTO)...
+🔄 Datos balanceados convertidos a twitter_trends: {
+  original_count: 115,
+  balanced_count: 15,
+  deportivos: 5,
+  no_deportivos: 10,
+  sample: [ 'Fraijanes II', 'Sistema Penitenciario', '#OurMuseJimin' ]
+}
+❌ Error registrado: Proceso principal automatizado Error: ExtractorW respondió con status 502: Bad Gateway
+    at processAutomatedTrends (file:///home/pj/NewsCron/fetch_trending_process.js:436:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+✅ Ejecución finalizada - Status: failed
+📊 Resumen:
+   - Duración: 13s
+   - Tweets procesados: 0
+   - Tweets guardados: 0
+   - Requests IA: 0
+   - Costo estimado: $0.000000
+   - Errores: 1
+❌ ERROR EN PROCESAMIENTO AUTOMATIZADO: Error: ExtractorW respondió con status 502: Bad Gateway
+    at processAutomatedTrends (file:///home/pj/NewsCron/fetch_trending_process.js:436:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+📋 Detalles del error: {
+  message: 'ExtractorW respondió con status 502: Bad Gateway',
+  stack: 'Error: ExtractorW respondió con status 502: Bad Gateway'
+}
+
+NaN
+🏁 EJECUCIÓN FINALIZADA
+📊 Resultado final: {
+  "success": false,
+  "error": "Error en procesamiento automatizado",
+  "message": "ExtractorW respondió con status 502: Bad Gateway",
+  "timestamp": "2025-10-12T18:00:16.268Z",
+  "credits_consumed": 0,
+  "source": "automated_cron"
+}
+🕐 Fin: 10/12/2025, 6:00:16 PM
+🚀 Ejecutando procesamiento automatizado de trending topics...
+🕐 Inicio: 10/13/2025, 6:00:02 PM
+📍 Este proceso NO consume créditos (usa endpoint cron gratuito)
+NaN
+📊 Ejecución iniciada - ID: d4942e0d-9bab-41df-9ba3-d8072a2e8b09
+🔄 2025-10-13T18:00:02.872Z - Iniciando procesamiento automatizado de tendencias...
+🤖 [AUTOMATED] Iniciando procesamiento automatizado de tendencias...
+📅 Timestamp: 2025-10-13T18:00:02.874Z
+🔄 2025-10-13T18:00:02.874Z - PASO 1: Obteniendo trending topics del VPS...
+📡 PASO 1: Obteniendo trending topics del VPS...
+🔗 URL: https://api.standatpd.com/trending?location=guatemala&limit=50
+✅ 2025-10-13T18:00:08.820Z - Datos raw obtenidos exitosamente del VPS
+✅ Datos raw obtenidos exitosamente del VPS
+📊 Datos obtenidos: { status: 'success', trends_count: 141, location: 'guatemala' }
+🔢 Limitando a 50 trends de 141 disponibles
+
+🎯 [FILTRO] Iniciando clasificación IA de 50 trends...
+🤖 [GEMINI] Clasificando trends con IA...
+   📊 Total a clasificar: 50 trends
+   📝 Respuesta de Gemini recibida
+   ✅ Clasificación completada exitosamente
+   📊 Total clasificados: 50
+   ⚽ Deportivos: 6
+   📰 No deportivos: 44
+   📰 General: "Fraijanes II"
+   📰 General: "Sistema Penitenciario"
+   📰 General: "Jiménez"
+   📰 General: "Barrio 18"
+   📰 General: "Foppa"
+   📰 General: "Gobernación"
+   📰 General: "Black Demon"
+   📰 General: "#LaGranjaVIP"
+   📰 General: "Renuncie"
+   📰 General: "Pueblo Nuevo Viñas"
+   📰 General: "Linda Vista"
+   📰 General: "Mingob"
+   📰 General: "HAPPY BIRTHDAY JIMIN"
+   ⚽ Deportivo: "#Apertura2025"
+   📰 General: "Latín Family"
+   ⚽ Deportivo: "Cobán Imperial"
+   📰 General: "#HappyJiminDay"
+   📰 General: "AARON MERCURY EN LEBEH"
+   📰 General: "El MP"
+   ⚽ Deportivo: "Comunicaciones"
+   ⚽ Deportivo: "Guastatoya"
+   📰 General: "#OurMuseJimin"
+   📰 General: "Raíces"
+   📰 General: "Santa Rosa"
+   📰 General: "Sandra Torres"
+   📰 General: "Monterrey"
+   📰 General: "#30YearsofLove"
+   📰 General: "El Trébol"
+   📰 General: "Marcela"
+   📰 General: "Lobo"
+   📰 General: "Arévalo"
+   📰 General: "Mareros"
+   📰 General: "Director"
+   📰 General: "karin Herrera"
+   📰 General: "Semilla"
+   📰 General: "Retalhuleu"
+   📰 General: "Diane Keaton"
+   📰 General: "Samuel"
+   📰 General: "Inepto"
+   📰 General: "Destituya"
+   📰 General: "Presidente"
+   ⚽ Deportivo: "Marquense"
+   📰 General: "Hamas"
+   📰 General: "ardon"
+   ⚽ Deportivo: "liga guate banrural"
+   📰 General: "Mara 18"
+   📰 General: "Ludin Astolfo Godínez"
+   📰 General: "Destitución"
+   📰 General: "Incompetente"
+   📰 General: "Inútil"
+
+✅ [FILTRO] Balanceo con IA completado:
+   📊 Recibidos: 50 trends
+   ⚽ Deportivos encontrados: 6
+   📰 No deportivos encontrados: 44
+   ✅ Deportivos seleccionados: 5/5
+   ✅ No deportivos seleccionados: 10/10
+   📊 Total a procesar: 15
+   🎯 % Deportes: 33%
+✅ 2025-10-13T18:00:16.835Z - Balanceo completado: 5 deportes + 10 generales
+🔄 2025-10-13T18:00:16.835Z - PASO 2: Procesando con ExtractorW (endpoint cron - SIN COSTO)...
+⚡ PASO 2: Procesando con ExtractorW (endpoint cron - SIN COSTO)...
+🔄 Datos balanceados convertidos a twitter_trends: {
+  original_count: 141,
+  balanced_count: 15,
+  deportivos: 5,
+  no_deportivos: 10,
+  sample: [ 'Fraijanes II', 'Sistema Penitenciario', 'Jiménez' ]
+}
+✅ 2025-10-13T18:05:04.223Z - Procesamiento completado por ExtractorW
+✅ Procesamiento completado por ExtractorW
+📊 Resultado: {
+  success: true,
+  source: 'cron_job_automated',
+  timestamp: '2025-10-13T18:05:03.990Z',
+  word_cloud_count: 15,
+  keywords_count: 15,
+  categories_count: 3,
+  record_id: 'c453bf52-a906-4745-94b9-474afeb74067'
+}
+🗄️  PASO 3: Verificando datos en Supabase...
+✅ Datos verificados en Supabase
+📋 Resumen guardado: {
+  id: 'c453bf52-a906-4745-94b9-474afeb74067',
+  timestamp: '2025-10-13T18:05:03.99+00:00',
+  processing_status: 'complete',
+  source: undefined,
+  word_cloud_data_count: 15,
+  top_keywords_count: 15,
+  category_data_count: 3
+}
+
+🎉 PROCESO AUTOMATIZADO COMPLETADO EXITOSAMENTE
+📋 Resumen de la operación:
+   ✅ Datos raw obtenidos: SÍ
+   ⚽ Trends recibidos: 50
+   🤖 [CLASIFICACIÓN] Gemini AI clasificó los trends
+      - Deportivos encontrados: 6
+      - No deportivos encontrados: 44
+   ⚖️  [BALANCEO] Selección automática aplicada:
+      - Deportivos seleccionados: 5/5
+      - No deportivos seleccionados: 10/10
+      - Total procesado: 15
+      - % Deportes: 33%
+   ✅ Procesamiento IA: EXITOSO
+   ✅ Guardado en DB: SÍ
+   ✅ Procesamiento background: INICIADO
+   💰 Créditos consumidos: 0 (endpoint gratuito)
+   📅 Timestamp final: 2025-10-13T18:05:03.990Z
+✅ Ejecución finalizada - Status: completed
+📊 Resumen:
+   - Duración: 301s
+   - Tweets procesados: 0
+   - Tweets guardados: 0
+   - Requests IA: 1
+   - Costo estimado: $0.000000
+   - Errores: 0
+
+NaN
+🏁 EJECUCIÓN FINALIZADA
+📊 Resultado final: {
+  "success": true,
+  "message": "Trending topics procesados automáticamente",
+  "timestamp": "2025-10-13T18:05:03.990Z",
+  "record_id": "c453bf52-a906-4745-94b9-474afeb74067",
+  "credits_consumed": 0,
+  "source": "automated_cron",
+  "data_summary": {
+    "word_cloud_count": 15,
+    "keywords_count": 15,
+    "categories_count": 3
+  }
+}
+🕐 Fin: 10/13/2025, 6:05:04 PM
+🚀 Ejecutando procesamiento automatizado de trending topics...
+🕐 Inicio: 10/14/2025, 6:00:02 PM
+📍 Este proceso NO consume créditos (usa endpoint cron gratuito)
+NaN
+📊 Ejecución iniciada - ID: 37f30550-0553-4ad0-a574-f73eaf8bf4f4
+🔄 2025-10-14T18:00:03.021Z - Iniciando procesamiento automatizado de tendencias...
+🤖 [AUTOMATED] Iniciando procesamiento automatizado de tendencias...
+📅 Timestamp: 2025-10-14T18:00:03.021Z
+🔄 2025-10-14T18:00:03.021Z - PASO 1: Obteniendo trending topics del VPS...
+📡 PASO 1: Obteniendo trending topics del VPS...
+🔗 URL: https://api.standatpd.com/trending?location=guatemala&limit=50
+✅ 2025-10-14T18:00:13.761Z - Datos raw obtenidos exitosamente del VPS
+✅ Datos raw obtenidos exitosamente del VPS
+📊 Datos obtenidos: { status: 'success', trends_count: 141, location: 'guatemala' }
+🔢 Limitando a 50 trends de 141 disponibles
+
+🎯 [FILTRO] Iniciando clasificación IA de 50 trends...
+🤖 [GEMINI] Clasificando trends con IA...
+   📊 Total a clasificar: 50 trends
+   📝 Respuesta de Gemini recibida
+   ✅ Clasificación completada exitosamente
+   📊 Total clasificados: 50
+   ⚽ Deportivos: 5
+   📰 No deportivos: 45
+   📰 General: "Foppa"
+   📰 General: "Fraijanes II"
+   📰 General: "Jiménez"
+   📰 General: "Barrio 18"
+   📰 General: "Cabo Verde"
+   📰 General: "Gobernación"
+   📰 General: "Sistema Penitenciario"
+   📰 General: "Joji"
+   📰 General: "Nicaragua"
+   📰 General: "San Marcos"
+   📰 General: "#LaGranjaVIP"
+   📰 General: "Arévalo"
+   📰 General: "ALDAINE X PODCAST"
+   📰 General: "latín family"
+   📰 General: "Haití"
+   ⚽ Deportivo: "Coman"
+   📰 General: "Mingob"
+   📰 General: "Black Demon"
+   📰 General: "Honduras"
+   ⚽ Deportivo: "Dodgers"
+   📰 General: "Samuel"
+   📰 General: "Portillo"
+   📰 General: "#AaronBailaEnHoy"
+   📰 General: "Bukele"
+   📰 General: "El MP"
+   📰 General: "#BMCGuatemala"
+   📰 General: "Esmeralda"
+   📰 General: "Sandra"
+   📰 General: "Superintendente de Competencia"
+   📰 General: "pueblo nuevo viñas"
+   📰 General: "#AlertaNaranja"
+   📰 General: "La UNE"
+   📰 General: "#CubaCoopera"
+   📰 General: "Raíces"
+   📰 General: "la ronda"
+   📰 General: "Martes 14"
+   ⚽ Deportivo: "Estadio Cuscatlán"
+   📰 General: "Ineptos"
+   📰 General: "Retalhuleu"
+   📰 General: "Día Internacional"
+   ⚽ Deportivo: "guastatoya"
+   📰 General: "CICIG"
+   📰 General: "Renuncie"
+   📰 General: "San Salvador"
+   📰 General: "puerto barrios"
+   📰 General: "Semilla"
+   📰 General: "Marcela"
+   📰 General: "mariscal zavala"
+   ⚽ Deportivo: "Luis Fernando Tena"
+   📰 General: "Cacif"
+
+✅ [FILTRO] Balanceo con IA completado:
+   📊 Recibidos: 50 trends
+   ⚽ Deportivos encontrados: 5
+   📰 No deportivos encontrados: 45
+   ✅ Deportivos seleccionados: 5/5
+   ✅ No deportivos seleccionados: 10/10
+   📊 Total a procesar: 15
+   🎯 % Deportes: 33%
+✅ 2025-10-14T18:00:22.405Z - Balanceo completado: 5 deportes + 10 generales
+🔄 2025-10-14T18:00:22.405Z - PASO 2: Procesando con ExtractorW (endpoint cron - SIN COSTO)...
+⚡ PASO 2: Procesando con ExtractorW (endpoint cron - SIN COSTO)...
+🔄 Datos balanceados convertidos a twitter_trends: {
+  original_count: 141,
+  balanced_count: 15,
+  deportivos: 5,
+  no_deportivos: 10,
+  sample: [ 'Foppa', 'Fraijanes II', 'Jiménez' ]
+}
+✅ 2025-10-14T18:04:20.748Z - Procesamiento completado por ExtractorW
+✅ Procesamiento completado por ExtractorW
+📊 Resultado: {
+  success: true,
+  source: 'cron_job_automated',
+  timestamp: '2025-10-14T18:04:20.470Z',
+  word_cloud_count: 15,
+  keywords_count: 15,
+  categories_count: 5,
+  record_id: 'a5e82540-c838-4854-b2ff-c138e3da1157'
+}
+🗄️  PASO 3: Verificando datos en Supabase...
+✅ Datos verificados en Supabase
+📋 Resumen guardado: {
+  id: 'a5e82540-c838-4854-b2ff-c138e3da1157',
+  timestamp: '2025-10-14T18:04:20.47+00:00',
+  processing_status: 'complete',
+  source: undefined,
+  word_cloud_data_count: 15,
+  top_keywords_count: 15,
+  category_data_count: 5
+}
+
+🎉 PROCESO AUTOMATIZADO COMPLETADO EXITOSAMENTE
+📋 Resumen de la operación:
+   ✅ Datos raw obtenidos: SÍ
+   ⚽ Trends recibidos: 50
+   🤖 [CLASIFICACIÓN] Gemini AI clasificó los trends
+      - Deportivos encontrados: 5
+      - No deportivos encontrados: 45
+   ⚖️  [BALANCEO] Selección automática aplicada:
+      - Deportivos seleccionados: 5/5
+      - No deportivos seleccionados: 10/10
+      - Total procesado: 15
+      - % Deportes: 33%
+   ✅ Procesamiento IA: EXITOSO
+   ✅ Guardado en DB: SÍ
+   ✅ Procesamiento background: INICIADO
+   💰 Créditos consumidos: 0 (endpoint gratuito)
+   📅 Timestamp final: 2025-10-14T18:04:20.470Z
+✅ Ejecución finalizada - Status: completed
+📊 Resumen:
+   - Duración: 258s
+   - Tweets procesados: 0
+   - Tweets guardados: 0
+   - Requests IA: 1
+   - Costo estimado: $0.000000
+   - Errores: 0
+
+NaN
+🏁 EJECUCIÓN FINALIZADA
+📊 Resultado final: {
+  "success": true,
+  "message": "Trending topics procesados automáticamente",
+  "timestamp": "2025-10-14T18:04:20.470Z",
+  "record_id": "a5e82540-c838-4854-b2ff-c138e3da1157",
+  "credits_consumed": 0,
+  "source": "automated_cron",
+  "data_summary": {
+    "word_cloud_count": 15,
+    "keywords_count": 15,
+    "categories_count": 5
+  }
+}
+🕐 Fin: 10/14/2025, 6:04:20 PM
+🚀 Ejecutando procesamiento automatizado de trending topics...
+🕐 Inicio: 10/15/2025, 6:00:02 PM
+📍 Este proceso NO consume créditos (usa endpoint cron gratuito)
+NaN
+📊 Ejecución iniciada - ID: 17887100-8019-494d-a4ff-a4314ed18ffe
+🔄 2025-10-15T18:00:03.522Z - Iniciando procesamiento automatizado de tendencias...
+🤖 [AUTOMATED] Iniciando procesamiento automatizado de tendencias...
+📅 Timestamp: 2025-10-15T18:00:03.522Z
+🔄 2025-10-15T18:00:03.522Z - PASO 1: Obteniendo trending topics del VPS...
+📡 PASO 1: Obteniendo trending topics del VPS...
+🔗 URL: https://api.standatpd.com/trending?location=guatemala&limit=50
+✅ 2025-10-15T18:00:09.562Z - Datos raw obtenidos exitosamente del VPS
+✅ Datos raw obtenidos exitosamente del VPS
+📊 Datos obtenidos: { status: 'success', trends_count: 176, location: 'guatemala' }
+🔢 Limitando a 50 trends de 176 disponibles
+
+🎯 [FILTRO] Iniciando clasificación IA de 50 trends...
+🤖 [GEMINI] Clasificando trends con IA...
+   📊 Total a clasificar: 50 trends
+   📝 Respuesta de Gemini recibida
+   ✅ Clasificación completada exitosamente
+   📊 Total clasificados: 50
+   ⚽ Deportivos: 10
+   📰 No deportivos: 40
+   📰 General: "Guate"
+   📰 General: "Santis"
+   📰 General: "Portillo"
+   📰 General: "Cuscatlán"
+   📰 General: "Panamá"
+   ⚽ Deportivo: "CABALLO MORALES"
+   ⚽ Deportivo: "Altan"
+   ⚽ Deportivo: "HAGEN"
+   📰 General: "XCRY CON KATTEYES"
+   📰 General: "Rudy"
+   ⚽ Deportivo: "Bolillo"
+   📰 General: "AARON X MITZY"
+   📰 General: "Ministerio"
+   ⚽ Deportivo: "Chucho"
+   📰 General: "Rubio"
+   📰 General: "Olger"
+   📰 General: "Claudia Palencia"
+   📰 General: "San Antonio Suchitepéquez"
+   📰 General: "Franco"
+   📰 General: "Samayoa"
+   📰 General: "ALDAINE X PODCAST"
+   📰 General: "Trébol"
+   📰 General: "Esmeralda"
+   📰 General: "Jiménez"
+   📰 General: "#LoveYourW2025"
+   📰 General: "CECOT"
+   📰 General: "Michelle"
+   📰 General: "Bukele"
+   📰 General: "toribio acevedo"
+   📰 General: "#LMD7"
+   ⚽ Deportivo: "#EliminatoriasCONCACAF"
+   📰 General: "Mingob"
+   📰 General: "Foppa"
+   📰 General: "Robles"
+   📰 General: "Chema"
+   ⚽ Deportivo: "Castellanos"
+   📰 General: "Guanacos"
+   📰 General: "#casodiariomilitar"
+   ⚽ Deportivo: "#clasificacionmundial"
+   📰 General: "Pinto"
+   📰 General: "luis aguirre"
+   📰 General: "Arévalo"
+   📰 General: "Rodríguez"
+   📰 General: "Defensa"
+   📰 General: "Shombre"
+   📰 General: "Mixco"
+   📰 General: "Día Internacional"
+   ⚽ Deportivo: "Dodgers"
+   📰 General: "Ministerio de Gobernación"
+   ⚽ Deportivo: "Cristiano Ronaldo"
+
+✅ [FILTRO] Balanceo con IA completado:
+   📊 Recibidos: 50 trends
+   ⚽ Deportivos encontrados: 10
+   📰 No deportivos encontrados: 40
+   ✅ Deportivos seleccionados: 5/5
+   ✅ No deportivos seleccionados: 10/10
+   📊 Total a procesar: 15
+   🎯 % Deportes: 33%
+✅ 2025-10-15T18:00:18.439Z - Balanceo completado: 5 deportes + 10 generales
+🔄 2025-10-15T18:00:18.439Z - PASO 2: Procesando con ExtractorW (endpoint cron - SIN COSTO)...
+⚡ PASO 2: Procesando con ExtractorW (endpoint cron - SIN COSTO)...
+🔄 Datos balanceados convertidos a twitter_trends: {
+  original_count: 176,
+  balanced_count: 15,
+  deportivos: 5,
+  no_deportivos: 10,
+  sample: [ 'Guate', 'Santis', 'Portillo' ]
+}
+✅ 2025-10-15T18:04:45.084Z - Procesamiento completado por ExtractorW
+✅ Procesamiento completado por ExtractorW
+📊 Resultado: {
+  success: true,
+  source: 'cron_job_automated',
+  timestamp: '2025-10-15T18:04:44.718Z',
+  word_cloud_count: 15,
+  keywords_count: 15,
+  categories_count: 4,
+  record_id: '3fd0a18c-ff44-48f3-9f80-a284b2bfbb6b'
+}
+🗄️  PASO 3: Verificando datos en Supabase...
+✅ Datos verificados en Supabase
+📋 Resumen guardado: {
+  id: '3fd0a18c-ff44-48f3-9f80-a284b2bfbb6b',
+  timestamp: '2025-10-15T18:04:44.718+00:00',
+  processing_status: 'complete',
+  source: undefined,
+  word_cloud_data_count: 15,
+  top_keywords_count: 15,
+  category_data_count: 4
+}
+
+🎉 PROCESO AUTOMATIZADO COMPLETADO EXITOSAMENTE
+📋 Resumen de la operación:
+   ✅ Datos raw obtenidos: SÍ
+   ⚽ Trends recibidos: 50
+   🤖 [CLASIFICACIÓN] Gemini AI clasificó los trends
+      - Deportivos encontrados: 10
+      - No deportivos encontrados: 40
+   ⚖️  [BALANCEO] Selección automática aplicada:
+      - Deportivos seleccionados: 5/5
+      - No deportivos seleccionados: 10/10
+      - Total procesado: 15
+      - % Deportes: 33%
+   ✅ Procesamiento IA: EXITOSO
+   ✅ Guardado en DB: SÍ
+   ✅ Procesamiento background: INICIADO
+   💰 Créditos consumidos: 0 (endpoint gratuito)
+   📅 Timestamp final: 2025-10-15T18:04:44.718Z
+✅ Ejecución finalizada - Status: completed
+📊 Resumen:
+   - Duración: 283s
+   - Tweets procesados: 0
+   - Tweets guardados: 0
+   - Requests IA: 1
+   - Costo estimado: $0.000000
+   - Errores: 0
+
+NaN
+🏁 EJECUCIÓN FINALIZADA
+📊 Resultado final: {
+  "success": true,
+  "message": "Trending topics procesados automáticamente",
+  "timestamp": "2025-10-15T18:04:44.718Z",
+  "record_id": "3fd0a18c-ff44-48f3-9f80-a284b2bfbb6b",
+  "credits_consumed": 0,
+  "source": "automated_cron",
+  "data_summary": {
+    "word_cloud_count": 15,
+    "keywords_count": 15,
+    "categories_count": 4
+  }
+}
+🕐 Fin: 10/15/2025, 6:04:45 PM
+🚀 Ejecutando procesamiento automatizado de trending topics...
+🕐 Inicio: 10/16/2025, 6:00:01 PM
+📍 Este proceso NO consume créditos (usa endpoint cron gratuito)
+NaN
+📊 Ejecución iniciada - ID: 41ac3138-6950-44de-bdc1-258b5ed97946
+🔄 2025-10-16T18:00:02.759Z - Iniciando procesamiento automatizado de tendencias...
+🤖 [AUTOMATED] Iniciando procesamiento automatizado de tendencias...
+📅 Timestamp: 2025-10-16T18:00:02.759Z
+🔄 2025-10-16T18:00:02.759Z - PASO 1: Obteniendo trending topics del VPS...
+📡 PASO 1: Obteniendo trending topics del VPS...
+🔗 URL: https://api.standatpd.com/trending?location=guatemala&limit=50
+✅ 2025-10-16T18:00:08.613Z - Datos raw obtenidos exitosamente del VPS
+✅ Datos raw obtenidos exitosamente del VPS
+📊 Datos obtenidos: { status: 'success', trends_count: 192, location: 'guatemala' }
+🔢 Limitando a 50 trends de 192 disponibles
+
+🎯 [FILTRO] Iniciando clasificación IA de 50 trends...
+🤖 [GEMINI] Clasificando trends con IA...
+   📊 Total a clasificar: 50 trends
+   📝 Respuesta de Gemini recibida
+   ✅ Clasificación completada exitosamente
+   📊 Total clasificados: 50
+   ⚽ Deportivos: 4
+   📰 No deportivos: 46
+   📰 General: "#2025MAMAVOTE"
+   📰 General: "#jhope"
+   📰 General: "BRILLAARON EN LEBEH"
+   📰 General: "Codedes"
+   📰 General: "Guatemala"
+   📰 General: "Karol G"
+   📰 General: "XCRY CON KATTEYES"
+   📰 General: "#VSFashionShow"
+   📰 General: "El Salvador"
+   📰 General: "Santis"
+   📰 General: "Portillo"
+   📰 General: "Cuscatlán"
+   📰 General: "VSFS"
+   📰 General: "Bukele"
+   ⚽ Deportivo: "Bolillo"
+   📰 General: "olger"
+   📰 General: "Claudia Palencia"
+   📰 General: "Victoria Secret"
+   📰 General: "bella hadid"
+   📰 General: "caballo morales"
+   📰 General: "América Latina"
+   📰 General: "Candice"
+   📰 General: "Mingob"
+   ⚽ Deportivo: "Marquense"
+   📰 General: "Villalobos"
+   📰 General: "Francisco Jiménez"
+   📰 General: "Altan"
+   📰 General: "Cantabal"
+   📰 General: "Chucho"
+   📰 General: "barbara palvin"
+   📰 General: "Rudy"
+   ⚽ Deportivo: "Selecta"
+   📰 General: "Playa Grande"
+   📰 General: "Presidente Arévalo"
+   📰 General: "#LaGranjaVIP"
+   📰 General: "Michelle"
+   📰 General: "Ixcán"
+   📰 General: "HAGEN"
+   📰 General: "Trébol"
+   📰 General: "Justin Bieber"
+   📰 General: "#CubaPorLaVida"
+   📰 General: "Milei"
+   ⚽ Deportivo: "Kevin Ruiz"
+   📰 General: "Panamá"
+   📰 General: "El FBI"
+   📰 General: "Urge"
+   📰 General: "Oliverio García Rodas"
+   📰 General: "Chava"
+   📰 General: "Defensa"
+   📰 General: "Halloween"
+
+✅ [FILTRO] Balanceo con IA completado:
+   📊 Recibidos: 50 trends
+   ⚽ Deportivos encontrados: 4
+   📰 No deportivos encontrados: 46
+   ✅ Deportivos seleccionados: 4/5
+   ✅ No deportivos seleccionados: 10/10
+   📊 Total a procesar: 14
+   🎯 % Deportes: 29%
+✅ 2025-10-16T18:00:17.135Z - Balanceo completado: 4 deportes + 10 generales
+🔄 2025-10-16T18:00:17.135Z - PASO 2: Procesando con ExtractorW (endpoint cron - SIN COSTO)...
+⚡ PASO 2: Procesando con ExtractorW (endpoint cron - SIN COSTO)...
+🔄 Datos balanceados convertidos a twitter_trends: {
+  original_count: 192,
+  balanced_count: 14,
+  deportivos: 4,
+  no_deportivos: 10,
+  sample: [ '#2025MAMAVOTE', '#jhope', 'BRILLAARON EN LEBEH' ]
+}
+✅ 2025-10-16T18:04:50.844Z - Procesamiento completado por ExtractorW
+✅ Procesamiento completado por ExtractorW
+📊 Resultado: {
+  success: true,
+  source: 'cron_job_automated',
+  timestamp: '2025-10-16T18:04:50.475Z',
+  word_cloud_count: 14,
+  keywords_count: 14,
+  categories_count: 5,
+  record_id: 'c4dd4382-fd36-4684-9705-8a03bbf384b4'
+}
+🗄️  PASO 3: Verificando datos en Supabase...
+✅ Datos verificados en Supabase
+📋 Resumen guardado: {
+  id: 'c4dd4382-fd36-4684-9705-8a03bbf384b4',
+  timestamp: '2025-10-16T18:04:50.475+00:00',
+  processing_status: 'complete',
+  source: undefined,
+  word_cloud_data_count: 14,
+  top_keywords_count: 14,
+  category_data_count: 5
+}
+
+🎉 PROCESO AUTOMATIZADO COMPLETADO EXITOSAMENTE
+📋 Resumen de la operación:
+   ✅ Datos raw obtenidos: SÍ
+   ⚽ Trends recibidos: 50
+   🤖 [CLASIFICACIÓN] Gemini AI clasificó los trends
+      - Deportivos encontrados: 4
+      - No deportivos encontrados: 46
+   ⚖️  [BALANCEO] Selección automática aplicada:
+      - Deportivos seleccionados: 4/5
+      - No deportivos seleccionados: 10/10
+      - Total procesado: 14
+      - % Deportes: 29%
+   ✅ Procesamiento IA: EXITOSO
+   ✅ Guardado en DB: SÍ
+   ✅ Procesamiento background: INICIADO
+   💰 Créditos consumidos: 0 (endpoint gratuito)
+   📅 Timestamp final: 2025-10-16T18:04:50.475Z
+✅ Ejecución finalizada - Status: completed
+📊 Resumen:
+   - Duración: 289s
+   - Tweets procesados: 0
+   - Tweets guardados: 0
+   - Requests IA: 1
+   - Costo estimado: $0.000000
+   - Errores: 0
+
+NaN
+🏁 EJECUCIÓN FINALIZADA
+📊 Resultado final: {
+  "success": true,
+  "message": "Trending topics procesados automáticamente",
+  "timestamp": "2025-10-16T18:04:50.475Z",
+  "record_id": "c4dd4382-fd36-4684-9705-8a03bbf384b4",
+  "credits_consumed": 0,
+  "source": "automated_cron",
+  "data_summary": {
+    "word_cloud_count": 14,
+    "keywords_count": 14,
+    "categories_count": 5
+  }
+}
+🕐 Fin: 10/16/2025, 6:04:51 PM
+🚀 Ejecutando procesamiento automatizado de trending topics...
+🕐 Inicio: 10/17/2025, 6:00:01 PM
+📍 Este proceso NO consume créditos (usa endpoint cron gratuito)
+NaN
+📊 Ejecución iniciada - ID: 9c3b98d7-cff9-43d6-b183-8a03f8cf8a74
+🔄 2025-10-17T18:00:02.776Z - Iniciando procesamiento automatizado de tendencias...
+🤖 [AUTOMATED] Iniciando procesamiento automatizado de tendencias...
+📅 Timestamp: 2025-10-17T18:00:02.776Z
+🔄 2025-10-17T18:00:02.776Z - PASO 1: Obteniendo trending topics del VPS...
+📡 PASO 1: Obteniendo trending topics del VPS...
+🔗 URL: https://api.standatpd.com/trending?location=guatemala&limit=50
+✅ 2025-10-17T18:00:08.381Z - Datos raw obtenidos exitosamente del VPS
+✅ Datos raw obtenidos exitosamente del VPS
+📊 Datos obtenidos: { status: 'success', trends_count: 183, location: 'guatemala' }
+🔢 Limitando a 50 trends de 183 disponibles
+
+🎯 [FILTRO] Iniciando clasificación IA de 50 trends...
+🤖 [GEMINI] Clasificando trends con IA...
+   📊 Total a clasificar: 50 trends
+   📝 Respuesta de Gemini recibida
+   ✅ Clasificación completada exitosamente
+   📊 Total clasificados: 50
+   ⚽ Deportivos: 3
+   📰 No deportivos: 47
+   📰 General: "Marco Antonio Villeda Sandoval"
+   📰 General: "#2025MAMAVOTE"
+   📰 General: "Gobernación"
+   📰 General: "AMA EN PINKY PROMISE"
+   📰 General: "#jhope"
+   📰 General: "BRILLAARON EN LEBEH"
+   📰 General: "dalilah x monólogos"
+   📰 General: "ALDAINE FT LALALOVEYOU"
+   ⚽ Deportivo: "Juegos Centroamericanos"
+   📰 General: "Decreto 7-2025"
+   📰 General: "#DíaMundialDeLaAlimentación"
+   📰 General: "El Inquieto"
+   📰 General: "Juanes"
+   📰 General: "Villa Nueva"
+   📰 General: "Godoy"
+   📰 General: "#StrayKids"
+   📰 General: "#URGENTE"
+   📰 General: "Ace Frehley"
+   📰 General: "Karol G"
+   ⚽ Deportivo: "FIFA"
+   📰 General: "pablo villagran"
+   📰 General: "muxbal"
+   📰 General: "playa grande"
+   📰 General: "Superman"
+   📰 General: "Pokémon"
+   📰 General: "Mixco"
+   📰 General: "Bernardo Arévalo"
+   📰 General: "CODEDES"
+   📰 General: "Uruguay"
+   📰 General: "Santa Catarina Pinula"
+   📰 General: "Trébol"
+   📰 General: "José Portillo"
+   📰 General: "Caribe"
+   📰 General: "CA-9"
+   📰 General: "Bomberos Municipales"
+   📰 General: "kevin ruiz"
+   📰 General: "Barbara Palvin"
+   📰 General: "Bella Hadid"
+   📰 General: "Victoria Secret"
+   📰 General: "caballo morales"
+   📰 General: "Alta Verapaz"
+   📰 General: "Influencers"
+   📰 General: "Halloween"
+   📰 General: "Bukele"
+   📰 General: "Joaquín Barnoya"
+   📰 General: "Putin"
+   📰 General: "Francia"
+   📰 General: "EE.UU."
+   ⚽ Deportivo: "Marquense"
+   📰 General: "oliverio garcía rodas"
+
+✅ [FILTRO] Balanceo con IA completado:
+   📊 Recibidos: 50 trends
+   ⚽ Deportivos encontrados: 3
+   📰 No deportivos encontrados: 47
+   ✅ Deportivos seleccionados: 3/5
+   ✅ No deportivos seleccionados: 10/10
+   📊 Total a procesar: 13
+   🎯 % Deportes: 23%
+✅ 2025-10-17T18:00:16.258Z - Balanceo completado: 3 deportes + 10 generales
+🔄 2025-10-17T18:00:16.258Z - PASO 2: Procesando con ExtractorW (endpoint cron - SIN COSTO)...
+⚡ PASO 2: Procesando con ExtractorW (endpoint cron - SIN COSTO)...
+🔄 Datos balanceados convertidos a twitter_trends: {
+  original_count: 183,
+  balanced_count: 13,
+  deportivos: 3,
+  no_deportivos: 10,
+  sample: [ 'Marco Antonio Villeda Sandoval', '#2025MAMAVOTE', 'Gobernación' ]
+}
+✅ 2025-10-17T18:02:04.202Z - Procesamiento completado por ExtractorW
+✅ Procesamiento completado por ExtractorW
+📊 Resultado: {
+  success: true,
+  source: 'cron_job_automated',
+  timestamp: '2025-10-17T18:02:03.952Z',
+  word_cloud_count: 13,
+  keywords_count: 13,
+  categories_count: 1,
+  record_id: 'a473beb2-039d-427b-ae93-256f10fc3849'
+}
+🗄️  PASO 3: Verificando datos en Supabase...
+✅ Datos verificados en Supabase
+📋 Resumen guardado: {
+  id: 'a473beb2-039d-427b-ae93-256f10fc3849',
+  timestamp: '2025-10-17T18:02:03.952+00:00',
+  processing_status: 'complete',
+  source: undefined,
+  word_cloud_data_count: 13,
+  top_keywords_count: 13,
+  category_data_count: 1
+}
+
+🎉 PROCESO AUTOMATIZADO COMPLETADO EXITOSAMENTE
+📋 Resumen de la operación:
+   ✅ Datos raw obtenidos: SÍ
+   ⚽ Trends recibidos: 50
+   🤖 [CLASIFICACIÓN] Gemini AI clasificó los trends
+      - Deportivos encontrados: 3
+      - No deportivos encontrados: 47
+   ⚖️  [BALANCEO] Selección automática aplicada:
+      - Deportivos seleccionados: 3/5
+      - No deportivos seleccionados: 10/10
+      - Total procesado: 13
+      - % Deportes: 23%
+   ✅ Procesamiento IA: EXITOSO
+   ✅ Guardado en DB: SÍ
+   ✅ Procesamiento background: INICIADO
+   💰 Créditos consumidos: 0 (endpoint gratuito)
+   📅 Timestamp final: 2025-10-17T18:02:03.952Z
+✅ Ejecución finalizada - Status: completed
+📊 Resumen:
+   - Duración: 122s
+   - Tweets procesados: 0
+   - Tweets guardados: 0
+   - Requests IA: 1
+   - Costo estimado: $0.000000
+   - Errores: 0
+
+NaN
+🏁 EJECUCIÓN FINALIZADA
+📊 Resultado final: {
+  "success": true,
+  "message": "Trending topics procesados automáticamente",
+  "timestamp": "2025-10-17T18:02:03.952Z",
+  "record_id": "a473beb2-039d-427b-ae93-256f10fc3849",
+  "credits_consumed": 0,
+  "source": "automated_cron",
+  "data_summary": {
+    "word_cloud_count": 13,
+    "keywords_count": 13,
+    "categories_count": 1
+  }
+}
+🕐 Fin: 10/17/2025, 6:02:04 PM
+🚀 Ejecutando procesamiento automatizado de trending topics...
+🕐 Inicio: 10/18/2025, 6:00:02 PM
+📍 Este proceso NO consume créditos (usa endpoint cron gratuito)
+NaN
+📊 Ejecución iniciada - ID: a5c2396e-9a14-4ad3-a0d7-db7557ee4762
+🔄 2025-10-18T18:00:03.649Z - Iniciando procesamiento automatizado de tendencias...
+🤖 [AUTOMATED] Iniciando procesamiento automatizado de tendencias...
+📅 Timestamp: 2025-10-18T18:00:03.649Z
+🔄 2025-10-18T18:00:03.649Z - PASO 1: Obteniendo trending topics del VPS...
+📡 PASO 1: Obteniendo trending topics del VPS...
+🔗 URL: https://api.standatpd.com/trending?location=guatemala&limit=50
+✅ 2025-10-18T18:00:08.858Z - Datos raw obtenidos exitosamente del VPS
+✅ Datos raw obtenidos exitosamente del VPS
+📊 Datos obtenidos: { status: 'success', trends_count: 188, location: 'guatemala' }
+🔢 Limitando a 50 trends de 188 disponibles
+
+🎯 [FILTRO] Iniciando clasificación IA de 50 trends...
+🤖 [GEMINI] Clasificando trends con IA...
+   📊 Total a clasificar: 50 trends
+   📝 Respuesta de Gemini recibida
+   ✅ Clasificación completada exitosamente
+   📊 Total clasificados: 50
+   ⚽ Deportivos: 18
+   📰 No deportivos: 32
+   ⚽ Deportivo: "Araujo"
+   ⚽ Deportivo: "Gil Manzano"
+   ⚽ Deportivo: "Flick"
+   📰 General: "Aguilar Batres"
+   📰 General: "XCRY X ADIDAS FWMX"
+   ⚽ Deportivo: "Girona"
+   📰 General: "Liro Strong"
+   ⚽ Deportivo: "Barça"
+   📰 General: "#2025MAMAVOTE"
+   ⚽ Deportivo: "Madrid"
+   ⚽ Deportivo: "Barcelona"
+   ⚽ Deportivo: "Pedri"
+   📰 General: "Huehuetenango"
+   ⚽ Deportivo: "Lamine"
+   📰 General: "Melcin Gabriel De León"
+   📰 General: "Little Strong"
+   📰 General: "marco antonio villeda sandoval"
+   📰 General: "NOCHE IS BACK"
+   ⚽ Deportivo: "Negreira"
+   ⚽ Deportivo: "#LaLiga"
+   ⚽ Deportivo: "Clásico"
+   📰 General: "Ana Lendl"
+   📰 General: "Javier"
+   📰 General: "El MP"
+   ⚽ Deportivo: "Ohtani"
+   📰 General: "Claudia Palencia"
+   📰 General: "#jhope"
+   ⚽ Deportivo: "#Dodgers"
+   ⚽ Deportivo: "Juegos Centroamericanos"
+   📰 General: "DALILAH EN DOS LOCAS"
+   📰 General: "Miss Grand International"
+   📰 General: "Estilo"
+   📰 General: "Villa Nueva"
+   📰 General: "Top 10"
+   ⚽ Deportivo: "Tenis"
+   📰 General: "Ministerio de Gobernación"
+   📰 General: "san josé pinula"
+   📰 General: "Bronco"
+   📰 General: "Vestido"
+   📰 General: "Camisa"
+   📰 General: "Sudadera"
+   📰 General: "Adame"
+   📰 General: "Esooo"
+   📰 General: "Rebellcam"
+   📰 General: "Fariseo"
+   📰 General: "Aurora"
+   ⚽ Deportivo: "Mario Camposeco"
+   ⚽ Deportivo: "xelajú mc"
+   📰 General: "El Ministerio Público"
+   📰 General: "cang"
+
+✅ [FILTRO] Balanceo con IA completado:
+   📊 Recibidos: 50 trends
+   ⚽ Deportivos encontrados: 18
+   📰 No deportivos encontrados: 32
+   ✅ Deportivos seleccionados: 5/5
+   ✅ No deportivos seleccionados: 10/10
+   📊 Total a procesar: 15
+   🎯 % Deportes: 33%
+✅ 2025-10-18T18:00:15.687Z - Balanceo completado: 5 deportes + 10 generales
+🔄 2025-10-18T18:00:15.687Z - PASO 2: Procesando con ExtractorW (endpoint cron - SIN COSTO)...
+⚡ PASO 2: Procesando con ExtractorW (endpoint cron - SIN COSTO)...
+🔄 Datos balanceados convertidos a twitter_trends: {
+  original_count: 188,
+  balanced_count: 15,
+  deportivos: 5,
+  no_deportivos: 10,
+  sample: [ 'Aguilar Batres', 'XCRY X ADIDAS FWMX', 'Liro Strong' ]
+}
+✅ 2025-10-18T18:02:19.905Z - Procesamiento completado por ExtractorW
+✅ Procesamiento completado por ExtractorW
+📊 Resultado: {
+  success: true,
+  source: 'cron_job_automated',
+  timestamp: '2025-10-18T18:02:19.604Z',
+  word_cloud_count: 15,
+  keywords_count: 15,
+  categories_count: 1,
+  record_id: 'f533fa11-dfc7-44bf-9251-ba3c605be4c4'
+}
+🗄️  PASO 3: Verificando datos en Supabase...
+✅ Datos verificados en Supabase
+📋 Resumen guardado: {
+  id: 'f533fa11-dfc7-44bf-9251-ba3c605be4c4',
+  timestamp: '2025-10-18T18:02:19.604+00:00',
+  processing_status: 'complete',
+  source: undefined,
+  word_cloud_data_count: 15,
+  top_keywords_count: 15,
+  category_data_count: 1
+}
+
+🎉 PROCESO AUTOMATIZADO COMPLETADO EXITOSAMENTE
+📋 Resumen de la operación:
+   ✅ Datos raw obtenidos: SÍ
+   ⚽ Trends recibidos: 50
+   🤖 [CLASIFICACIÓN] Gemini AI clasificó los trends
+      - Deportivos encontrados: 18
+      - No deportivos encontrados: 32
+   ⚖️  [BALANCEO] Selección automática aplicada:
+      - Deportivos seleccionados: 5/5
+      - No deportivos seleccionados: 10/10
+      - Total procesado: 15
+      - % Deportes: 33%
+   ✅ Procesamiento IA: EXITOSO
+   ✅ Guardado en DB: SÍ
+   ✅ Procesamiento background: INICIADO
+   💰 Créditos consumidos: 0 (endpoint gratuito)
+   📅 Timestamp final: 2025-10-18T18:02:19.604Z
+✅ Ejecución finalizada - Status: completed
+📊 Resumen:
+   - Duración: 137s
+   - Tweets procesados: 0
+   - Tweets guardados: 0
+   - Requests IA: 1
+   - Costo estimado: $0.000000
+   - Errores: 0
+
+NaN
+🏁 EJECUCIÓN FINALIZADA
+📊 Resultado final: {
+  "success": true,
+  "message": "Trending topics procesados automáticamente",
+  "timestamp": "2025-10-18T18:02:19.604Z",
+  "record_id": "f533fa11-dfc7-44bf-9251-ba3c605be4c4",
+  "credits_consumed": 0,
+  "source": "automated_cron",
+  "data_summary": {
+    "word_cloud_count": 15,
+    "keywords_count": 15,
+    "categories_count": 1
+  }
+}
+🕐 Fin: 10/18/2025, 6:02:20 PM
+🚀 Ejecutando procesamiento automatizado de trending topics...
+🕐 Inicio: 10/19/2025, 6:00:02 PM
+📍 Este proceso NO consume créditos (usa endpoint cron gratuito)
+NaN
+📊 Ejecución iniciada - ID: ef033828-3464-483b-a643-30e84a2a5e26
+🔄 2025-10-19T18:00:03.524Z - Iniciando procesamiento automatizado de tendencias...
+🤖 [AUTOMATED] Iniciando procesamiento automatizado de tendencias...
+📅 Timestamp: 2025-10-19T18:00:03.524Z
+🔄 2025-10-19T18:00:03.524Z - PASO 1: Obteniendo trending topics del VPS...
+📡 PASO 1: Obteniendo trending topics del VPS...
+🔗 URL: https://api.standatpd.com/trending?location=guatemala&limit=50
+✅ 2025-10-19T18:00:09.413Z - Datos raw obtenidos exitosamente del VPS
+✅ Datos raw obtenidos exitosamente del VPS
+📊 Datos obtenidos: { status: 'success', trends_count: 137, location: 'guatemala' }
+🔢 Limitando a 50 trends de 137 disponibles
+
+🎯 [FILTRO] Iniciando clasificación IA de 50 trends...
+🤖 [GEMINI] Clasificando trends con IA...
+   📊 Total a clasificar: 50 trends
+   📝 Respuesta de Gemini recibida
+   ✅ Clasificación completada exitosamente
+   📊 Total clasificados: 50
+   ⚽ Deportivos: 11
+   📰 No deportivos: 39
+   📰 General: "#2025MAMAVOTE"
+   📰 General: "XCRY X ADIDAS FWMX"
+   📰 General: "Aguilar Batres"
+   📰 General: "Petro"
+   📰 General: "ALDRON IS ALIVE"
+   📰 General: "#CubaEsCultura"
+   📰 General: "#StreamFighters4"
+   ⚽ Deportivo: "Liverpool"
+   ⚽ Deportivo: "Araujo"
+   ⚽ Deportivo: "Girona"
+   📰 General: "Trump"
+   ⚽ Deportivo: "Flick"
+   📰 General: "Colombia"
+   📰 General: "melcin gabriel de león"
+   ⚽ Deportivo: "Pedri"
+   📰 General: "#jhope"
+   📰 General: "marlon manolo martínez sincuir"
+   ⚽ Deportivo: "Gil Manzano"
+   📰 General: "NOCHE IS BACK"
+   📰 General: "DALILAH EN DOS LOCAS"
+   ⚽ Deportivo: "McLaren"
+   📰 General: "#100AñosConFidel"
+   ⚽ Deportivo: "Juegos Centroamericanos"
+   📰 General: "Yina"
+   📰 General: "LITTLE STRONG"
+   📰 General: "Huehuetenango"
+   📰 General: "ELAINE X MOVISTAR"
+   📰 General: "Cáncer de Mama"
+   📰 General: "Liro Strong"
+   📰 General: "Bronco"
+   📰 General: "La CC"
+   📰 General: "pasarela"
+   📰 General: "Karina"
+   ⚽ Deportivo: "Ohtani"
+   📰 General: "Camisa"
+   📰 General: "Tenis"
+   📰 General: "El MP"
+   ⚽ Deportivo: "Rashford"
+   ⚽ Deportivo: "Laporta"
+   📰 General: "rebellcam"
+   📰 General: "sudadera"
+   📰 General: "Guatemala 2025"
+   📰 General: "emetra"
+   📰 General: "ana lendl"
+   📰 General: "Javier"
+   📰 General: "Aurora"
+   📰 General: "Vestido"
+   📰 General: "Carlos Pineda"
+   📰 General: "Gato"
+   📰 General: "Amamos"
+
+✅ [FILTRO] Balanceo con IA completado:
+   📊 Recibidos: 50 trends
+   ⚽ Deportivos encontrados: 11
+   📰 No deportivos encontrados: 39
+   ✅ Deportivos seleccionados: 5/5
+   ✅ No deportivos seleccionados: 10/10
+   📊 Total a procesar: 15
+   🎯 % Deportes: 33%
+✅ 2025-10-19T18:00:17.015Z - Balanceo completado: 5 deportes + 10 generales
+🔄 2025-10-19T18:00:17.015Z - PASO 2: Procesando con ExtractorW (endpoint cron - SIN COSTO)...
+⚡ PASO 2: Procesando con ExtractorW (endpoint cron - SIN COSTO)...
+🔄 Datos balanceados convertidos a twitter_trends: {
+  original_count: 137,
+  balanced_count: 15,
+  deportivos: 5,
+  no_deportivos: 10,
+  sample: [ '#2025MAMAVOTE', 'XCRY X ADIDAS FWMX', 'Aguilar Batres' ]
+}
+✅ 2025-10-19T18:04:17.298Z - Procesamiento completado por ExtractorW
+✅ Procesamiento completado por ExtractorW
+📊 Resultado: {
+  success: true,
+  source: 'cron_job_automated',
+  timestamp: '2025-10-19T18:04:16.820Z',
+  word_cloud_count: 15,
+  keywords_count: 15,
+  categories_count: 7,
+  record_id: '922ffe50-88f8-4fc1-93af-cf5f0fab25e4'
+}
+🗄️  PASO 3: Verificando datos en Supabase...
+✅ Datos verificados en Supabase
+📋 Resumen guardado: {
+  id: '922ffe50-88f8-4fc1-93af-cf5f0fab25e4',
+  timestamp: '2025-10-19T18:04:16.82+00:00',
+  processing_status: 'complete',
+  source: undefined,
+  word_cloud_data_count: 15,
+  top_keywords_count: 15,
+  category_data_count: 7
+}
+
+🎉 PROCESO AUTOMATIZADO COMPLETADO EXITOSAMENTE
+📋 Resumen de la operación:
+   ✅ Datos raw obtenidos: SÍ
+   ⚽ Trends recibidos: 50
+   🤖 [CLASIFICACIÓN] Gemini AI clasificó los trends
+      - Deportivos encontrados: 11
+      - No deportivos encontrados: 39
+   ⚖️  [BALANCEO] Selección automática aplicada:
+      - Deportivos seleccionados: 5/5
+      - No deportivos seleccionados: 10/10
+      - Total procesado: 15
+      - % Deportes: 33%
+   ✅ Procesamiento IA: EXITOSO
+   ✅ Guardado en DB: SÍ
+   ✅ Procesamiento background: INICIADO
+   💰 Créditos consumidos: 0 (endpoint gratuito)
+   📅 Timestamp final: 2025-10-19T18:04:16.820Z
+✅ Ejecución finalizada - Status: completed
+📊 Resumen:
+   - Duración: 255s
+   - Tweets procesados: 0
+   - Tweets guardados: 0
+   - Requests IA: 1
+   - Costo estimado: $0.000000
+   - Errores: 0
+
+NaN
+🏁 EJECUCIÓN FINALIZADA
+📊 Resultado final: {
+  "success": true,
+  "message": "Trending topics procesados automáticamente",
+  "timestamp": "2025-10-19T18:04:16.820Z",
+  "record_id": "922ffe50-88f8-4fc1-93af-cf5f0fab25e4",
+  "credits_consumed": 0,
+  "source": "automated_cron",
+  "data_summary": {
+    "word_cloud_count": 15,
+    "keywords_count": 15,
+    "categories_count": 7
+  }
+}
+🕐 Fin: 10/19/2025, 6:04:17 PM
+(node:1381720) Warning: To load an ES module, set "type": "module" in the package.json or use the .mjs extension.
+(Use `node --trace-warnings ...` to show where the warning was created)
+/home/pj/NewsCron/fetch_trending_process.js:1
+import fetch from 'node-fetch';
+^^^^^^
+
+SyntaxError: Cannot use import statement outside a module
+    at wrapSafe (node:internal/modules/cjs/loader:1281:20)
+    at Module._compile (node:internal/modules/cjs/loader:1321:27)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1416:10)
+    at Module.load (node:internal/modules/cjs/loader:1208:32)
+    at Module._load (node:internal/modules/cjs/loader:1024:12)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:174:12)
+    at node:internal/main/run_main_module:28:49
+
+Node.js v20.16.0

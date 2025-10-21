@@ -1,0 +1,873 @@
+🚀 Ejecutando procesamiento de noticias...
+🕐 Inicio: 10/5/2025, 11:00:02 PM
+📍 Categorías a procesar: Política, Económica, Sociales
+NaN
+📊 Ejecución iniciada - ID: 0888d99f-14d1-4b81-9f3c-191ce4d292e2
+🔄 2025-10-05T23:00:03.433Z - Iniciando procesamiento de noticias por categorías...
+🔄 2025-10-05T23:00:03.433Z - Procesando categoría: Política (context: politica)
+🔄 2025-10-05T23:00:13.429Z - 5 noticias encontradas para Política
+✅ 2025-10-05T23:00:14.216Z - Categoría Política completada
+🔄 2025-10-05T23:00:14.216Z - Procesando categoría: Económica (context: finanzas)
+🔄 2025-10-05T23:00:19.755Z - 2 noticias encontradas para Económica
+✅ 2025-10-05T23:00:20.155Z - Categoría Económica completada
+🔄 2025-10-05T23:00:20.155Z - Procesando categoría: Sociales (context: sociedad)
+🔄 2025-10-05T23:00:23.684Z - 1 noticias encontradas para Sociales
+✅ 2025-10-05T23:00:23.766Z - Categoría Sociales completada
+✅ Ejecución finalizada - Status: completed
+📊 Resumen:
+   - Duración: 21s
+   - Tweets procesados: 0
+   - Tweets guardados: 0
+   - Requests IA: 0
+   - Costo estimado: $0.000000
+   - Errores: 0
+✅ Proceso completado: 7 noticias nuevas guardadas de 8 procesadas
+📊 1 noticias ya existían (duplicados omitidos)
+
+NaN
+🏁 EJECUCIÓN FINALIZADA
+🕐 Fin: 10/5/2025, 11:00:23 PM
+🚀 Ejecutando procesamiento de noticias...
+🕐 Inicio: 10/6/2025, 11:00:01 AM
+📍 Categorías a procesar: Política, Económica, Sociales
+NaN
+📊 Ejecución iniciada - ID: e267a216-24ad-4f4a-b148-bf6bba248ec7
+🔄 2025-10-06T11:00:02.744Z - Iniciando procesamiento de noticias por categorías...
+🔄 2025-10-06T11:00:02.744Z - Procesando categoría: Política (context: politica)
+🔄 2025-10-06T11:00:13.392Z - 2 noticias encontradas para Política
+✅ 2025-10-06T11:00:13.801Z - Categoría Política completada
+🔄 2025-10-06T11:00:13.801Z - Procesando categoría: Económica (context: finanzas)
+🔄 2025-10-06T11:00:18.031Z - 0 noticias encontradas para Económica
+✅ 2025-10-06T11:00:18.032Z - Categoría Económica completada
+🔄 2025-10-06T11:00:18.032Z - Procesando categoría: Sociales (context: sociedad)
+🔄 2025-10-06T11:00:21.169Z - 1 noticias encontradas para Sociales
+✅ 2025-10-06T11:00:21.314Z - Categoría Sociales completada
+✅ Ejecución finalizada - Status: completed
+📊 Resumen:
+   - Duración: 19s
+   - Tweets procesados: 0
+   - Tweets guardados: 0
+   - Requests IA: 0
+   - Costo estimado: $0.000000
+   - Errores: 0
+✅ Proceso completado: 2 noticias nuevas guardadas de 3 procesadas
+📊 1 noticias ya existían (duplicados omitidos)
+
+NaN
+🏁 EJECUCIÓN FINALIZADA
+🕐 Fin: 10/6/2025, 11:00:21 AM
+🚀 Ejecutando procesamiento de noticias...
+🕐 Inicio: 10/6/2025, 11:00:01 PM
+📍 Categorías a procesar: Política, Económica, Sociales
+NaN
+📊 Ejecución iniciada - ID: 13eb3c59-a129-48b2-a491-46081a6c9a83
+🔄 2025-10-06T23:00:03.275Z - Iniciando procesamiento de noticias por categorías...
+🔄 2025-10-06T23:00:03.275Z - Procesando categoría: Política (context: politica)
+🔄 2025-10-06T23:00:14.004Z - 2 noticias encontradas para Política
+✅ 2025-10-06T23:00:14.532Z - Categoría Política completada
+🔄 2025-10-06T23:00:14.532Z - Procesando categoría: Económica (context: finanzas)
+🔄 2025-10-06T23:00:17.828Z - 1 noticias encontradas para Económica
+✅ 2025-10-06T23:00:18.031Z - Categoría Económica completada
+🔄 2025-10-06T23:00:18.031Z - Procesando categoría: Sociales (context: sociedad)
+🔄 2025-10-06T23:00:22.072Z - 1 noticias encontradas para Sociales
+✅ 2025-10-06T23:00:22.285Z - Categoría Sociales completada
+✅ Ejecución finalizada - Status: completed
+📊 Resumen:
+   - Duración: 20s
+   - Tweets procesados: 0
+   - Tweets guardados: 0
+   - Requests IA: 0
+   - Costo estimado: $0.000000
+   - Errores: 0
+✅ Proceso completado: 4 noticias nuevas guardadas de 4 procesadas
+📊 0 noticias ya existían (duplicados omitidos)
+
+NaN
+🏁 EJECUCIÓN FINALIZADA
+🕐 Fin: 10/6/2025, 11:00:22 PM
+🚀 Ejecutando procesamiento de noticias...
+🕐 Inicio: 10/7/2025, 11:00:02 AM
+📍 Categorías a procesar: Política, Económica, Sociales
+NaN
+📊 Ejecución iniciada - ID: d241a860-be13-447a-aaf8-234cba4ddd5a
+🔄 2025-10-07T11:00:03.547Z - Iniciando procesamiento de noticias por categorías...
+🔄 2025-10-07T11:00:03.547Z - Procesando categoría: Política (context: politica)
+🔄 2025-10-07T11:00:14.257Z - 3 noticias encontradas para Política
+✅ 2025-10-07T11:00:15.046Z - Categoría Política completada
+🔄 2025-10-07T11:00:15.046Z - Procesando categoría: Económica (context: finanzas)
+🔄 2025-10-07T11:00:18.182Z - 0 noticias encontradas para Económica
+✅ 2025-10-07T11:00:18.182Z - Categoría Económica completada
+🔄 2025-10-07T11:00:18.182Z - Procesando categoría: Sociales (context: sociedad)
+🔄 2025-10-07T11:00:20.905Z - 2 noticias encontradas para Sociales
+✅ 2025-10-07T11:00:21.329Z - Categoría Sociales completada
+✅ Ejecución finalizada - Status: completed
+📊 Resumen:
+   - Duración: 19s
+   - Tweets procesados: 0
+   - Tweets guardados: 0
+   - Requests IA: 0
+   - Costo estimado: $0.000000
+   - Errores: 0
+✅ Proceso completado: 5 noticias nuevas guardadas de 5 procesadas
+📊 0 noticias ya existían (duplicados omitidos)
+
+NaN
+🏁 EJECUCIÓN FINALIZADA
+🕐 Fin: 10/7/2025, 11:00:21 AM
+🚀 Ejecutando procesamiento de noticias...
+🕐 Inicio: 10/7/2025, 11:00:02 PM
+📍 Categorías a procesar: Política, Económica, Sociales
+NaN
+📊 Ejecución iniciada - ID: c76325d7-fc23-457f-a2db-49892d3cd8d1
+🔄 2025-10-07T23:00:03.948Z - Iniciando procesamiento de noticias por categorías...
+🔄 2025-10-07T23:00:03.948Z - Procesando categoría: Política (context: politica)
+🔄 2025-10-07T23:00:14.383Z - 0 noticias encontradas para Política
+✅ 2025-10-07T23:00:14.384Z - Categoría Política completada
+🔄 2025-10-07T23:00:14.384Z - Procesando categoría: Económica (context: finanzas)
+🔄 2025-10-07T23:00:20.468Z - 1 noticias encontradas para Económica
+✅ 2025-10-07T23:00:20.911Z - Categoría Económica completada
+🔄 2025-10-07T23:00:20.911Z - Procesando categoría: Sociales (context: sociedad)
+🔄 2025-10-07T23:00:23.323Z - 0 noticias encontradas para Sociales
+✅ 2025-10-07T23:00:23.323Z - Categoría Sociales completada
+✅ Ejecución finalizada - Status: completed
+📊 Resumen:
+   - Duración: 20s
+   - Tweets procesados: 0
+   - Tweets guardados: 0
+   - Requests IA: 0
+   - Costo estimado: $0.000000
+   - Errores: 0
+✅ Proceso completado: 1 noticias nuevas guardadas de 1 procesadas
+📊 0 noticias ya existían (duplicados omitidos)
+
+NaN
+🏁 EJECUCIÓN FINALIZADA
+🕐 Fin: 10/7/2025, 11:00:23 PM
+🚀 Ejecutando procesamiento de noticias...
+🕐 Inicio: 10/8/2025, 11:00:02 AM
+📍 Categorías a procesar: Política, Económica, Sociales
+NaN
+📊 Ejecución iniciada - ID: 0e83d963-7f5f-41ca-8e15-19c2a4b4efb4
+🔄 2025-10-08T11:00:03.541Z - Iniciando procesamiento de noticias por categorías...
+🔄 2025-10-08T11:00:03.541Z - Procesando categoría: Política (context: politica)
+🔄 2025-10-08T11:00:13.567Z - 5 noticias encontradas para Política
+✅ 2025-10-08T11:00:14.548Z - Categoría Política completada
+🔄 2025-10-08T11:00:14.548Z - Procesando categoría: Económica (context: finanzas)
+🔄 2025-10-08T11:00:21.837Z - 2 noticias encontradas para Económica
+✅ 2025-10-08T11:00:22.112Z - Categoría Económica completada
+🔄 2025-10-08T11:00:22.112Z - Procesando categoría: Sociales (context: sociedad)
+🔄 2025-10-08T11:00:24.585Z - 2 noticias encontradas para Sociales
+✅ 2025-10-08T11:00:24.775Z - Categoría Sociales completada
+✅ Ejecución finalizada - Status: completed
+📊 Resumen:
+   - Duración: 22s
+   - Tweets procesados: 0
+   - Tweets guardados: 0
+   - Requests IA: 0
+   - Costo estimado: $0.000000
+   - Errores: 0
+✅ Proceso completado: 7 noticias nuevas guardadas de 9 procesadas
+📊 2 noticias ya existían (duplicados omitidos)
+
+NaN
+🏁 EJECUCIÓN FINALIZADA
+🕐 Fin: 10/8/2025, 11:00:24 AM
+🚀 Ejecutando procesamiento de noticias...
+🕐 Inicio: 10/8/2025, 11:00:02 PM
+📍 Categorías a procesar: Política, Económica, Sociales
+NaN
+📊 Ejecución iniciada - ID: 08d875e8-ed1f-41e7-a92b-642fe5ee7630
+🔄 2025-10-08T23:00:03.863Z - Iniciando procesamiento de noticias por categorías...
+🔄 2025-10-08T23:00:03.865Z - Procesando categoría: Política (context: politica)
+🔄 2025-10-08T23:00:18.016Z - 1 noticias encontradas para Política
+✅ 2025-10-08T23:00:18.418Z - Categoría Política completada
+🔄 2025-10-08T23:00:18.418Z - Procesando categoría: Económica (context: finanzas)
+🔄 2025-10-08T23:00:23.700Z - 1 noticias encontradas para Económica
+✅ 2025-10-08T23:00:24.020Z - Categoría Económica completada
+🔄 2025-10-08T23:00:24.020Z - Procesando categoría: Sociales (context: sociedad)
+🔄 2025-10-08T23:00:29.541Z - 3 noticias encontradas para Sociales
+✅ 2025-10-08T23:00:30.227Z - Categoría Sociales completada
+✅ Ejecución finalizada - Status: completed
+📊 Resumen:
+   - Duración: 27s
+   - Tweets procesados: 0
+   - Tweets guardados: 0
+   - Requests IA: 0
+   - Costo estimado: $0.000000
+   - Errores: 0
+✅ Proceso completado: 4 noticias nuevas guardadas de 5 procesadas
+📊 1 noticias ya existían (duplicados omitidos)
+
+NaN
+🏁 EJECUCIÓN FINALIZADA
+🕐 Fin: 10/8/2025, 11:00:30 PM
+🚀 Ejecutando procesamiento de noticias...
+🕐 Inicio: 10/9/2025, 11:00:01 AM
+📍 Categorías a procesar: Política, Económica, Sociales
+NaN
+📊 Ejecución iniciada - ID: a6f0ec84-5dc1-4169-886c-d062f009fd8c
+🔄 2025-10-09T11:00:02.686Z - Iniciando procesamiento de noticias por categorías...
+🔄 2025-10-09T11:00:02.686Z - Procesando categoría: Política (context: politica)
+🔄 2025-10-09T11:00:13.242Z - 3 noticias encontradas para Política
+✅ 2025-10-09T11:00:13.945Z - Categoría Política completada
+🔄 2025-10-09T11:00:13.945Z - Procesando categoría: Económica (context: finanzas)
+🔄 2025-10-09T11:00:17.396Z - 0 noticias encontradas para Económica
+✅ 2025-10-09T11:00:17.397Z - Categoría Económica completada
+🔄 2025-10-09T11:00:17.397Z - Procesando categoría: Sociales (context: sociedad)
+🔄 2025-10-09T11:00:20.071Z - 1 noticias encontradas para Sociales
+✅ 2025-10-09T11:00:20.397Z - Categoría Sociales completada
+✅ Ejecución finalizada - Status: completed
+📊 Resumen:
+   - Duración: 18s
+   - Tweets procesados: 0
+   - Tweets guardados: 0
+   - Requests IA: 0
+   - Costo estimado: $0.000000
+   - Errores: 0
+✅ Proceso completado: 4 noticias nuevas guardadas de 4 procesadas
+📊 0 noticias ya existían (duplicados omitidos)
+
+NaN
+🏁 EJECUCIÓN FINALIZADA
+🕐 Fin: 10/9/2025, 11:00:20 AM
+🚀 Ejecutando procesamiento de noticias...
+🕐 Inicio: 10/9/2025, 11:00:02 PM
+📍 Categorías a procesar: Política, Económica, Sociales
+NaN
+📊 Ejecución iniciada - ID: 8ee5503e-714c-4e47-b1c9-5f343efb271d
+🔄 2025-10-09T23:00:03.603Z - Iniciando procesamiento de noticias por categorías...
+🔄 2025-10-09T23:00:03.603Z - Procesando categoría: Política (context: politica)
+🔄 2025-10-09T23:00:19.654Z - 2 noticias encontradas para Política
+✅ 2025-10-09T23:00:20.276Z - Categoría Política completada
+🔄 2025-10-09T23:00:20.276Z - Procesando categoría: Económica (context: finanzas)
+🔄 2025-10-09T23:00:24.502Z - 0 noticias encontradas para Económica
+✅ 2025-10-09T23:00:24.502Z - Categoría Económica completada
+🔄 2025-10-09T23:00:24.502Z - Procesando categoría: Sociales (context: sociedad)
+🔄 2025-10-09T23:00:28.656Z - 3 noticias encontradas para Sociales
+✅ 2025-10-09T23:00:29.156Z - Categoría Sociales completada
+✅ Ejecución finalizada - Status: completed
+📊 Resumen:
+   - Duración: 26s
+   - Tweets procesados: 0
+   - Tweets guardados: 0
+   - Requests IA: 0
+   - Costo estimado: $0.000000
+   - Errores: 0
+✅ Proceso completado: 4 noticias nuevas guardadas de 5 procesadas
+📊 1 noticias ya existían (duplicados omitidos)
+
+NaN
+🏁 EJECUCIÓN FINALIZADA
+🕐 Fin: 10/9/2025, 11:00:29 PM
+🚀 Ejecutando procesamiento de noticias...
+🕐 Inicio: 10/10/2025, 11:00:02 AM
+📍 Categorías a procesar: Política, Económica, Sociales
+NaN
+📊 Ejecución iniciada - ID: aab23bbb-9249-4b11-baad-ddadab271a68
+🔄 2025-10-10T11:00:03.348Z - Iniciando procesamiento de noticias por categorías...
+🔄 2025-10-10T11:00:03.348Z - Procesando categoría: Política (context: politica)
+🔄 2025-10-10T11:00:13.121Z - 4 noticias encontradas para Política
+✅ 2025-10-10T11:00:14.054Z - Categoría Política completada
+🔄 2025-10-10T11:00:14.054Z - Procesando categoría: Económica (context: finanzas)
+🔄 2025-10-10T11:00:17.879Z - 2 noticias encontradas para Económica
+✅ 2025-10-10T11:00:18.120Z - Categoría Económica completada
+🔄 2025-10-10T11:00:18.120Z - Procesando categoría: Sociales (context: sociedad)
+🔄 2025-10-10T11:00:22.087Z - 2 noticias encontradas para Sociales
+✅ 2025-10-10T11:00:22.358Z - Categoría Sociales completada
+✅ Ejecución finalizada - Status: completed
+📊 Resumen:
+   - Duración: 20s
+   - Tweets procesados: 0
+   - Tweets guardados: 0
+   - Requests IA: 0
+   - Costo estimado: $0.000000
+   - Errores: 0
+✅ Proceso completado: 6 noticias nuevas guardadas de 8 procesadas
+📊 2 noticias ya existían (duplicados omitidos)
+
+NaN
+🏁 EJECUCIÓN FINALIZADA
+🕐 Fin: 10/10/2025, 11:00:22 AM
+🚀 Ejecutando procesamiento de noticias...
+🕐 Inicio: 10/10/2025, 11:00:02 PM
+📍 Categorías a procesar: Política, Económica, Sociales
+NaN
+📊 Ejecución iniciada - ID: da49b21f-c103-4285-97cd-b2f9957fdda3
+🔄 2025-10-10T23:00:03.461Z - Iniciando procesamiento de noticias por categorías...
+🔄 2025-10-10T23:00:03.461Z - Procesando categoría: Política (context: politica)
+🔄 2025-10-10T23:00:13.719Z - 2 noticias encontradas para Política
+✅ 2025-10-10T23:00:14.435Z - Categoría Política completada
+🔄 2025-10-10T23:00:14.435Z - Procesando categoría: Económica (context: finanzas)
+🔄 2025-10-10T23:00:19.169Z - 1 noticias encontradas para Económica
+✅ 2025-10-10T23:00:19.462Z - Categoría Económica completada
+🔄 2025-10-10T23:00:19.462Z - Procesando categoría: Sociales (context: sociedad)
+🔄 2025-10-10T23:00:22.326Z - 3 noticias encontradas para Sociales
+✅ 2025-10-10T23:00:22.790Z - Categoría Sociales completada
+✅ Ejecución finalizada - Status: completed
+📊 Resumen:
+   - Duración: 20s
+   - Tweets procesados: 0
+   - Tweets guardados: 0
+   - Requests IA: 0
+   - Costo estimado: $0.000000
+   - Errores: 0
+✅ Proceso completado: 6 noticias nuevas guardadas de 6 procesadas
+📊 0 noticias ya existían (duplicados omitidos)
+
+NaN
+🏁 EJECUCIÓN FINALIZADA
+🕐 Fin: 10/10/2025, 11:00:22 PM
+🚀 Ejecutando procesamiento de noticias...
+🕐 Inicio: 10/11/2025, 11:00:02 AM
+📍 Categorías a procesar: Política, Económica, Sociales
+NaN
+📊 Ejecución iniciada - ID: 5eb16d74-d304-48d8-80f7-edb4d846657b
+🔄 2025-10-11T11:00:03.315Z - Iniciando procesamiento de noticias por categorías...
+🔄 2025-10-11T11:00:03.315Z - Procesando categoría: Política (context: politica)
+🔄 2025-10-11T11:00:12.650Z - 4 noticias encontradas para Política
+✅ 2025-10-11T11:00:13.607Z - Categoría Política completada
+🔄 2025-10-11T11:00:13.608Z - Procesando categoría: Económica (context: finanzas)
+🔄 2025-10-11T11:00:16.903Z - 1 noticias encontradas para Económica
+✅ 2025-10-11T11:00:17.137Z - Categoría Económica completada
+🔄 2025-10-11T11:00:17.137Z - Procesando categoría: Sociales (context: sociedad)
+🔄 2025-10-11T11:00:20.142Z - 0 noticias encontradas para Sociales
+✅ 2025-10-11T11:00:20.143Z - Categoría Sociales completada
+✅ Ejecución finalizada - Status: completed
+📊 Resumen:
+   - Duración: 18s
+   - Tweets procesados: 0
+   - Tweets guardados: 0
+   - Requests IA: 0
+   - Costo estimado: $0.000000
+   - Errores: 0
+✅ Proceso completado: 5 noticias nuevas guardadas de 5 procesadas
+📊 0 noticias ya existían (duplicados omitidos)
+
+NaN
+🏁 EJECUCIÓN FINALIZADA
+🕐 Fin: 10/11/2025, 11:00:20 AM
+🚀 Ejecutando procesamiento de noticias...
+🕐 Inicio: 10/11/2025, 11:00:01 PM
+📍 Categorías a procesar: Política, Económica, Sociales
+NaN
+📊 Ejecución iniciada - ID: 32f942be-69d6-489a-8b39-3e26ec73f2a7
+🔄 2025-10-11T23:00:02.796Z - Iniciando procesamiento de noticias por categorías...
+🔄 2025-10-11T23:00:02.796Z - Procesando categoría: Política (context: politica)
+🔄 2025-10-11T23:00:14.759Z - 2 noticias encontradas para Política
+✅ 2025-10-11T23:00:15.440Z - Categoría Política completada
+🔄 2025-10-11T23:00:15.440Z - Procesando categoría: Económica (context: finanzas)
+🔄 2025-10-11T23:00:19.428Z - 1 noticias encontradas para Económica
+✅ 2025-10-11T23:00:19.594Z - Categoría Económica completada
+🔄 2025-10-11T23:00:19.594Z - Procesando categoría: Sociales (context: sociedad)
+🔄 2025-10-11T23:00:23.242Z - 0 noticias encontradas para Sociales
+✅ 2025-10-11T23:00:23.243Z - Categoría Sociales completada
+✅ Ejecución finalizada - Status: completed
+📊 Resumen:
+   - Duración: 21s
+   - Tweets procesados: 0
+   - Tweets guardados: 0
+   - Requests IA: 0
+   - Costo estimado: $0.000000
+   - Errores: 0
+✅ Proceso completado: 2 noticias nuevas guardadas de 3 procesadas
+📊 1 noticias ya existían (duplicados omitidos)
+
+NaN
+🏁 EJECUCIÓN FINALIZADA
+🕐 Fin: 10/11/2025, 11:00:23 PM
+🚀 Ejecutando procesamiento de noticias...
+🕐 Inicio: 10/12/2025, 11:00:01 AM
+📍 Categorías a procesar: Política, Económica, Sociales
+NaN
+📊 Ejecución iniciada - ID: 9d5bb26f-c821-491f-877e-1c2a6d4e2efd
+🔄 2025-10-12T11:00:03.054Z - Iniciando procesamiento de noticias por categorías...
+🔄 2025-10-12T11:00:03.054Z - Procesando categoría: Política (context: politica)
+🔄 2025-10-12T11:00:15.667Z - 3 noticias encontradas para Política
+✅ 2025-10-12T11:00:16.421Z - Categoría Política completada
+🔄 2025-10-12T11:00:16.421Z - Procesando categoría: Económica (context: finanzas)
+🔄 2025-10-12T11:00:20.320Z - 0 noticias encontradas para Económica
+✅ 2025-10-12T11:00:20.320Z - Categoría Económica completada
+🔄 2025-10-12T11:00:20.320Z - Procesando categoría: Sociales (context: sociedad)
+🔄 2025-10-12T11:00:23.318Z - 1 noticias encontradas para Sociales
+✅ 2025-10-12T11:00:23.592Z - Categoría Sociales completada
+✅ Ejecución finalizada - Status: completed
+📊 Resumen:
+   - Duración: 21s
+   - Tweets procesados: 0
+   - Tweets guardados: 0
+   - Requests IA: 0
+   - Costo estimado: $0.000000
+   - Errores: 0
+✅ Proceso completado: 4 noticias nuevas guardadas de 4 procesadas
+📊 0 noticias ya existían (duplicados omitidos)
+
+NaN
+🏁 EJECUCIÓN FINALIZADA
+🕐 Fin: 10/12/2025, 11:00:23 AM
+🚀 Ejecutando procesamiento de noticias...
+🕐 Inicio: 10/12/2025, 11:00:01 PM
+📍 Categorías a procesar: Política, Económica, Sociales
+NaN
+📊 Ejecución iniciada - ID: 1b7209d0-5489-4eac-b89e-f5f150287750
+🔄 2025-10-12T23:00:03.347Z - Iniciando procesamiento de noticias por categorías...
+🔄 2025-10-12T23:00:03.347Z - Procesando categoría: Política (context: politica)
+🔄 2025-10-12T23:00:12.213Z - 2 noticias encontradas para Política
+✅ 2025-10-12T23:00:12.805Z - Categoría Política completada
+🔄 2025-10-12T23:00:12.805Z - Procesando categoría: Económica (context: finanzas)
+🔄 2025-10-12T23:00:16.570Z - 0 noticias encontradas para Económica
+✅ 2025-10-12T23:00:16.571Z - Categoría Económica completada
+🔄 2025-10-12T23:00:16.571Z - Procesando categoría: Sociales (context: sociedad)
+🔄 2025-10-12T23:00:20.391Z - 2 noticias encontradas para Sociales
+✅ 2025-10-12T23:00:20.960Z - Categoría Sociales completada
+✅ Ejecución finalizada - Status: completed
+📊 Resumen:
+   - Duración: 18s
+   - Tweets procesados: 0
+   - Tweets guardados: 0
+   - Requests IA: 0
+   - Costo estimado: $0.000000
+   - Errores: 0
+✅ Proceso completado: 4 noticias nuevas guardadas de 4 procesadas
+📊 0 noticias ya existían (duplicados omitidos)
+
+NaN
+🏁 EJECUCIÓN FINALIZADA
+🕐 Fin: 10/12/2025, 11:00:21 PM
+🚀 Ejecutando procesamiento de noticias...
+🕐 Inicio: 10/13/2025, 11:00:02 AM
+📍 Categorías a procesar: Política, Económica, Sociales
+NaN
+📊 Ejecución iniciada - ID: 30d1bd12-07e6-4929-9a70-5d6b37cf3a27
+🔄 2025-10-13T11:00:03.872Z - Iniciando procesamiento de noticias por categorías...
+🔄 2025-10-13T11:00:03.872Z - Procesando categoría: Política (context: politica)
+🔄 2025-10-13T11:00:18.439Z - 6 noticias encontradas para Política
+✅ 2025-10-13T11:00:19.774Z - Categoría Política completada
+🔄 2025-10-13T11:00:19.774Z - Procesando categoría: Económica (context: finanzas)
+🔄 2025-10-13T11:00:24.021Z - 0 noticias encontradas para Económica
+✅ 2025-10-13T11:00:24.021Z - Categoría Económica completada
+🔄 2025-10-13T11:00:24.021Z - Procesando categoría: Sociales (context: sociedad)
+🔄 2025-10-13T11:00:27.273Z - 3 noticias encontradas para Sociales
+✅ 2025-10-13T11:00:27.827Z - Categoría Sociales completada
+✅ Ejecución finalizada - Status: completed
+📊 Resumen:
+   - Duración: 25s
+   - Tweets procesados: 0
+   - Tweets guardados: 0
+   - Requests IA: 0
+   - Costo estimado: $0.000000
+   - Errores: 0
+✅ Proceso completado: 7 noticias nuevas guardadas de 9 procesadas
+📊 2 noticias ya existían (duplicados omitidos)
+
+NaN
+🏁 EJECUCIÓN FINALIZADA
+🕐 Fin: 10/13/2025, 11:00:27 AM
+🚀 Ejecutando procesamiento de noticias...
+🕐 Inicio: 10/13/2025, 11:00:01 PM
+📍 Categorías a procesar: Política, Económica, Sociales
+NaN
+📊 Ejecución iniciada - ID: 5917ba8f-fb5e-405b-ac9b-7c91b841e106
+🔄 2025-10-13T23:00:03.072Z - Iniciando procesamiento de noticias por categorías...
+🔄 2025-10-13T23:00:03.072Z - Procesando categoría: Política (context: politica)
+🔄 2025-10-13T23:00:13.251Z - 3 noticias encontradas para Política
+✅ 2025-10-13T23:00:14.273Z - Categoría Política completada
+🔄 2025-10-13T23:00:14.273Z - Procesando categoría: Económica (context: finanzas)
+🔄 2025-10-13T23:00:18.033Z - 0 noticias encontradas para Económica
+✅ 2025-10-13T23:00:18.033Z - Categoría Económica completada
+🔄 2025-10-13T23:00:18.033Z - Procesando categoría: Sociales (context: sociedad)
+🔄 2025-10-13T23:00:21.034Z - 4 noticias encontradas para Sociales
+✅ 2025-10-13T23:00:22.031Z - Categoría Sociales completada
+✅ Ejecución finalizada - Status: completed
+📊 Resumen:
+   - Duración: 20s
+   - Tweets procesados: 0
+   - Tweets guardados: 0
+   - Requests IA: 0
+   - Costo estimado: $0.000000
+   - Errores: 0
+✅ Proceso completado: 6 noticias nuevas guardadas de 7 procesadas
+📊 1 noticias ya existían (duplicados omitidos)
+
+NaN
+🏁 EJECUCIÓN FINALIZADA
+🕐 Fin: 10/13/2025, 11:00:22 PM
+🚀 Ejecutando procesamiento de noticias...
+🕐 Inicio: 10/14/2025, 11:00:01 AM
+📍 Categorías a procesar: Política, Económica, Sociales
+NaN
+📊 Ejecución iniciada - ID: 2256c55c-c0bd-40a1-8c6b-61532ec9e3f3
+🔄 2025-10-14T11:00:02.809Z - Iniciando procesamiento de noticias por categorías...
+🔄 2025-10-14T11:00:02.809Z - Procesando categoría: Política (context: politica)
+🔄 2025-10-14T11:00:13.338Z - 3 noticias encontradas para Política
+✅ 2025-10-14T11:00:14.245Z - Categoría Política completada
+🔄 2025-10-14T11:00:14.246Z - Procesando categoría: Económica (context: finanzas)
+🔄 2025-10-14T11:00:17.818Z - 0 noticias encontradas para Económica
+✅ 2025-10-14T11:00:17.818Z - Categoría Económica completada
+🔄 2025-10-14T11:00:17.818Z - Procesando categoría: Sociales (context: sociedad)
+🔄 2025-10-14T11:00:20.840Z - 0 noticias encontradas para Sociales
+✅ 2025-10-14T11:00:20.841Z - Categoría Sociales completada
+✅ Ejecución finalizada - Status: completed
+📊 Resumen:
+   - Duración: 19s
+   - Tweets procesados: 0
+   - Tweets guardados: 0
+   - Requests IA: 0
+   - Costo estimado: $0.000000
+   - Errores: 0
+✅ Proceso completado: 3 noticias nuevas guardadas de 3 procesadas
+📊 0 noticias ya existían (duplicados omitidos)
+
+NaN
+🏁 EJECUCIÓN FINALIZADA
+🕐 Fin: 10/14/2025, 11:00:21 AM
+🚀 Ejecutando procesamiento de noticias...
+🕐 Inicio: 10/14/2025, 11:00:02 PM
+📍 Categorías a procesar: Política, Económica, Sociales
+NaN
+📊 Ejecución iniciada - ID: 8be90927-41a1-47c8-acf5-532da62298d2
+🔄 2025-10-14T23:00:03.880Z - Iniciando procesamiento de noticias por categorías...
+🔄 2025-10-14T23:00:03.880Z - Procesando categoría: Política (context: politica)
+🔄 2025-10-14T23:00:14.701Z - 3 noticias encontradas para Política
+✅ 2025-10-14T23:00:15.552Z - Categoría Política completada
+🔄 2025-10-14T23:00:15.552Z - Procesando categoría: Económica (context: finanzas)
+🔄 2025-10-14T23:00:19.652Z - 1 noticias encontradas para Económica
+✅ 2025-10-14T23:00:19.834Z - Categoría Económica completada
+🔄 2025-10-14T23:00:19.834Z - Procesando categoría: Sociales (context: sociedad)
+🔄 2025-10-14T23:00:23.796Z - 3 noticias encontradas para Sociales
+✅ 2025-10-14T23:00:24.202Z - Categoría Sociales completada
+✅ Ejecución finalizada - Status: completed
+📊 Resumen:
+   - Duración: 21s
+   - Tweets procesados: 0
+   - Tweets guardados: 0
+   - Requests IA: 0
+   - Costo estimado: $0.000000
+   - Errores: 0
+✅ Proceso completado: 6 noticias nuevas guardadas de 7 procesadas
+📊 1 noticias ya existían (duplicados omitidos)
+
+NaN
+🏁 EJECUCIÓN FINALIZADA
+🕐 Fin: 10/14/2025, 11:00:24 PM
+🚀 Ejecutando procesamiento de noticias...
+🕐 Inicio: 10/15/2025, 11:00:02 AM
+📍 Categorías a procesar: Política, Económica, Sociales
+NaN
+📊 Ejecución iniciada - ID: 8ac224e7-6d79-45d2-8364-a6e327b7e3b9
+🔄 2025-10-15T11:00:03.494Z - Iniciando procesamiento de noticias por categorías...
+🔄 2025-10-15T11:00:03.494Z - Procesando categoría: Política (context: politica)
+🔄 2025-10-15T11:00:13.746Z - 3 noticias encontradas para Política
+✅ 2025-10-15T11:00:14.393Z - Categoría Política completada
+🔄 2025-10-15T11:00:14.394Z - Procesando categoría: Económica (context: finanzas)
+🔄 2025-10-15T11:00:19.564Z - 0 noticias encontradas para Económica
+✅ 2025-10-15T11:00:19.564Z - Categoría Económica completada
+🔄 2025-10-15T11:00:19.564Z - Procesando categoría: Sociales (context: sociedad)
+🔄 2025-10-15T11:00:21.818Z - 2 noticias encontradas para Sociales
+✅ 2025-10-15T11:00:22.060Z - Categoría Sociales completada
+✅ Ejecución finalizada - Status: completed
+📊 Resumen:
+   - Duración: 19s
+   - Tweets procesados: 0
+   - Tweets guardados: 0
+   - Requests IA: 0
+   - Costo estimado: $0.000000
+   - Errores: 0
+✅ Proceso completado: 3 noticias nuevas guardadas de 5 procesadas
+📊 2 noticias ya existían (duplicados omitidos)
+
+NaN
+🏁 EJECUCIÓN FINALIZADA
+🕐 Fin: 10/15/2025, 11:00:22 AM
+🚀 Ejecutando procesamiento de noticias...
+🕐 Inicio: 10/15/2025, 11:00:02 PM
+📍 Categorías a procesar: Política, Económica, Sociales
+NaN
+📊 Ejecución iniciada - ID: 1e7c2356-64d4-4bc5-aabd-45416fdad272
+🔄 2025-10-15T23:00:03.474Z - Iniciando procesamiento de noticias por categorías...
+🔄 2025-10-15T23:00:03.474Z - Procesando categoría: Política (context: politica)
+🔄 2025-10-15T23:00:16.056Z - 3 noticias encontradas para Política
+✅ 2025-10-15T23:00:17.032Z - Categoría Política completada
+🔄 2025-10-15T23:00:17.032Z - Procesando categoría: Económica (context: finanzas)
+🔄 2025-10-15T23:00:20.790Z - 1 noticias encontradas para Económica
+✅ 2025-10-15T23:00:21.025Z - Categoría Económica completada
+🔄 2025-10-15T23:00:21.026Z - Procesando categoría: Sociales (context: sociedad)
+🔄 2025-10-15T23:00:24.984Z - 1 noticias encontradas para Sociales
+✅ 2025-10-15T23:00:25.081Z - Categoría Sociales completada
+✅ Ejecución finalizada - Status: completed
+📊 Resumen:
+   - Duración: 22s
+   - Tweets procesados: 0
+   - Tweets guardados: 0
+   - Requests IA: 0
+   - Costo estimado: $0.000000
+   - Errores: 0
+✅ Proceso completado: 4 noticias nuevas guardadas de 5 procesadas
+📊 1 noticias ya existían (duplicados omitidos)
+
+NaN
+🏁 EJECUCIÓN FINALIZADA
+🕐 Fin: 10/15/2025, 11:00:25 PM
+🚀 Ejecutando procesamiento de noticias...
+🕐 Inicio: 10/16/2025, 11:00:02 AM
+📍 Categorías a procesar: Política, Económica, Sociales
+NaN
+📊 Ejecución iniciada - ID: 879c2c51-6656-4f94-8467-289eb24df42c
+🔄 2025-10-16T11:00:03.822Z - Iniciando procesamiento de noticias por categorías...
+🔄 2025-10-16T11:00:03.822Z - Procesando categoría: Política (context: politica)
+🔄 2025-10-16T11:00:13.930Z - 1 noticias encontradas para Política
+✅ 2025-10-16T11:00:14.350Z - Categoría Política completada
+🔄 2025-10-16T11:00:14.350Z - Procesando categoría: Económica (context: finanzas)
+🔄 2025-10-16T11:00:17.754Z - 1 noticias encontradas para Económica
+✅ 2025-10-16T11:00:17.983Z - Categoría Económica completada
+🔄 2025-10-16T11:00:17.983Z - Procesando categoría: Sociales (context: sociedad)
+🔄 2025-10-16T11:00:20.297Z - 0 noticias encontradas para Sociales
+✅ 2025-10-16T11:00:20.297Z - Categoría Sociales completada
+✅ Ejecución finalizada - Status: completed
+📊 Resumen:
+   - Duración: 17s
+   - Tweets procesados: 0
+   - Tweets guardados: 0
+   - Requests IA: 0
+   - Costo estimado: $0.000000
+   - Errores: 0
+✅ Proceso completado: 2 noticias nuevas guardadas de 2 procesadas
+📊 0 noticias ya existían (duplicados omitidos)
+
+NaN
+🏁 EJECUCIÓN FINALIZADA
+🕐 Fin: 10/16/2025, 11:00:20 AM
+🚀 Ejecutando procesamiento de noticias...
+🕐 Inicio: 10/16/2025, 11:00:01 PM
+📍 Categorías a procesar: Política, Económica, Sociales
+NaN
+📊 Ejecución iniciada - ID: d811e903-d8e4-47cf-8451-fdd2e16845c0
+🔄 2025-10-16T23:00:03.050Z - Iniciando procesamiento de noticias por categorías...
+🔄 2025-10-16T23:00:03.050Z - Procesando categoría: Política (context: politica)
+🔄 2025-10-16T23:00:13.036Z - 1 noticias encontradas para Política
+✅ 2025-10-16T23:00:13.489Z - Categoría Política completada
+🔄 2025-10-16T23:00:13.489Z - Procesando categoría: Económica (context: finanzas)
+🔄 2025-10-16T23:00:16.296Z - 0 noticias encontradas para Económica
+✅ 2025-10-16T23:00:16.296Z - Categoría Económica completada
+🔄 2025-10-16T23:00:16.296Z - Procesando categoría: Sociales (context: sociedad)
+🔄 2025-10-16T23:00:20.200Z - 3 noticias encontradas para Sociales
+✅ 2025-10-16T23:00:20.863Z - Categoría Sociales completada
+✅ Ejecución finalizada - Status: completed
+📊 Resumen:
+   - Duración: 18s
+   - Tweets procesados: 0
+   - Tweets guardados: 0
+   - Requests IA: 0
+   - Costo estimado: $0.000000
+   - Errores: 0
+✅ Proceso completado: 4 noticias nuevas guardadas de 4 procesadas
+📊 0 noticias ya existían (duplicados omitidos)
+
+NaN
+🏁 EJECUCIÓN FINALIZADA
+🕐 Fin: 10/16/2025, 11:00:20 PM
+🚀 Ejecutando procesamiento de noticias...
+🕐 Inicio: 10/17/2025, 11:00:01 AM
+📍 Categorías a procesar: Política, Económica, Sociales
+NaN
+📊 Ejecución iniciada - ID: 5d533e35-3d49-41a1-b144-4544bca3c33d
+🔄 2025-10-17T11:00:03.239Z - Iniciando procesamiento de noticias por categorías...
+🔄 2025-10-17T11:00:03.239Z - Procesando categoría: Política (context: politica)
+🔄 2025-10-17T11:00:13.107Z - 2 noticias encontradas para Política
+✅ 2025-10-17T11:00:13.687Z - Categoría Política completada
+🔄 2025-10-17T11:00:13.687Z - Procesando categoría: Económica (context: finanzas)
+🔄 2025-10-17T11:00:16.871Z - 0 noticias encontradas para Económica
+✅ 2025-10-17T11:00:16.872Z - Categoría Económica completada
+🔄 2025-10-17T11:00:16.872Z - Procesando categoría: Sociales (context: sociedad)
+🔄 2025-10-17T11:00:20.559Z - 1 noticias encontradas para Sociales
+✅ 2025-10-17T11:00:20.822Z - Categoría Sociales completada
+✅ Ejecución finalizada - Status: completed
+📊 Resumen:
+   - Duración: 18s
+   - Tweets procesados: 0
+   - Tweets guardados: 0
+   - Requests IA: 0
+   - Costo estimado: $0.000000
+   - Errores: 0
+✅ Proceso completado: 3 noticias nuevas guardadas de 3 procesadas
+📊 0 noticias ya existían (duplicados omitidos)
+
+NaN
+🏁 EJECUCIÓN FINALIZADA
+🕐 Fin: 10/17/2025, 11:00:20 AM
+🚀 Ejecutando procesamiento de noticias...
+🕐 Inicio: 10/17/2025, 11:00:01 PM
+📍 Categorías a procesar: Política, Económica, Sociales
+NaN
+📊 Ejecución iniciada - ID: 54e48ec0-8298-4532-becd-a00282e3ed15
+🔄 2025-10-17T23:00:02.663Z - Iniciando procesamiento de noticias por categorías...
+🔄 2025-10-17T23:00:02.663Z - Procesando categoría: Política (context: politica)
+🔄 2025-10-17T23:05:09.434Z - 3 noticias encontradas para Política
+✅ 2025-10-17T23:05:10.606Z - Categoría Política completada
+🔄 2025-10-17T23:05:10.606Z - Procesando categoría: Económica (context: finanzas)
+🔄 2025-10-17T23:10:14.329Z - 0 noticias encontradas para Económica
+✅ 2025-10-17T23:10:14.330Z - Categoría Económica completada
+🔄 2025-10-17T23:10:14.330Z - Procesando categoría: Sociales (context: sociedad)
+🔄 2025-10-17T23:10:17.913Z - 1 noticias encontradas para Sociales
+✅ 2025-10-17T23:10:18.301Z - Categoría Sociales completada
+✅ Ejecución finalizada - Status: completed
+📊 Resumen:
+   - Duración: 616s
+   - Tweets procesados: 0
+   - Tweets guardados: 0
+   - Requests IA: 0
+   - Costo estimado: $0.000000
+   - Errores: 0
+✅ Proceso completado: 4 noticias nuevas guardadas de 4 procesadas
+📊 0 noticias ya existían (duplicados omitidos)
+
+NaN
+🏁 EJECUCIÓN FINALIZADA
+🕐 Fin: 10/17/2025, 11:10:18 PM
+🚀 Ejecutando procesamiento de noticias...
+🕐 Inicio: 10/18/2025, 11:00:02 AM
+📍 Categorías a procesar: Política, Económica, Sociales
+NaN
+📊 Ejecución iniciada - ID: 437152eb-b780-42d4-88f3-b22a2e6a6fe5
+🔄 2025-10-18T11:00:03.780Z - Iniciando procesamiento de noticias por categorías...
+🔄 2025-10-18T11:00:03.780Z - Procesando categoría: Política (context: politica)
+🔄 2025-10-18T11:00:07.930Z - 1 noticias encontradas para Política
+✅ 2025-10-18T11:00:08.253Z - Categoría Política completada
+🔄 2025-10-18T11:00:08.253Z - Procesando categoría: Económica (context: finanzas)
+🔄 2025-10-18T11:00:12.296Z - 0 noticias encontradas para Económica
+✅ 2025-10-18T11:00:12.297Z - Categoría Económica completada
+🔄 2025-10-18T11:00:12.297Z - Procesando categoría: Sociales (context: sociedad)
+🔄 2025-10-18T11:00:15.560Z - 1 noticias encontradas para Sociales
+✅ 2025-10-18T11:00:15.860Z - Categoría Sociales completada
+✅ Ejecución finalizada - Status: completed
+📊 Resumen:
+   - Duración: 13s
+   - Tweets procesados: 0
+   - Tweets guardados: 0
+   - Requests IA: 0
+   - Costo estimado: $0.000000
+   - Errores: 0
+✅ Proceso completado: 2 noticias nuevas guardadas de 2 procesadas
+📊 0 noticias ya existían (duplicados omitidos)
+
+NaN
+🏁 EJECUCIÓN FINALIZADA
+🕐 Fin: 10/18/2025, 11:00:15 AM
+🚀 Ejecutando procesamiento de noticias...
+🕐 Inicio: 10/18/2025, 11:00:01 PM
+📍 Categorías a procesar: Política, Económica, Sociales
+NaN
+📊 Ejecución iniciada - ID: 0509dc99-a8a1-448f-b46b-5dbc2ce0ed9e
+🔄 2025-10-18T23:00:02.567Z - Iniciando procesamiento de noticias por categorías...
+🔄 2025-10-18T23:00:02.567Z - Procesando categoría: Política (context: politica)
+🔄 2025-10-18T23:00:17.088Z - 2 noticias encontradas para Política
+✅ 2025-10-18T23:00:17.606Z - Categoría Política completada
+🔄 2025-10-18T23:00:17.606Z - Procesando categoría: Económica (context: finanzas)
+🔄 2025-10-18T23:00:20.266Z - 1 noticias encontradas para Económica
+✅ 2025-10-18T23:00:20.432Z - Categoría Económica completada
+🔄 2025-10-18T23:00:20.432Z - Procesando categoría: Sociales (context: sociedad)
+🔄 2025-10-18T23:00:23.404Z - 0 noticias encontradas para Sociales
+✅ 2025-10-18T23:00:23.405Z - Categoría Sociales completada
+✅ Ejecución finalizada - Status: completed
+📊 Resumen:
+   - Duración: 21s
+   - Tweets procesados: 0
+   - Tweets guardados: 0
+   - Requests IA: 0
+   - Costo estimado: $0.000000
+   - Errores: 0
+✅ Proceso completado: 3 noticias nuevas guardadas de 3 procesadas
+📊 0 noticias ya existían (duplicados omitidos)
+
+NaN
+🏁 EJECUCIÓN FINALIZADA
+🕐 Fin: 10/18/2025, 11:00:23 PM
+🚀 Ejecutando procesamiento de noticias...
+🕐 Inicio: 10/19/2025, 11:00:01 AM
+📍 Categorías a procesar: Política, Económica, Sociales
+NaN
+📊 Ejecución iniciada - ID: 4d496373-5725-48c7-88be-dee4e44796cb
+🔄 2025-10-19T11:00:03.296Z - Iniciando procesamiento de noticias por categorías...
+🔄 2025-10-19T11:00:03.296Z - Procesando categoría: Política (context: politica)
+🔄 2025-10-19T11:00:15.094Z - 1 noticias encontradas para Política
+✅ 2025-10-19T11:00:15.527Z - Categoría Política completada
+🔄 2025-10-19T11:00:15.528Z - Procesando categoría: Económica (context: finanzas)
+🔄 2025-10-19T11:00:17.930Z - 1 noticias encontradas para Económica
+✅ 2025-10-19T11:00:18.122Z - Categoría Económica completada
+🔄 2025-10-19T11:00:18.122Z - Procesando categoría: Sociales (context: sociedad)
+🔄 2025-10-19T11:00:21.510Z - 0 noticias encontradas para Sociales
+✅ 2025-10-19T11:00:21.510Z - Categoría Sociales completada
+✅ Ejecución finalizada - Status: completed
+📊 Resumen:
+   - Duración: 19s
+   - Tweets procesados: 0
+   - Tweets guardados: 0
+   - Requests IA: 0
+   - Costo estimado: $0.000000
+   - Errores: 0
+✅ Proceso completado: 2 noticias nuevas guardadas de 2 procesadas
+📊 0 noticias ya existían (duplicados omitidos)
+
+NaN
+🏁 EJECUCIÓN FINALIZADA
+🕐 Fin: 10/19/2025, 11:00:21 AM
+🚀 Ejecutando procesamiento de noticias...
+🕐 Inicio: 10/19/2025, 11:00:02 PM
+📍 Categorías a procesar: Política, Económica, Sociales
+NaN
+📊 Ejecución iniciada - ID: aa6e15f7-2cd5-4432-958c-87a81c64e80f
+🔄 2025-10-19T23:00:03.454Z - Iniciando procesamiento de noticias por categorías...
+🔄 2025-10-19T23:00:03.454Z - Procesando categoría: Política (context: politica)
+🔄 2025-10-19T23:00:13.480Z - 1 noticias encontradas para Política
+✅ 2025-10-19T23:00:13.887Z - Categoría Política completada
+🔄 2025-10-19T23:00:13.887Z - Procesando categoría: Económica (context: finanzas)
+🔄 2025-10-19T23:00:17.708Z - 0 noticias encontradas para Económica
+✅ 2025-10-19T23:00:17.708Z - Categoría Económica completada
+🔄 2025-10-19T23:00:17.708Z - Procesando categoría: Sociales (context: sociedad)
+🔄 2025-10-19T23:00:20.239Z - 0 noticias encontradas para Sociales
+✅ 2025-10-19T23:00:20.239Z - Categoría Sociales completada
+✅ Ejecución finalizada - Status: completed
+📊 Resumen:
+   - Duración: 18s
+   - Tweets procesados: 0
+   - Tweets guardados: 0
+   - Requests IA: 0
+   - Costo estimado: $0.000000
+   - Errores: 0
+✅ Proceso completado: 1 noticias nuevas guardadas de 1 procesadas
+📊 0 noticias ya existían (duplicados omitidos)
+
+NaN
+🏁 EJECUCIÓN FINALIZADA
+🕐 Fin: 10/19/2025, 11:00:20 PM
+(node:1322627) Warning: To load an ES module, set "type": "module" in the package.json or use the .mjs extension.
+(Use `node --trace-warnings ...` to show where the warning was created)
+/home/pj/NewsCron/fetch_and_store_news.js:1
+import fetch from 'node-fetch';
+^^^^^^
+
+SyntaxError: Cannot use import statement outside a module
+    at wrapSafe (node:internal/modules/cjs/loader:1281:20)
+    at Module._compile (node:internal/modules/cjs/loader:1321:27)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1416:10)
+    at Module.load (node:internal/modules/cjs/loader:1208:32)
+    at Module._load (node:internal/modules/cjs/loader:1024:12)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:174:12)
+    at node:internal/main/run_main_module:28:49
+
+Node.js v20.16.0
+(node:1418460) Warning: To load an ES module, set "type": "module" in the package.json or use the .mjs extension.
+(Use `node --trace-warnings ...` to show where the warning was created)
+/home/pj/NewsCron/fetch_and_store_news.js:1
+import fetch from 'node-fetch';
+^^^^^^
+
+SyntaxError: Cannot use import statement outside a module
+    at wrapSafe (node:internal/modules/cjs/loader:1281:20)
+    at Module._compile (node:internal/modules/cjs/loader:1321:27)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1416:10)
+    at Module.load (node:internal/modules/cjs/loader:1208:32)
+    at Module._load (node:internal/modules/cjs/loader:1024:12)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:174:12)
+    at node:internal/main/run_main_module:28:49
+
+Node.js v20.16.0

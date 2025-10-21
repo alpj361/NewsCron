@@ -1,5 +1,6 @@
-const { createClient } = require('@supabase/supabase-js');
-require('dotenv').config();
+import { createClient } from '@supabase/supabase-js';
+import dotenv from 'dotenv';
+dotenv.config();
 
 class SystemLogger {
     constructor() {
@@ -224,4 +225,4 @@ class SystemLogger {
     }
 }
 
-module.exports = { SystemLogger }; 
+export { SystemLogger }; 
