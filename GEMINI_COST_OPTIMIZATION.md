@@ -153,3 +153,4 @@ ENABLE_SENTIMENT_ANALYSIS=true node fetch_trending_and_tweets.js
 **Fecha de optimización**: 2024
 **Estado**: ✅ Implementado
 **Ahorro esperado**: ~95% en llamadas a Gemini
+
