@@ -8,8 +8,11 @@ const SUPABASE_URL = 'https://qqshdccpmypelhmyqnut.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFxc2hkY2NwbXlwZWxobXlxbnV0Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0NjAzNjcxMSwiZXhwIjoyMDYxNjEyNzExfQ.BaJ_z3Gp2pUnmYEDpfNTCIxpHloSjmxi43aKwm-93ZI';
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// Configuración de la API - SIEMPRE usar servidor de producción
-const EXTRACTORW_API_URL = 'https://server.standatpd.com/api';
+// Configuración de la API - usar server.standatpd.com por defecto (endpoint funcional)
+const isLocal = process.env.IS_LOCAL === 'true' || process.env.EXTRACTORW_LOCAL === 'true';
+const EXTRACTORW_API_URL = isLocal
+  ? (process.env.EXTRACTORW_API_URL || 'http://localhost:3009/api')
+  : (process.env.EXTRACTORW_API_URL || 'https://server.standatpd.com/api');
 // Estrategia multi-fuente para obtener más trends
 const VPS_TRENDING_URLS = [
   'https://api.standatpd.com/trending?location=guatemala&limit=50',  // VPS PRODUCCIÓN
